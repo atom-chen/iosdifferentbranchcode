@@ -155,10 +155,12 @@ do
             edgeWidth = getFontEdge(fontSize)
         end
         local label = CCLabelTTF:create(text, fontName, fontSize, area, align, valign)
+        --fix ios stroke
+        label:setColor(ccc3(r, g, b))
         if edgeWidth>0 then
             label:enableStroke(ccc3(0,0,0), edgeWidth, true)
         end
-        label:setColor(ccc3(r, g, b))
+
         
         --local tsize = label:getContentSize()
         --if area.width > 0 and tsize.width>area.width then
