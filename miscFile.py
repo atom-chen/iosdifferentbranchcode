@@ -13,7 +13,7 @@ import base64
 import time
 now = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
 
-os.system('cp -r Resources Resources-%s' % (now))
+os.system('cp -r Resources Resources-%s' % ('old'))
 def tranverse(cur):
     ret = []
     files = os.listdir(cur)
