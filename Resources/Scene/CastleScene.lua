@@ -1139,7 +1139,6 @@ function OperationScene:synData(isAsyn)
             end
             local dis = CrystalLogic.initValue
             local cl = #(CrystalLogic.changeList)
-
             if cl>0 then
                 needSyn = true
                 params.bs = CrystalLogic.initValue
@@ -1154,6 +1153,12 @@ function OperationScene:synData(isAsyn)
                 CCNative:showAlert(StringManager.getString("alertTitleOutsyn"), StringManager.getString("alertTextOutsyn"), 2, StringManager.getString("buttonClose"), 0, "")
                 self.synOver = false
                 return
+            end
+            cl = #(CrystalLogic.buyAction)
+            if cl>0 then
+                needSyn = true
+                params.bcl = json.encode(CrystalLogic.buyAction)
+                CrystalLogic.buyAction = {}
             end
             if needSyn then
                 self.synOver = false

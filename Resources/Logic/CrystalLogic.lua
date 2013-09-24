@@ -1,4 +1,4 @@
-CrystalLogic = {}
+CrystalLogic = {buyAction={}}
 
 function CrystalLogic.computeCostByResource(type, value)
 	if type=="food" or type=="oil" then
@@ -79,6 +79,7 @@ function CrystalLogic.buyCrystal(param)
 	else
     	CrystalLogic.buyObj = param
 	    CCNative:buyProductIdentifier(CRYSTAL_PREFIX .. (param.type-1))
+	    table.insert(CrystalLogic.buyAction, param.type-1)
 	end
 end
 
