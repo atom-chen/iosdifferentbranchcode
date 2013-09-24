@@ -47,11 +47,13 @@ local function main()
 	        General.purpleUrl = "http://mm.10086.cn/android/info/230548.html#hotcom"
 	        network.checkUrl = "http://www.caesarsgame.com:9090/"
 	    elseif network.platform=="android_dx" then
-	        General.purpleUrl = "http://www.baidu.com/s?wd=%E8%BF%9B%E5%87%BB%E7%9A%84%E5%83%B5%E5%B0%B8"
+	        General.purpleUrl = "http://www.baidu.com/s?wd=%E5%B8%8C%E6%9C%9B%E5%8F%B7"
 	        network.checkUrl = "http://www.caesarsgame.com:9090/"
 	    elseif network.platform=="android_daqin" then
-	        General.purpleUrl = "http://www.baidu.com/s?wd=%E8%BF%9B%E5%87%BB%E7%9A%84%E5%83%B5%E5%B0%B8"
+	        General.purpleUrl = "http://www.baidu.com/s?wd=%E5%B8%8C%E6%9C%9B%E5%8F%B7"
 	        network.checkUrl = "http://www.caesarsgame.com:9090/"
+	    elseif network.platform=="android_astep" then
+	        General.purpleUrl = "http://www.baidu.com/s?wd=%E5%B8%8C%E6%9C%9B%E5%8F%B7"
 	    elseif network.platform=="android_wiipay" then
 	        General.purpleUrl = "http://tieba.baidu.com/f?ie=utf-8&amp;kw=%E8%BF%9B%E5%87%BB%E7%9A%84%E5%83%B5%E5%B0%B8online"
 	    end
@@ -96,8 +98,6 @@ local function main()
 	require "Scene.LoadingScene"
 	
 	math.randomseed(os.time())
-	
-	default:setStringForKey("username","G:1528922569")
     
     display.runScene(OperationScene.new(), LoadingScene)
     EventManager.registerEventsToCpp({"EVENT_COCOS_PAUSE", "EVENT_COCOS_RESUME", "EVENT_BUY_SUCCESS", "EVENT_BUY_FAIL", "EVENT_SHARE_SUCCESS", "EVENT_SHARE_FAIL"})

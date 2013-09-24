@@ -946,6 +946,7 @@ function OperationScene:initData()
         end
         UserData.zombieShieldTime = timer.getTime(initInfo.zombieTime)
         UserData.crystal = initInfo.crystal
+        CrystalLogic.initCrystal(initInfo.crystal)
         if PauseLogic.pauseBuyObj then
             UserData.crystal = UserData.crystal + PauseLogic.pauseBuyObj.get
             PauseLogic.pauseBuyObj = nil
@@ -997,7 +998,7 @@ function OperationScene:synDataOver(suc, result)
     if suc and json.decode(result).code==0 then
         self.synOver = true
     else
-        EventManager.sendMessage("EVENT_NETWORK_OFF")
+        CCNative:showAlert(StringManager.getString("alertTitleOutsyn"), StringManager.getString("alertTextOutsyn"), 2, StringManager.getString("buttonClose"), 0, "")
     end
 end
 
@@ -1061,11 +1062,6 @@ function OperationScene:synData(isAsyn)
             
             local updateInfo = false
             local infos = {}
-            if UserData.crystal ~= self.initInfo.crystal then
-                self.initInfo.crystal = UserData.crystal
-                infos.crystal = UserData.crystal
-                updateInfo = true
-            end
             if UserData.userScore~=self.initInfo.score then
                 self.initInfo.score = UserData.userScore
                 infos.score = UserData.userScore
@@ -1140,6 +1136,24 @@ function OperationScene:synData(isAsyn)
                 needSyn = true
                 params.research = json.encode(UserData.researchLevel)
                 self.initInfo.researches = copyData(UserData.researchLevel)
+            end
+            local dis = CrystalLogic.initValue
+            local cl = #(CrystalLogic.changeList)
+
+            if cl>0 then
+                needSyn = true
+                params.bs = CrystalLogic.initValue
+                params.cc = 0
+                for i=1, cl do
+                    dis = dis + CrystalLogic.changeList[i]
+                    params.cc = params.cc + CrystalLogic.changeList[i]
+                end
+                CrystalLogic.initCrystal(UserData.crystal)
+            end
+            if dis~=UserData.crystal then
+                CCNative:showAlert(StringManager.getString("alertTitleOutsyn"), StringManager.getString("alertTextOutsyn"), 2, StringManager.getString("buttonClose"), 0, "")
+                self.synOver = false
+                return
             end
             if needSyn then
                 self.synOver = false

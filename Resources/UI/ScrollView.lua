@@ -392,8 +392,10 @@ do
 				beginIndex = beginIndex - 1
 			else
 				local cell = CCExtendNode:create(cellSize, false)
-				cellUpdate(cell, scrollView, info)
-				scrollView:addItem(cell, {offx=offx, offy=offy, disx=disx, disy=disy, index=i+beginIndex, rowmax=rowmax})
+				if cell and pcall(cellUpdate, cell, scrollView, info) then
+    				--cellUpdate(cell, scrollView, info)
+    				scrollView:addItem(cell, {offx=offx, offy=offy, disx=disx, disy=disy, index=i+beginIndex, rowmax=rowmax})
+    		    end
 			end
 		end
 		scrollView:prepare()

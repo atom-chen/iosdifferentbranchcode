@@ -160,7 +160,8 @@ end
 function BuildMould:getBaseInfo()
 	local baseInfo = {self.id, 0, self.buildData.bid, self.buildLevel, 0, self.buildData.hitPoints, ""}
 	if self.buildView then
-		baseInfo[2]=self.buildView.state.backGrid.gridPosX*10000+self.buildView.state.backGrid.gridPosY
+	    local grid = self.buildView.state.backGrid or self.buildView.state.grid
+	    baseInfo[2]=grid.gridPosX*10000+grid.gridPosY
 	else
 		baseInfo[2]=self.initSetting.initGridX *10000 + self.initSetting.initGridY
 	end
@@ -477,7 +478,11 @@ function BuildMould:addChildMenuButs(buts)
 end
 
 function BuildMould:getHitPoints()
-    return math.floor(self.buildView.hitpoints)
+    if self.buildView then
+        return math.floor(self.buildView.hitpoints)
+    else
+        return self.buildData.hitPoints
+    end
 end
 
 function BuildMould:getChildMenuButs()

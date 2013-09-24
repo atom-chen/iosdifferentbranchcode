@@ -72,8 +72,10 @@ do
 	        end
 	        if delIndex>0 then
 	            local s = table.remove(slist, delIndex)
-	            s.view:removeFromParentAndCleanup(true)
-	            s.view = nil
+	            if s.view then
+    	            s.view:removeFromParentAndCleanup(true)
+    	            s.view = nil
+    	        end
 	        end
 	    end
 	end
@@ -217,13 +219,13 @@ do
 	function SoldierLogic.updateSoldierList()
 		local updateList = {}
 		for i=1, #barracks do
-		    if barracks[i].buildState~=BuildStates.STATE_BUILDING and #(barracks[i].callList)>0 then
+		    if barracks[i].buildState~=BuildStates.STATE_BUILDING and barracks[i].callList and #(barracks[i].callList)>0 then
 			    table.insert(updateList,barracks[i])
 			end
 		end
 		--[[
 		for i=1, #zbarracks do
-		    if zbarracks[i].buildState~=BuildStates.STATE_BUILDING and #(zbarracks[i].callList)>0 then
+		    if zbarracks[i].buildState~=BuildStates.STATE_BUILDING and zbarracks[i].callList and #(zbarracks[i].callList)>0 then
 			    table.insert(updateList,zbarracks[i])
 			end
 		end

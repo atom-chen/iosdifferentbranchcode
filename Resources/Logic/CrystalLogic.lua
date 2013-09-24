@@ -105,6 +105,12 @@ function CrystalLogic.changeCrystal(cost)
         return false
     else
         UserData.crystal = UserData.crystal + cost
+        table.insert(CrystalLogic.changeList, cost)
         return true
     end
+end
+
+function CrystalLogic.initCrystal(crystal)
+    CrystalLogic.initValue = crystal
+    CrystalLogic.changeList = {}
 end

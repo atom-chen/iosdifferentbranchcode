@@ -58,9 +58,9 @@
 		<key>aprefix</key>
 		<string>nozomi</string>
 		<key>localVersion</key>
-		<string>3</string>
+		<string>2</string>
 		<key>baseUrl</key>
-		<string>http://23.21.135.42:9990/</string>
+		<string>http://23.21.135.42:9891/</string>
 		<key>scoreUrl</key>
 		<string>http://23.21.135.42:8998/</string>
 		<key>chatUrl</key>

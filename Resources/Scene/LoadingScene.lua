@@ -145,8 +145,13 @@ function LoadingScene:requestSelfData(isSuc, result)
                 CCNative:showAlert(data.title, data.content, 2, data.button, 0, "")
                 return
             elseif data.serverUpdate then
-                CCNative:showAlert(data.title, data.content, 3, data.button, 0, data.url)
-                return
+                CCUserDefault:sharedUserDefault():setStringForKey("versionUpdateUrl", data.url)
+                if data.forceUpdate then
+                    CCNative:showAlert(data.title, data.content, 3, data.button1, 0, "")
+                    return
+                else
+                    CCNative:showAlert(data.title, data.content, 3, data.button1, 1, data.button2)
+                end
             end
             self.loadMax = self.loadMax+30
             self.toScene.initInfo = data

@@ -10,7 +10,6 @@
 
 @interface CSAlertView : NSObject<UIAlertViewDelegate>{
     int button[2];
-    NSString* url;
 }
 
 - (id)initWithTitle:(NSString*)title content:(NSString*)content button1:(int)button1 button1Text:(NSString*)button1Text button2:(int)button2 button2Text:(NSString*)button2Text;
