@@ -94,6 +94,6 @@ for i in allPngFile:
     nf.close()
 """
 
-
-os.system('mv Resources Resources-enc-%s' % (now))
-os.system('mv Resources-%s Resources' % (now))
+#after compile recover code
+#os.system('mv Resources Resources-enc-%s' % (now))
+#os.system('mv Resources-%s Resources' % (now))

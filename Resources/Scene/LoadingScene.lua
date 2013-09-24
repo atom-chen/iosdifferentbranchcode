@@ -141,11 +141,13 @@ function LoadingScene:requestSelfData(isSuc, result)
             if self.isWaiting then
                 display.closeDialog()
             end
+            print("loading Data", data.serverError, data.serverUpdate)
             if data.serverError then
                 CCNative:showAlert(data.title, data.content, 2, data.button, 0, "")
                 return
             elseif data.serverUpdate then
                 CCUserDefault:sharedUserDefault():setStringForKey("versionUpdateUrl", data.url)
+                print("data force Update", data.forceUpdate, data.content, data.title)
                 if data.forceUpdate then
                     CCNative:showAlert(data.title, data.content, 3, data.button1, 0, "")
                     return
