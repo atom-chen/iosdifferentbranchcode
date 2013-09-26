@@ -2,6 +2,19 @@
 <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
     <dict>
+        <key>plugins</key>
+        <dict>
+            <key>social</key>
+            <dict>
+                <key>name</key>
+                <string>SocialFacebook</string>
+                <key>config</key>
+                <dict>
+                    <key>FacebookAppKey</key>
+                    <string>304997242960340</string>
+                </dict>
+            </dict>
+        </dict>
         <key>store</key>
         <dict>
             <key>crystal0</key>
@@ -37,7 +50,7 @@
         <key>config</key>
         <dict>
           <key>pay</key>
-          <string>false</string>
+          <string>true</string>
           <key>gamecenter</key>
           <string>false</string>
           <key>video</key>
@@ -49,11 +62,11 @@
           <key>cprefix</key>
           <string>crystal</string>
           <key>baseUrl</key>
-          <string>http://caesarsgame.com:9000/</string>
+          <string>http://23.21.135.42:9990/</string>
           <key>scoreUrl</key>
-          <string>http://caesarsgame.com:9002/</string>
+          <string>http://23.21.135.42:8998/</string>
           <key>chatUrl</key>
-          <string>http://caesarsgame.com:8004/</string>
+          <string>http://23.21.135.42:8005/</string>
           <key>musicTail</key>
           <string>wav</string>
       </dict>
