@@ -47,7 +47,7 @@ local GuideShowTypes = {{{2, 1}, {3,2}, {1,3}}, {}, {{2,4},{2,14},{2,15},{2,5}},
 
 function GuideLogic.checkBuild(bid, level)
     local info = GuideInfo[GuideLogic.step]
-	if bid==info[2] then
+	if info and bid==info[2] then
 	    if info[1]=="BuildLevel" and level>=info[3] then
     		GuideLogic.num = 1
     		GuideLogic.completeStep()
@@ -152,7 +152,7 @@ function GuideLogic.eventHandler(eventType, param)
 			GuideLogic.completeStep()
 		end
 	elseif eventType == EventManager.eventType.EVENT_BUY_SOLDIER then
-		GuideLogic.num = GuideLogic.num + 1
+		GuideLogic.num = (GuideLogic.num or 0) + 1
 		if GuideLogic.num>=GuideInfo[GuideLogic.step][2] then
 			GuideLogic.completeStep()
 			GuideLogic.isTrainGuide = false
@@ -252,14 +252,14 @@ function GuideLogic.nextAnimate(isDelay)
     		bnode:addChild(temp)
     		
     		if showType[1]==1 then
-    			temp = UI.createSpriteWithFile("images/guideNpc1.png",CCSizeMake(249, 371))
+    			temp = UI.createSpriteWithFile("images/guideNpc1.png")
     			screen.autoSuitable(temp, {x=1024, y=35})
     			bnode:addChild(temp)
     			temp:runAction(CCEaseBackOut:create(CCMoveTo:create(0.5, CCPointMake(68, 35))))
     			
 	            music.playEffect("music/npc1.mp3")
     		else
-    			temp = UI.createSpriteWithFile("images/guideNpc2.png",CCSizeMake(229, 393))
+    			temp = UI.createSpriteWithFile("images/guideNpc2.png")
     			screen.autoSuitable(temp, {nodeAnchor=General.anchorBottom, x=203, y=22})
     			bnode:addChild(temp)
     			temp:setScaleY(0)

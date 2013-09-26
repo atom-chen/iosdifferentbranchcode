@@ -1,12 +1,8 @@
 UserSetting = {musicOn = false, soundOn=false, nightMode = false}
 
 function UserSetting.init()
-    --UserSetting.musicOn = CCUserDefault:sharedUserDefault():getBoolForKey("musicOn")
-    --UserSetting.soundOn = CCUserDefault:sharedUserDefault():getBoolForKey("soundOn")
-    print("musicOn", UserSetting.musicOn)
-    UserSetting.musicOn = true
-    UserSetting.soundOn = true
-
+    UserSetting.musicOn = CCUserDefault:sharedUserDefault():getBoolForKey("musicOn")
+    UserSetting.soundOn = CCUserDefault:sharedUserDefault():getBoolForKey("soundOn")
     UserSetting.nightMode = CCUserDefault:sharedUserDefault():getBoolForKey("nightMode")
     music.changeMusicState(UserSetting.musicOn)
     music.changeSoundState(UserSetting.soundOn)

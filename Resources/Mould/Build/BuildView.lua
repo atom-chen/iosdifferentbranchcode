@@ -392,13 +392,9 @@ function BuildView:setFocus(focus)
 			self.buildMould:onFocus(true)
 		end
 	else
+	    xpcall(function()
 		if build then
 			build:stopAllActions()
-			--if state.nightMode then
-			--	build:setColor(General.nightColor)
-			--else
-			--	build:setColor(General.normalColor)
-			--end
 			if self.backViewState then
 				build:setPositionY(self.backViewState[2])
 				build:setScaleX(self.backViewState[3])
@@ -423,6 +419,7 @@ function BuildView:setFocus(focus)
 			self.pt:removeFromParentAndCleanup(true)
 			self.pt = nil
 		end
+		end, doNothing)
 		EventManager.sendMessage("EVENT_BUILD_UNFOCUS", self)
 		self.buildMould:onFocus(false)
 	end
@@ -617,6 +614,12 @@ function BuildView:damage(value)
 		delayRemove(t, item)
 	end
 	if self.scene.sceneType == SceneTypes.Battle then
+	    if not self.buildMould.buildView then
+	        self.buildMould.buildView = self
+	    end
+	    if self.scene and self.scene.builds[self.buildMould.id]~=self.buildMould then
+	        self.scene.builds[self.buildMould.id]=self.buildMould
+	    end
 		BattleLogic.setBuildHitpoints(self.buildMould.id, self.hitpoints)
 	end
 end

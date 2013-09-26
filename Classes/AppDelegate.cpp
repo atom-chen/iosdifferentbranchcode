@@ -60,18 +60,6 @@ bool AppDelegate::applicationDidFinishLaunching()
     std::string path = CCFileUtils::sharedFileUtils()->fullPathForFilename("main.lua");
     pEngine->executeScriptFile(path.c_str());
     
-    /*
-	extension::AssetsLoader* layer = new extension::AssetsLoader();
-	if(layer->init()){
-		CCScene* scene = CCScene::create();
-		scene->addChild(layer);
-		CCDirector::sharedDirector()->runWithScene(scene);
-	}
-	else{
-		CC_SAFE_RELEASE_NULL(layer);
-		
-	}
-     */
 
     return true;
 }

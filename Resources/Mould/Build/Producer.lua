@@ -27,6 +27,10 @@ function Producer:getResource()
 	gain = gain + math.floor((math.floor(timer.getTime())-self.collectTime)*bdata.extendValue1/3600)
 	if gain>bdata.extendValue2 then
 		gain = bdata.extendValue2
+    elseif gain<0 then
+        gain = 0
+        self.resource = 0
+        self.collectTime = timer.getTime()
 	end
 	return gain
 end

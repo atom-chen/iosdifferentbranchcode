@@ -219,7 +219,11 @@ function CastleScene:initGround()
     Action.runBlinkAction(temp)
     self:initFogs()
 end
+<<<<<<< HEAD
 local CastleSceneLoadYet = false
+=======
+
+>>>>>>> 2b526ee94a0355e29514fae137fa00f452de25e8
 function CastleScene:prepare()
     local function prepareOver(eventType)
         if eventType=="exit" then
@@ -228,9 +232,13 @@ function CastleScene:prepare()
     end
     
     --改为在经营场景加载所有图片
+<<<<<<< HEAD
     --self.sceneType==SceneTypes.Operation
     if not CastleSceneLoadYet then
         CastleSceneLoadYet = true
+=======
+    if self.sceneType==SceneTypes.Operation then
+>>>>>>> 2b526ee94a0355e29514fae137fa00f452de25e8
         local loader = CCImageLoader:create()
         loader:addImage("images/bottoms.pvr.ccz", "images/bottoms.plist", kCCTexture2DPixelFormat_RGBA4444)
         loader:addImage("animate/npc.png", "animate/npc.plist", kCCTexture2DPixelFormat_RGBA4444)
@@ -739,7 +747,10 @@ function CastleScene:updateNightMode()
     end
 end
 --]]
+<<<<<<< HEAD
 local EnterReplay = false 
+=======
+>>>>>>> 2b526ee94a0355e29514fae137fa00f452de25e8
 
 function CastleScene:update(diff)
     self.logicDiff = (self.logicDiff or 0) + diff
@@ -790,6 +801,7 @@ function CastleScene:update(diff)
     if state.touchTime and state.touchTime<timer.getTime() then
         self:onTouchHold()
     end
+<<<<<<< HEAD
 
     if not EnterReplay and not display.isSceneChange then
         print("EnterReplay", PLAY_VIDEO.seed)
@@ -801,6 +813,8 @@ function CastleScene:update(diff)
         display.pushScene(ReplayScene.new("download"), PreBattleScene)
         UserStat.stat(UserStatType.HISTORY_VIDEO)
     end
+=======
+>>>>>>> 2b526ee94a0355e29514fae137fa00f452de25e8
 end
 
 function CastleScene:enterOrExit(isEnter)
@@ -819,8 +833,15 @@ function CastleScene:enterOrExit(isEnter)
          self.updateEntry = CCDirector:sharedDirector():getScheduler():scheduleScriptFunc(updateWorld, 0, false)
     else
         self.isShow = false
+<<<<<<< HEAD
         EventManager.removeEventMonitor(self.monitorId)
         self.monitorId = nil
+=======
+        if self.monitorId then
+            EventManager.removeEventMonitor(self.monitorId)
+            self.monitorId = nil
+        end
+>>>>>>> 2b526ee94a0355e29514fae137fa00f452de25e8
 
          CCDirector:sharedDirector():getScheduler():unscheduleScriptEntry(self.updateEntry)
     end
@@ -958,6 +979,10 @@ function OperationScene:initData()
         end
         UserData.zombieShieldTime = timer.getTime(initInfo.zombieTime)
         UserData.crystal = initInfo.crystal
+<<<<<<< HEAD
+=======
+        CrystalLogic.initCrystal(initInfo.crystal)
+>>>>>>> 2b526ee94a0355e29514fae137fa00f452de25e8
         if PauseLogic.pauseBuyObj then
             UserData.crystal = UserData.crystal + PauseLogic.pauseBuyObj.get
             PauseLogic.pauseBuyObj = nil
@@ -1009,7 +1034,11 @@ function OperationScene:synDataOver(suc, result)
     if suc and json.decode(result).code==0 then
         self.synOver = true
     else
+<<<<<<< HEAD
         EventManager.sendMessage("EVENT_NETWORK_OFF")
+=======
+        CCNative:showAlert(StringManager.getString("alertTitleOutsyn"), StringManager.getString("alertTextOutsyn"), 2, StringManager.getString("buttonClose"), 0, "")
+>>>>>>> 2b526ee94a0355e29514fae137fa00f452de25e8
     end
 end
 
@@ -1073,11 +1102,14 @@ function OperationScene:synData(isAsyn)
             
             local updateInfo = false
             local infos = {}
+<<<<<<< HEAD
             if UserData.crystal ~= self.initInfo.crystal then
                 self.initInfo.crystal = UserData.crystal
                 infos.crystal = UserData.crystal
                 updateInfo = true
             end
+=======
+>>>>>>> 2b526ee94a0355e29514fae137fa00f452de25e8
             if UserData.userScore~=self.initInfo.score then
                 self.initInfo.score = UserData.userScore
                 infos.score = UserData.userScore
@@ -1153,6 +1185,27 @@ function OperationScene:synData(isAsyn)
                 params.research = json.encode(UserData.researchLevel)
                 self.initInfo.researches = copyData(UserData.researchLevel)
             end
+<<<<<<< HEAD
+=======
+            local dis = CrystalLogic.initValue
+            local cl = #(CrystalLogic.changeList)
+
+            if cl>0 then
+                needSyn = true
+                params.bs = CrystalLogic.initValue
+                params.cc = 0
+                for i=1, cl do
+                    dis = dis + CrystalLogic.changeList[i]
+                    params.cc = params.cc + CrystalLogic.changeList[i]
+                end
+                CrystalLogic.initCrystal(UserData.crystal)
+            end
+            if dis~=UserData.crystal then
+                CCNative:showAlert(StringManager.getString("alertTitleOutsyn"), StringManager.getString("alertTextOutsyn"), 2, StringManager.getString("buttonClose"), 0, "")
+                self.synOver = false
+                return
+            end
+>>>>>>> 2b526ee94a0355e29514fae137fa00f452de25e8
             if needSyn then
                 self.synOver = false
                 print(json.encode(params))
@@ -1555,7 +1608,10 @@ function ReplayScene:ctor(menuParam)
     self.isReplay = true
     ZombieLogic.battleEnd = nil
     BattleLogic.battleEnd = nil
+<<<<<<< HEAD
     self.music = "music/inBattle.mp3"
+=======
+>>>>>>> 2b526ee94a0355e29514fae137fa00f452de25e8
     if ReplayLogic.isZombie then
         self.sceneType = SceneTypes.Zombie
         ZombieLogic.init()
@@ -1649,4 +1705,8 @@ function ReplayScene:updateLogic(diff)
             self.cmdTime = self.cmd[1]
         end
     end
+<<<<<<< HEAD
 end
+=======
+end
+>>>>>>> 2b526ee94a0355e29514fae137fa00f452de25e8

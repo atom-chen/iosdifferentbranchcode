@@ -216,7 +216,9 @@ function ZombieResultDialog:ctor(result)
     end
     local sc = display.getCurrentScene(1)
     for _, id in ipairs(BattleLogic.costTraps) do
-        sc.builds[id].deleted = true
-        Build.decBuild(sc.builds[id].buildData.bid)
+        if id then
+            sc.builds[id].deleted = true
+            Build.decBuild(sc.builds[id].buildData.bid)
+        end
     end
 end

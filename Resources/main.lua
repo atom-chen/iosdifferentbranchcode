@@ -42,6 +42,7 @@ local function main()
 	network.checkUrl = default:getStringForKey("checkUrl")
 	if General.purpleUrl=="" then
 	    if network.platform=="android" then
+<<<<<<< HEAD
 	        General.purpleUrl = "https://play.google.com/store/apps/details?id=com.caesars.nozomi"
 	    elseif network.platform=="android_mm" then
 	        General.purpleUrl = "http://www.baidu.com/s?wd=%E8%BF%9B%E5%87%BB%E7%9A%84%E5%83%B5%E5%B0%B8"
@@ -55,6 +56,23 @@ local function main()
 	    elseif network.platform=="android_wiipay" then
 	        General.purpleUrl = "http://tieba.baidu.com/f?ie=utf-8&amp;kw=%E8%BF%9B%E5%87%BB%E7%9A%84%E5%83%B5%E5%B0%B8online"
 	   end
+=======
+	        General.purpleUrl = "https://play.google.com/store/apps/details?id=com.caesars.zombie"
+	    elseif network.platform=="android_mm" then
+	        General.purpleUrl = "http://mm.10086.cn/android/info/230548.html#hotcom"
+	        network.checkUrl = "http://www.caesarsgame.com:9090/"
+	    elseif network.platform=="android_dx" then
+	        General.purpleUrl = "http://www.baidu.com/s?wd=%E5%B8%8C%E6%9C%9B%E5%8F%B7"
+	        network.checkUrl = "http://www.caesarsgame.com:9090/"
+	    elseif network.platform=="android_daqin" then
+	        General.purpleUrl = "http://www.baidu.com/s?wd=%E5%B8%8C%E6%9C%9B%E5%8F%B7"
+	        network.checkUrl = "http://www.caesarsgame.com:9090/"
+	    elseif network.platform=="android_astep" then
+	        General.purpleUrl = "http://www.baidu.com/s?wd=%E5%B8%8C%E6%9C%9B%E5%8F%B7"
+	    elseif network.platform=="android_wiipay" then
+	        General.purpleUrl = "http://tieba.baidu.com/f?ie=utf-8&amp;kw=%E8%BF%9B%E5%87%BB%E7%9A%84%E5%83%B5%E5%B0%B8online"
+	    end
+>>>>>>> 2b526ee94a0355e29514fae137fa00f452de25e8
 	end
 	if network.checkUrl ~= "" then
 	    General.inputNeedCheck = true
@@ -97,21 +115,7 @@ local function main()
 	
 	math.randomseed(os.time())
     
-    require "videoData"
-    CCUserDefault:sharedUserDefault():setStringForKey("username", "TEST100")
-	--local engine = SimpleAudioEngine:sharedEngine()
-    --engine:playEffect("music/operation.wav", true)
-
     display.runScene(OperationScene.new(), LoadingScene)
-    --[[
-    ReplayLogic.randomSeed = PLAY_VIDEO.seed 
-    ReplayLogic.buildData = PLAY_VIDEO.data
-    ReplayLogic.cmdList = PLAY_VIDEO.cmdList
-    ReplayLogic.isZombie = false
-    display.runScene(ReplayScene.new(), PreBattleScene)
-    UserStat.stat(UserStatType.HISTORY_VIDEO)
-    --]]
-
     EventManager.registerEventsToCpp({"EVENT_COCOS_PAUSE", "EVENT_COCOS_RESUME", "EVENT_BUY_SUCCESS", "EVENT_BUY_FAIL", "EVENT_SHARE_SUCCESS", "EVENT_SHARE_FAIL"})
 end
 

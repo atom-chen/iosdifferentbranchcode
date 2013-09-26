@@ -255,8 +255,8 @@ function ReplayMenuLayer:addDownloadView()
     
     delayCallback(t1+t2, self.beginLoadingFrame, self)
     
-    music.changeMusicState(true)
-    music.changeSoundState(true)
+    music.changeMusicState(false)
+    music.changeSoundState(false)
 end
 
 function ReplayMenuLayer:updateDownload(diff)

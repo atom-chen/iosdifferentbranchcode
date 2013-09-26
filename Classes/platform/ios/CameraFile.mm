@@ -98,6 +98,7 @@ void CameraFile::createDataFBO() {
     
     glBindFramebuffer(GL_FRAMEBUFFER, oldFBO);
     CCDirector::sharedDirector()->startRecording();
+    NSLog(@"CCDirector startRecording");
 }
 void CameraFile::savedToCamera() {
     NSLog(@"cameraFIle ");
@@ -106,17 +107,26 @@ void CameraFile::savedToCamera() {
     
     UISaveVideoAtPathToSavedPhotosAlbum([NSString stringWithFormat:@"%s",  fileName], removeTempVideo, @selector(finishCopy:error:context:), nil);
     NSLog(@"count num %lu", (unsigned long)[removeTempVideo retainCount]);
-    delete this;
+    
+    //fix IOS 7
+    //delete this;
     //[[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%s", fileName] error:nil];
 }
 void CameraFile::startWork(int w, int h) {
     //根据屏幕尺寸设定视频尺寸
-    if(w == 2048) {
+    
+    //FIX IOS7 video size problem
+    if(w > 1024) {
         this->width = 1024;
         this->height = 768;
     } else {
-        this->width = w;
-        this->height = h;
+        if([[UIDevice currentDevice].systemVersion floatValue] < 7.0) {
+            this->width = w;
+            this->height = h;
+        } else {
+            this->width = 960;
+            this->height = 640;
+        }
     }
     
     //frameData = (uint8_t*)malloc(this->width*4);
@@ -162,7 +172,7 @@ void CameraFile::startWork(int w, int h) {
     
     [assetWriter startWriting];
     [assetWriter startSessionAtSourceTime:kCMTimeZero];
-    NSLog(@"startWork");
+    NSLog(@"startWork assetWriter startWriting");
     
     //必须要等待 startWriting 才能 分配renderTarget
     this->createDataFBO();
@@ -194,15 +204,22 @@ void CameraFile::compressFrame() {
     CCSprite *recordSprite = CCDirector::sharedDirector()->getRecordSprite();
     //recordSprite->setAnchorPoint(ccp(0, 0));
     //recordSprite->setPosition(ccp(0, 0));
-    float sx = this->width/winSize.width;
-    float sy = this->height/winSize.height;
-    recordSprite->setScaleX(sx);
-    recordSprite->setScaleY(sy);
+    
+    
+    //float sx = this->width/winSize.width;
+    //float sy = this->height/winSize.height;
+    float sx = winSize.width/this->width;
+    float sy = winSize.height/this->height;
+    float sca = MIN(sx, sy);
+    recordSprite->setScaleX(sca);
+    recordSprite->setScaleY(sca);
     //CCDirector::sharedDirector()->getRecordSprite()->setScaleY(1);
     recordSprite->visit();
     //CCDirector::sharedDirector()->getRecordSprite()->setScaleY(-1);
     recordSprite->setAnchorPoint(ccp(0.5, 0.5));
-    recordSprite->setPosition(ccp(winSize.width/2, winSize.height/2));
+    //recordSprite->setPosition(ccp(winSize.width/2, winSize.height/2));
+    recordSprite->setPosition(ccp(this->width/2, this->height/2));
+    
     recordSprite->setScaleX(1);
     recordSprite->setScaleY(-1);
                               
@@ -223,10 +240,13 @@ void CameraFile::compressFrame() {
 }
 void CameraFile::stopWork() {
     CCDirector::sharedDirector()->stopRecording();
-    
+    //if ([[UIDevice currentDevice].systemVersion floatValue] < 7.0) {
     [assetWriterVideoInput markAsFinished];
+    //}
      
-    [assetWriter finishWritingWithCompletionHandler:^(){savedToCamera();}];
+    //[assetWriter finishWritingWithCompletionHandler:^(){savedToCamera();}];
+    [assetWriter finishWriting];
+    savedToCamera();
     NSLog(@"stopWork");
     
     [assetWriter release];
@@ -235,6 +255,9 @@ void CameraFile::stopWork() {
     [startTime release];
     //free(frameData);
     destroyDataFBO();
+    
+    //after save Video delete this
+    delete this;
 }
 
 NS_CC_EXT_END

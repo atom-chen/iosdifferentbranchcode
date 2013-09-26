@@ -328,7 +328,10 @@ function ClanDialog:loadMembersOver(suc, result, setting)
         end
         local scrollView = UI.createScrollViewAuto(CCSizeMake(996, 500), false, {offx=5, offy=4, disy=10, size=CCSizeMake(986, 58), infos=data, cellUpdate=updateClanMemberCell})
         screen.autoSuitable(scrollView.view, {nodeAnchor=General.anchorLeftTop, x=12, y=526})
-        bg:addChild(scrollView.view)
+        local function tmpAddChild()
+            bg:addChild(scrollView.view)
+        end
+        xpcall(tmpAddChild, doNothing)
     end
 end
 

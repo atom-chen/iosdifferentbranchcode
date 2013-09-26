@@ -49,6 +49,7 @@ Entry("buttonZombie","僵尸","Zombies")
 Entry("buttonSave","保存","Save")
 Entry("buttonEdit","编辑","Edit")
 Entry("buttonAchievementsMore","游戏中心","Game Center")
+Entry("buttonClose","关闭","Close")
 
 -- 标题文字
 Entry("titleStore","商店","Shop")
@@ -598,3 +599,5 @@ Entry("textReward","奖励*[rate]","Bonus*[rate]")
 Entry("dialogTipsDaily","*间断登录将重新计算天数","*Intermittent login will recalculate the number of days")
 Entry("noticeErrorCheckWord","抱歉，你输入的内容包含屏蔽词汇，请重新输入","")
 Entry("labelLeaguePosition","*联盟内的职务由联盟功勋决定","*Position in the League is decided by Exploits")
+Entry("alertTitleOutsyn","数据出错","Data Error!")
+Entry("alertTextOutsyn","你的数据出错，请重新启动游戏！","Data error, restart game please!")

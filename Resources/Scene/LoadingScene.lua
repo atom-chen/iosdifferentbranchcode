@@ -77,8 +77,15 @@ end
 function LoadingScene:requestData()
     if not self.requesting then
         self.requesting = true
-        print("request self data")
-        network.httpRequest("getData", self.requestSelfData, {params={uid=UserData.userId, login=1, version=1}}, self)
+        local default = CCUserDefault:sharedUserDefault()
+        local params = {uid=UserData.userId, login=1, version=1}
+        local version = default:getStringForKey("localVersion")
+        if version~="" then
+            params.checkVersion=version
+            params.check=1
+            params.country = default:getStringForKey("localCountry")
+        end
+        network.httpRequest("getData", self.requestSelfData, {params=params}, self)
     end
 end
 
@@ -136,6 +143,14 @@ function LoadingScene:requestSelfData(isSuc, result)
             if data.serverError then
                 CCNative:showAlert(data.title, data.content, 2, data.button, 0, "")
                 return
+            elseif data.serverUpdate then
+                CCUserDefault:sharedUserDefault():setStringForKey("versionUpdateUrl", data.url)
+                if data.forceUpdate then
+                    CCNative:showAlert(data.title, data.content, 3, data.button1, 0, "")
+                    return
+                else
+                    CCNative:showAlert(data.title, data.content, 3, data.button1, 1, data.button2)
+                end
             end
             self.loadMax = self.loadMax+30
             self.toScene.initInfo = data
