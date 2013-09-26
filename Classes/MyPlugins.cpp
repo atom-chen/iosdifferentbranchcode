@@ -9,6 +9,7 @@
 #include "MyPlugins.h"
 #include "PluginManager.h"
 #include "support/CCNotificationCenter.h"
+#include "support/user_default/CCUserDefault.h"
 
 using namespace cocos2d::plugin;
 using namespace cocos2d;
@@ -17,7 +18,9 @@ MyPlugins* MyPlugins::s_pPlugins = NULL;
 
 MyPlugins::MyPlugins()
 : m_pRetListener(NULL)
+, m_pIAPPlugin(NULL)
 , m_pSharePlugin(NULL)
+, m_pIAPListener(NULL)
 {
     
 }
@@ -72,6 +75,31 @@ void MyPlugins::loadPlugins(CCDictionary* dict)
 			m_pSharePlugin->setResultListener(m_pRetListener);
 		}
 	}
+	pluginSetting = (CCDictionary*) dict->objectForKey("iap");
+	if(pluginSetting!=NULL){
+		m_pIAPPlugin = dynamic_cast<ProtocolIAP*>(PluginManager::getInstance()->loadPlugin(pluginSetting->valueForKey("name")->getCString()));
+		if (NULL != m_pIAPPlugin)
+		{
+			m_pPluginNames->addObject(CCString::create(pluginSetting->valueForKey("name")->getCString()));
+
+			TIAPDeveloperInfo pIAPInfo;
+			CCDictionary* configDict = (CCDictionary*) pluginSetting->objectForKey("config");
+			CCArray* configKeys = configDict->allKeys();
+			CCObject* configKey;
+			CCARRAY_FOREACH(configKeys, configKey)
+			{
+				const char* keyStr = ((CCString*)configKey)->getCString();
+				pIAPInfo[keyStr] = configDict->valueForKey(keyStr)->getCString();
+			}
+			m_pIAPPlugin->setDebugMode(true);
+			m_pIAPPlugin->configDeveloperInfo(pIAPInfo);
+			if (m_pIAPListener == NULL)
+			{
+				m_pIAPListener = new MyPayResult();
+			}
+			m_pIAPPlugin->setResultListener(m_pIAPListener);
+		}
+	}
 }
 
 void MyPlugins::unloadPlugins()
@@ -92,7 +120,19 @@ void MyPlugins::share(const char* sharedText, const char* sharedImagePath)
     info["SharedText"] = sharedText;
     if(sharedImagePath!=NULL)
         info["SharedImagePath"] = sharedImagePath;
-    m_pSharePlugin->share(info);
+	if(m_pSharePlugin!=NULL)
+	    m_pSharePlugin->share(info);
+}
+
+void MyPlugins::pay(const char* productId)
+{
+	TProductInfo info;
+	info["productName"] = productId;
+	char uid[20] = {};
+	sprintf(uid, "%d", CCUserDefault::sharedUserDefault()->getIntegerForKey("userId"));
+	info["payerId"] = std::string(uid);
+	if(m_pIAPPlugin!=NULL)
+		m_pIAPPlugin->payForProduct(info);
 }
 
 void MyShareResult::onShareResult(ShareResultCode ret, const char* msg)
@@ -102,5 +142,15 @@ void MyShareResult::onShareResult(ShareResultCode ret, const char* msg)
     }
     else{
         CCNotificationCenter::sharedNotificationCenter()->postNotification("EVENT_SHARE_FAIL");
+    }
+}
+
+void MyPayResult::onPayResult(PayResultCode ret, const char* msg, TProductInfo info)
+{
+    if(ret == kPaySuccess){
+        CCNotificationCenter::sharedNotificationCenter()->postNotification("EVENT_BUY_SUCCESS");
+    }
+    else{
+        CCNotificationCenter::sharedNotificationCenter()->postNotification("EVENT_BUY_FAIL");
     }
 }
