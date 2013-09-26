@@ -42,21 +42,6 @@ local function main()
 	network.checkUrl = default:getStringForKey("checkUrl")
 	if General.purpleUrl=="" then
 	    if network.platform=="android" then
-<<<<<<< HEAD
-	        General.purpleUrl = "https://play.google.com/store/apps/details?id=com.caesars.nozomi"
-	    elseif network.platform=="android_mm" then
-	        General.purpleUrl = "http://www.baidu.com/s?wd=%E8%BF%9B%E5%87%BB%E7%9A%84%E5%83%B5%E5%B0%B8"
-	        network.checkUrl = "http://www.caesarsgame.com:9090/"
-	    elseif network.platform=="android_dx" then
-	        General.purpleUrl = "http://www.baidu.com/s?wd=%E8%BF%9B%E5%87%BB%E7%9A%84%E5%83%B5%E5%B0%B8"
-	        network.checkUrl = "http://www.caesarsgame.com:9090/"
-	    elseif network.platform=="android_daqin" then
-	        General.purpleUrl = "http://www.baidu.com/s?wd=%E8%BF%9B%E5%87%BB%E7%9A%84%E5%83%B5%E5%B0%B8"
-	        network.checkUrl = "http://www.caesarsgame.com:9090/"
-	    elseif network.platform=="android_wiipay" then
-	        General.purpleUrl = "http://tieba.baidu.com/f?ie=utf-8&amp;kw=%E8%BF%9B%E5%87%BB%E7%9A%84%E5%83%B5%E5%B0%B8online"
-	   end
-=======
 	        General.purpleUrl = "https://play.google.com/store/apps/details?id=com.caesars.zombie"
 	    elseif network.platform=="android_mm" then
 	        General.purpleUrl = "http://mm.10086.cn/android/info/230548.html#hotcom"
@@ -72,7 +57,6 @@ local function main()
 	    elseif network.platform=="android_wiipay" then
 	        General.purpleUrl = "http://tieba.baidu.com/f?ie=utf-8&amp;kw=%E8%BF%9B%E5%87%BB%E7%9A%84%E5%83%B5%E5%B0%B8online"
 	    end
->>>>>>> 2b526ee94a0355e29514fae137fa00f452de25e8
 	end
 	if network.checkUrl ~= "" then
 	    General.inputNeedCheck = true
