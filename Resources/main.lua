@@ -99,6 +99,8 @@ local function main()
 	
 	math.randomseed(os.time())
     
+    --default:setStringForKey("username","G:1439084508")
+    
     display.runScene(OperationScene.new(), LoadingScene)
     EventManager.registerEventsToCpp({"EVENT_COCOS_PAUSE", "EVENT_COCOS_RESUME", "EVENT_BUY_SUCCESS", "EVENT_BUY_FAIL", "EVENT_SHARE_SUCCESS", "EVENT_SHARE_FAIL"})
 end
