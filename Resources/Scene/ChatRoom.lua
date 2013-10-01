@@ -536,7 +536,10 @@ function ChatRoom.reloadLeagueView()
     if ChatRoom.deleted then return end
     local bg = ChatRoom.leagueView
     if not bg then return end
-    bg:removeAllChildrenWithCleanup(true)
+    if not pcall(bg.removeAllChildrenWithCleanup, bg, true) then
+        ChatRoom.leagueView = nil
+        return
+    end
     if UserData.clan==0 then
         local str = StringManager.getString("labelChatRoomLeagueInfo")
         if not CCUserDefault:sharedUserDefault():getBoolForKey("chinese") then
@@ -694,7 +697,10 @@ function ChatRoom.showNotice()
     if not ChatRoom.visible and not ChatRoom.deleted and ChatRoom.view then
         local temp = UI.createSpriteWithFile("images/numIcon.png",CCSizeMake(29, 29))
         screen.autoSuitable(temp, {nodeAnchor=General.anchorCenter, x=411, y=439})
-        ChatRoom.view:addChild(temp, 0, TAG_ACTION)
+        if not pcall(ChatRoom.view.addChild, ChatRoom.view, temp, 0, TAG_ACTION) then
+            ChatRoom.view = nil
+            return
+        end
         local t = getParam("actionTimeButtonNotice", 400)/1000
         local s = getParam("actionScaleButtonNotice", 120)/100
         local n = getParam("actionNumButtonNotice", 1)

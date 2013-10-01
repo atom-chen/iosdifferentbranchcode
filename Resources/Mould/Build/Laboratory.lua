@@ -2,7 +2,14 @@ Laboratory = class(BuildMould)
 
 function Laboratory:ctor(bid, setting)
     if setting.rid then
-        UserData.researchItem = {rid=setting.rid, endTime=timer.getTime(setting.rtime)}
+        self.researchItem = {rid=setting.rid, endTime=timer.getTime(setting.rtime)}
+    end
+end
+
+function Laboratory:enterOperation()
+    if self.researchItem then
+        UserData.researchItem = self.researchItem
+        self.researchItem = nil
     end
 end
 
