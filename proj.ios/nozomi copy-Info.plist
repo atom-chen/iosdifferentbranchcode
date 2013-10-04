@@ -25,7 +25,7 @@
 		<string>Icon-152.png</string>
 	</array>
 	<key>CFBundleIdentifier</key>
-	<string>com.caesars.nozomi91</string>
+	<string>com.caesars.xiwanghao</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -48,7 +48,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>2.4</string>
+	<string>2.5</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIPrerenderedIcon</key>
