@@ -38,6 +38,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.WindowManager;
 
@@ -116,16 +117,26 @@ public class CaesarsActivity extends Cocos2dxActivity{
 	public Cocos2dxGLSurfaceView onCreateGLSurfaceView() {
     	return new LuaGLSurfaceView(this);
     }
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		Log.e("Cocos2dX", "activity back key");
+    	if (keyCode == KeyEvent.KEYCODE_BACK) {
+    		android.os.Process.killProcess(android.os.Process.myPid());
+    	}
+        return super.onKeyDown(keyCode, event);
+	}
 }
 
 class LuaGLSurfaceView extends Cocos2dxGLSurfaceView{
 	
 	public LuaGLSurfaceView(Context context){
 		super(context);
+		setFocusable(true);
 	}
 	
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
     	// exit program when key back is entered
+		Log.e("Cocos2dX", "back on key");
     	if (keyCode == KeyEvent.KEYCODE_BACK) {
     		android.os.Process.killProcess(android.os.Process.myPid());
     	}

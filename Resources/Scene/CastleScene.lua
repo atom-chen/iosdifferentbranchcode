@@ -1,3 +1,4 @@
+require "Logic.AdsLogic"
 require "Logic.ResourceLogic"
 require "Logic.SoldierLogic"
 require "Logic.BattleLogic"
@@ -870,7 +871,7 @@ OperationScene = class(CastleScene)
 
 function OperationScene:ctor()
     self.sceneType = SceneTypes.Operation
-    self.monitorEvents = {"EVENT_BUY_BUILD", "EVENT_BUY_SOLDIER", "EVENT_GUIDE_STEP", "EVENT_VISIT_USER"}
+    self.monitorEvents = {"EVENT_BUY_BUILD", "EVENT_BUY_SOLDIER", "EVENT_GUIDE_STEP", "EVENT_VISIT_USER", "EVENT_INIT_ADS", "EVENT_NOADS"}
     self.synOver = true
     self.synTime = 0
     self.music = "music/operation.mp3"
@@ -941,6 +942,8 @@ function OperationScene:initData()
         UserData.clan = initInfo.clan
         UserData.clanInfo = initInfo.clanInfo
         UserData.memberType = initInfo.mtype
+
+        AdsLogic.checkAds()
         if getParam("switchZombieOpen", 0)~=0 then
             initInfo.zombieTime = 0
         end
@@ -1318,6 +1321,22 @@ function OperationScene:eventHandler(eventType, params)
             self.visitUid = params
             network.httpRequest("getData", self.visitUser, {single=true, params={uid=params}}, self)
         end
+    elseif eventType == EventManager.eventType.EVENT_INIT_ADS then
+        if AdsLogic.hasAds == 0 then
+            print("showAds")
+            AdsLogic.showAds()
+            --[[
+            self.ads = CCNode:create()
+            self.view:addChild(self.ads) 
+            --]]
+        end
+    elseif eventType == EventManager.eventType.EVENT_NOADS then
+        print("removeAds")
+        AdsLogic.removeAds()
+            --[[
+            self.ads:removeFromParentAndCleanup(true)
+            self.ads = nil
+            --]]
     end
 end
 

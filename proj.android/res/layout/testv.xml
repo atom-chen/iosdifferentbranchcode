@@ -9,9 +9,10 @@
        class="de.softgames.sdk.ui.SGAdView"
        android:layout_width="wrap_content"
        android:layout_height="wrap_content" />
-    <view class="de.softgames.sdk.ui.MoreGamesButton"
+    
+    <!--view class="de.softgames.sdk.ui.MoreGamesButton"
        android:layout_width="wrap_content"
-       android:layout_height="wrap_content" />
+       android:layout_height="wrap_content" /-->
     
 
 </LinearLayout>

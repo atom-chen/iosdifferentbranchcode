@@ -189,8 +189,10 @@ do
         bg:addChild(temp)
 	end
 	
+    --显示水晶 和 其它资源图片
 	local function updateTreasureCell(cell, scrollView, info)
 		local bg, temp = cell
+        print("updateTreasureCell", cell, scrollView, json.encode(info))
 		bg:removeAllChildrenWithCleanup(true)
 		
 		temp = UI.createSpriteWithFile("images/dialogItemButtonStore.png", CCSizeMake(283, 235))
@@ -206,9 +208,9 @@ do
 			bg:addChild(temp)
 		end
 		
-		temp = UI.createSpriteWithFile("images/dialogItemBgCost.png",CCSizeMake(264, 46))
-		screen.autoSuitable(temp, {x=10, y=10})
-		bg:addChild(temp)
+        temp = UI.createSpriteWithFile("images/dialogItemBgCost.png",CCSizeMake(264, 46))
+        screen.autoSuitable(temp, {x=10, y=10})
+        bg:addChild(temp)
 		
 		if info.resource=="crystal" then
 			temp = UI.createLabel(tostring(info.cost), General.font6, 20, {colorR = 255, colorG = 255, colorB = 255})
@@ -232,6 +234,15 @@ do
 			if info.type==6 and timer.getTime()-UserData.lastOffTime<86400*7 then
 			    bg:setSatOffset(-100, true)
 			end
+        elseif info.resource == 'ads' then
+			temp = UI.createLabel(info.text, General.font3, 20, {colorR = 252, colorG = 186, colorB = 255})
+			screen.autoSuitable(temp, {x=142, y=213, nodeAnchor=General.anchorCenter})
+			bg:addChild(temp)
+
+			temp = UI.createLabel("BUY", General.font4, 20, {colorR = 255, colorG = 255, colorB = 255})
+			screen.autoSuitable(temp, {x=142, y=31, nodeAnchor=General.anchorCenter})
+			bg:addChild(temp)
+			scrollView:addChildTouchNode(bg, AdsLogic.buyAds, info)
 		else
 		    local colorSetting = {colorR = 255, colorG = 255, colorB = 255}
 		    if info.cost>UserData.crystal then
@@ -255,7 +266,8 @@ do
 			scrollView:addChildTouchNode(bg, CrystalLogic.buyResource, info)
 		end
 	end
-	
+	--购买成功资源之后 调用特别的毁掉函数 resources 里面
+    --设置资源的 info
 	local function showTreasureTab(param)
 		local infos = {}
 		local crystals = {}
@@ -275,6 +287,8 @@ do
     	    end
 		end
 		
+        local info = {type=7, resource="ads", cost=1, get=1, text=StringManager.getString("noAds"), img="images/storeItemNoAds.png"}
+        table.insert(infos, info)
 		
 		local types = {"food", "oil", "person"}
 		local tmap = {food="Food", oil="Oil", person="Person"}

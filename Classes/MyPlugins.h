@@ -12,6 +12,7 @@
 #include "ProtocolSocial.h"
 #include "cocoa/CCDictionary.h"
 #include "cocoa/CCArray.h"
+#include "ProtocolAds.h"
 
 class MyShareResult : public cocos2d::plugin::ShareResultListener
 {
@@ -28,6 +29,7 @@ public:
 	void unloadPlugins();
     void loadPlugins(cocos2d::CCDictionary* dict);
     void share(const char* sharedText, const char* sharedImagePath);
+    void sendCmd(const char *, const char *arg);
     
 private:
     MyPlugins();
@@ -38,6 +40,8 @@ private:
     cocos2d::plugin::ProtocolSocial* m_pSharePlugin;
     MyShareResult* m_pRetListener;
 	cocos2d::CCArray* m_pPluginNames;
+
+    cocos2d::plugin::ProtocolAds *m_ads;    
 };
 
 #endif //__CAESARS_MY_PLUGINS_H__

@@ -15,6 +15,7 @@ public class SDKDemoActivity extends SoftgamesAbstractActivity {
 		super.onCreate(sb);
 		Log.e("Softgame", "enter game!");
 		setContentView(R.layout.testv);
+		/*
 		ImageButton sgButtonNoAds= (ImageButton)findViewById(de.softgames.sdk.R.id.sg_button_no_ads);
 		
         sgButtonNoAds.setOnClickListener(new OnClickListener() {            
@@ -22,6 +23,7 @@ public class SDKDemoActivity extends SoftgamesAbstractActivity {
             public void onClick(View v) {
             }
         });
+        */
 	}
 	public void hideBannerAds(){
 		runOnUiThread(new Runnable(){

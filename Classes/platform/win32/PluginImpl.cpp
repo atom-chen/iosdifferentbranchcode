@@ -1,6 +1,7 @@
 #include "PluginManager.h"
 #include "PluginProtocol.h"
 #include "ProtocolSocial.h"
+#include "ProtocolAds.h"
 
 /* add this EMPTY implement to keep the codes the same in both win32 and movable-platform */
 /* The plugins wasn't active in win32 */
@@ -51,6 +52,35 @@ void ProtocolSocial::setResultListener(ShareResultListener* pListener)
 
 void ProtocolSocial::onShareResult(ShareResultCode ret, const char* msg)
 {
+
 }
+
+
+
+
+void ProtocolAds::configDeveloperInfo(TAdsDeveloperInfo devInfo){
+}
+
+void ProtocolAds::showAds(AdsType type, int sizeEnum , AdsPos pos) {
+}
+
+void ProtocolAds::hideAds(AdsType type){
+}
+
+void ProtocolAds::spendPoints(int points) {
+}
+
+void ProtocolAds::setAdsListener(AdsListener* pListener) {
+}
+
+void ProtocolAds::onAdsResult(AdsResultCode code, const char* msg){
+}
+void ProtocolAds::onPlayerGetPoints(int points) {
+}
+
+ProtocolAds::~ProtocolAds()
+{
+}
+
 
 }}

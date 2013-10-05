@@ -2,7 +2,10 @@ package com.caesars.nozomi;
 
 import android.os.Bundle;
 
+import com.adeven.adjustio.AdjustIo;
 import com.caesars.lib.CaesarsActivity;
+
+import de.softgames.sdk.R;
 
 public class NozomiActivity extends CaesarsActivity {
 
@@ -12,5 +15,16 @@ public class NozomiActivity extends CaesarsActivity {
 	
     static {
         System.loadLibrary("cocos2dlua");
+    }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AdjustIo.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AdjustIo.onResume(getResources().getString(R.string.sg_adjust_token), this);
     }
 }

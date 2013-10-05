@@ -2758,6 +2758,45 @@ static int tolua_Cocos2dExt_MyPlugins_getInstance00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
+
+
+/* method: sendCmd of class  MyPlugins */
+#ifndef TOLUA_DISABLE_tolua_Cocos2dExt_MyPlugins_sendCmd00
+static int tolua_Cocos2dExt_MyPlugins_sendCmd00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"MyPlugins",0,&tolua_err) ||
+     !tolua_isstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isstring(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  MyPlugins* self = (MyPlugins*)  tolua_tousertype(tolua_S,1,0);
+  const char* cmd = ((const char*)  tolua_tostring(tolua_S,2,0));
+  const char* arg = ((const char*)  tolua_tostring(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'sendCmd'", NULL);
+#endif
+  {
+   self->sendCmd(cmd, arg);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'sendCmd'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+
+
 /* method: share of class  MyPlugins */
 #ifndef TOLUA_DISABLE_tolua_Cocos2dExt_MyPlugins_share00
 static int tolua_Cocos2dExt_MyPlugins_share00(lua_State* tolua_S)
@@ -2946,6 +2985,7 @@ TOLUA_API int tolua_extensions_caesars_open (lua_State* tolua_S)
   tolua_beginmodule(tolua_S,"MyPlugins");
    tolua_function(tolua_S,"getInstance",tolua_Cocos2dExt_MyPlugins_getInstance00);
    tolua_function(tolua_S,"share",tolua_Cocos2dExt_MyPlugins_share00);
+   tolua_function(tolua_S,"sendCmd",tolua_Cocos2dExt_MyPlugins_sendCmd00);
   tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);
  return 1;

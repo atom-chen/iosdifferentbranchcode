@@ -68,6 +68,7 @@ end
 
 EventManager.registerEventMonitor({"EVENT_BUY_SUCCESS", "EVENT_BUY_FAIL"}, CrystalLogic.buyOver)
 
+
 --need param cost and get
 function CrystalLogic.buyCrystal(param)
     if CrystalLogic.buyObj then return end
