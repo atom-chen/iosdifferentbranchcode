@@ -62,11 +62,11 @@
           <key>cprefix</key>
           <string>crystal</string>
           <key>baseUrl</key>
-          <string>http://23.21.135.42:9990/</string>
+          <string>http://localhost:9012/</string>
           <key>scoreUrl</key>
-          <string>http://23.21.135.42:8998/</string>
+          <string>http://localhost:9003/</string>
           <key>chatUrl</key>
-          <string>http://23.21.135.42:8005/</string>
+          <string>http://localhost:8009/</string>
           <key>musicTail</key>
           <string>wav</string>
       </dict>

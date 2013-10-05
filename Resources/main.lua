@@ -98,7 +98,9 @@ local function main()
 	require "Scene.LoadingScene"
 	
 	math.randomseed(os.time())
-    
+    default:setStringForKey("username", "liyongtestbuild8")
+    --default:setStringForKey("username", "CA26697A-CE15-45BF-A62B-C68906568202-del")
+
     display.runScene(OperationScene.new(), LoadingScene)
     EventManager.registerEventsToCpp({"EVENT_COCOS_PAUSE", "EVENT_COCOS_RESUME", "EVENT_BUY_SUCCESS", "EVENT_BUY_FAIL", "EVENT_SHARE_SUCCESS", "EVENT_SHARE_FAIL"})
 end
