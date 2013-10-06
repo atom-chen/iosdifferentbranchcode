@@ -958,6 +958,11 @@ function OperationScene:initData()
         end
         if initInfo.leagueWarTime then
             UserData.leagueWarTime = timer.getTime(initInfo.leagueWarTime)
+            UserData.nextLeagueWarTime = timer.getTime(initInfo.nextLeagueWarTime)
+            if UserData.clan>0 and UserSetting.getValue("leagueWarOpened")==0 then
+                UserSetting.setValue("leagueWarOpened", 1)
+                UserData.showLeagueWar = true
+            end
         end
         UserData.obstacleTime = timer.getTime(initInfo.obstacleTime)
         if getParam("switchGuideOpen", 0)~=0 then

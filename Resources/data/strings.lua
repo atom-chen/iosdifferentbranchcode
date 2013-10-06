@@ -81,6 +81,7 @@ Entry("titleVideo","战斗视频","Battle Video")
 Entry("titleLeagueWarEnd0","胜利!","Victory!")
 Entry("titleLeagueWarEnd1","战败!","Defeated!")
 Entry("titleDaily","第[day]天登录奖励","Day [day] Bonus Rewards!")
+Entry("titleLeagueWar","联盟战争开启啦！","Leagues War!")
 
 -- 数据文字 建筑名称
 Entry("dataBuildName1000","军营","Army Camp")
@@ -601,3 +602,6 @@ Entry("noticeErrorCheckWord","抱歉，你输入的内容包含屏蔽词汇，�
 Entry("labelLeaguePosition","*联盟内的职务由联盟功勋决定","*Position in the League is decided by Exploits")
 Entry("alertTitleOutsyn","数据出错","Data Error!")
 Entry("alertTextOutsyn","你的数据出错，请重新启动游戏！","Data error, restart game please!")
+Entry("labelNextTimeCount","开启倒计时:","Open Left Time:")
+Entry("tabCaesarsCup","大奖赛","Caesars\nTournament")
+Entry("labelLeagueWarRule","1. 只有长老和盟主才能发起战争\n2. 每次大奖赛联盟积分都重新计算\n3. 联盟内部奖励根据玩家功勋值计算","1. Only Leader and Elders can Launch a League War\n2. Points will be recalculated at each Caesars Tournament\n3. Rewards will be calculated based on Exploits")

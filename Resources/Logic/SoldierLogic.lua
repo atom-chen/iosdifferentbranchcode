@@ -138,6 +138,13 @@ do
                 end
             end
 	    end
+	    for i=1, 10 do
+	        if costTroops[i]>1 then
+                CCNative:showAlert(StringManager.getString("alertTitleOutsyn"), StringManager.getString("alertTextOutsyn"), 2, StringManager.getString("buttonClose"), 0, "")
+	            return true
+	        end
+	    end
+	    return false
 	end
 	
 	function SoldierLogic.deployZombies()

@@ -604,7 +604,7 @@ end
 function BattleMenuLayer:showEndBattleDialog()
     --ReplayLogic.makeReplayResult("battle.txt")
 	table.insert(ReplayLogic.cmdList, {timer.getTime() - ReplayLogic.beginTime, "e"})
-	self.view:removeFromParentAndCleanup(true)
+	pcall(self.view.removeFromParentAndCleanup, self.view, true)
 	display.showDialog(BattleResultDialog.new(BattleLogic.getBattleResult()), false)
 end
 

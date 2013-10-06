@@ -704,6 +704,9 @@ function MenuLayer:update(diff)
             curDialog = FeedbackDialog.new()
             UserSetting.setValue("feadbackDialog", UserData.level)
             self.showFeedback = nil
+        elseif UserData.showLeagueWar then
+            UserData.showLeagueWar = nil
+            curDialog = RankDialog.new()
         elseif UserData.rewards then
             local rnum = #(UserData.rewards)
             if rnum>0 then

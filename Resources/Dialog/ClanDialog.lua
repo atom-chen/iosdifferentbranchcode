@@ -5,6 +5,40 @@ local TEMP_CLAN_ID, TEMP_MIN_SCORE, IS_CREATING=1, 0, false
 local LABEL_SIZE = 15
 local LABEL_BASE_Y = 666
 
+local LeagueWarIntroDialog = class()
+
+function LeagueWarIntroDialog:ctor()
+    local temp, bg = nil
+    bg = UI.createButton(CCSizeMake(720, 526), doNothing, {image="images/dialogBgA.png", priority=display.DIALOG_PRI, nodeChangeHandler = doNothing})
+    screen.autoSuitable(bg, {screenAnchor=General.anchorCenter, scaleType = screen.SCALE_DIALOG_CLEVER})
+    self.view = bg
+	UI.setShowAnimate(bg)
+    
+    temp = UI.createSpriteWithFile("images/dialogItemBlood.png",CCSizeMake(292, 222))
+    screen.autoSuitable(temp, {x=400, y=50})
+    bg:addChild(temp)
+    temp = UI.createSpriteWithFile("images/featureShadow.png",CCSizeMake(192, 74))
+    screen.autoSuitable(temp, {x=53, y=70})
+    bg:addChild(temp)
+    temp = UI.createSpriteWithFile("images/guideNpc2.png")
+    temp:setScale(0.786)
+    screen.autoSuitable(temp, {nodeAnchor=General.anchorCenter, x=146, y=253})
+    bg:addChild(temp)
+    temp = UI.createButton(CCSizeMake(135, 61), display.closeDialog, {image="images/buttonGreen.png", text=StringManager.getString("buttonYes"), fontSize=26, fontName=General.font3})
+    screen.autoSuitable(temp, {x=449, y=134, nodeAnchor=General.anchorCenter})
+    bg:addChild(temp)
+    temp = UI.createLabel(StringManager.getString("labelLeagueWarRule"), General.font1, 28, {colorR = 75, colorG = 66, colorB = 46, size=CCSizeMake(400, 240), align=kCCTextAlignmentLeft})
+    screen.autoSuitable(temp, {x=475, y=276, nodeAnchor=General.anchorCenter})
+    bg:addChild(temp)
+    
+    temp = UI.createLabel(StringManager.getString("titleLeagueWar"), General.font3, 30, {colorR = 255, colorG = 255, colorB = 255})
+    screen.autoSuitable(temp, {x=360, y=489, nodeAnchor=General.anchorCenter})
+    bg:addChild(temp)
+	temp = UI.createButton(CCSizeMake(47, 46), display.closeDialog, {image="images/buttonClose.png"})
+	screen.autoSuitable(temp, {x=683, y=492, nodeAnchor=General.anchorCenter})
+	bg:addChild(temp)
+end
+
 local function createTab(setting)
     local tname = setting.tabname
     local dialog = setting.handler
@@ -20,6 +54,8 @@ local function createTab(setting)
         return dialog:createCreateTab(true)
     elseif tname=="tabLeagueWar" then
         return dialog:createLeagueWarTab()
+    elseif tname=="tabCaesarsCup" then
+        return dialog:createCaesarsCupTab()
     end
 end
 
@@ -48,11 +84,6 @@ function ClanDialog:ctor(index)
     temp = UI.createSpriteWithFile("images/dialogBackB.png",CCSizeMake(998, 676))
     screen.autoSuitable(temp, {x=11, y=13})
     bg:addChild(temp, 1)
-    --[[
-    temp = UI.createButton(CCSizeMake(107, 49), self.popTab, {image="images/buttonBack.png", callbackParam=self})
-    screen.autoSuitable(temp, {x=66, y=726, nodeAnchor=General.anchorCenter})
-    bg:addChild(temp)
-    --]]
     temp = UI.createButton(CCSizeMake(55, 53), display.closeDialog, {image="images/buttonClose.png"})
     screen.autoSuitable(temp, {x=985, y=727, nodeAnchor=General.anchorCenter})
     bg:addChild(temp)
@@ -65,7 +96,10 @@ function ClanDialog:initTabView(tabs, changeTab)
     if UserData.clan==0 then
         tabTitles = {"tabJoin","tabSearch","tabCreate"}
     else
-        tabTitles = {"tabMyLeague", "tabSearch", "tabLeagueWar"}
+        tabTitles = {"tabMyLeague", "tabLeagueWar"}
+        if UserData.leagueWarTime and UserData.nextLeagueWarTime and UserData.leagueWarTime>timer.getTime() and (UserData.leagueWarTime<UserData.nextLeagueWarTime or UserData.nextLeagueWarTime<timer.getTime()) then
+            table.insert(tabTitles, 1, "tabCaesarsCup")
+        end
     end
     for i=1, #tabTitles do
         temp = UI.createSpriteWithFile("images/leagueTab0.png",CCSizeMake(200, 77))
@@ -109,6 +143,103 @@ end
 
 local function showLeagueView(info)
     info.dialog:showLeagueTab(info)
+end
+
+function updateRankClanCell(bg, scrollView, info)
+    local imageFile = "images/dialogItemLeagueA.png"
+    if info.clan==UserData.clan then
+        imageFile = "images/dialogItemLeagueA2.png"
+    end
+    local temp = UI.createSpriteWithFile(imageFile,CCSizeMake(986, 58))
+    screen.autoSuitable(temp)
+    bg:addChild(temp)
+    temp = UI.createSpriteWithFile("images/dialogItemRankScoreBg.png",CCSizeMake(156, 41))
+    screen.autoSuitable(temp, {x=823, y=10})
+    bg:addChild(temp)
+    temp = UI.createSpriteWithFile("images/score.png",CCSizeMake(37, 42))
+    screen.autoSuitable(temp, {x=934, y=10})
+    bg:addChild(temp)
+    temp = UI.createSpriteWithFile("images/leagueIcon/" .. info.icon .. ".png",CCSizeMake(39, 44))
+    screen.autoSuitable(temp, {x=128, y=7})
+    bg:addChild(temp)
+    temp = UI.createLabel(info.name, General.font6, 25, {colorR = 255, colorG = 255, colorB = 255})
+    screen.autoSuitable(temp, {x=176, y=27, nodeAnchor=General.anchorLeft})
+    bg:addChild(temp)
+    temp = UI.createLabel(tostring(info.score), General.font4, 23, {colorR = 255, colorG = 255, colorB = 255, lineOffset=-12})
+    screen.autoSuitable(temp, {x=888, y=31, nodeAnchor=General.anchorCenter})
+    bg:addChild(temp)
+    temp = UI.createLabel(StringManager.getString("labelVisitClan"), General.font1, 15, {colorR = 125, colorG = 123, colorB = 121})
+    screen.autoSuitable(temp, {x=470, y=14, nodeAnchor=General.anchorCenter})
+    bg:addChild(temp)
+    temp = UI.createLabel(StringManager.getString("labelMembers"), General.font1, 18, {colorR = 90, colorG = 81, colorB = 74})
+    screen.autoSuitable(temp, {x=721, y=43, nodeAnchor=General.anchorCenter})
+    bg:addChild(temp)
+    temp = UI.createLabel(info.members .. "/50", General.font1, 19, {colorR = 0, colorG = 0, colorB = 0})
+    screen.autoSuitable(temp, {x=721, y=22, nodeAnchor=General.anchorCenter})
+    bg:addChild(temp)
+    temp = UI.createSpriteWithFile("images/dialogItemHistorySeperator.png",CCSizeMake(2, 55))
+    screen.autoSuitable(temp, {x=115, y=2})
+    bg:addChild(temp)
+	local rgb = RANK_COLOR[info.rank] or {255, 255, 255}
+    temp = UI.createLabel(info.rank .. ".", General.font4, 23, {colorR = rgb[1], colorG = rgb[2], colorB = rgb[3], lineOffset=-12})
+    screen.autoSuitable(temp, {x=41, y=29, nodeAnchor=General.anchorCenter})
+    bg:addChild(temp)
+    scrollView:addChildTouchNode(bg, showLeagueView, info, {nodeChangeHandler=doNothing})
+end
+
+function ClanDialog:getCaesarsCupData(isSuc, result, view)
+    if isSuc and not self.deleted then
+        local data = json.decode(result)
+        if data==None or #data==0 then return end
+    	local infos = {}
+    	local isNew = true
+    	for i=1, #data do
+    	    local info = data[i]
+    	    --`id`, icon, score, `type`, name, `desc`, members, `min`
+    	    local item = {dialog=self, rank=i, clan=info[1], icon=info[2], score=info[3], type=info[4], name=info[5], desc=info[6], members=info[7], min=info[8]}
+        	table.insert(infos, item)
+    	end
+    	
+        local scrollView = UI.createScrollViewAuto(CCSizeMake(996, 470), false, {offx=5, offy=4, disy=10, size=CCSizeMake(986, 58), infos=infos, cellUpdate=updateRankClanCell})
+        screen.autoSuitable(scrollView.view, {nodeAnchor=General.anchorLeftBottom, x=12, y=26})
+        view:addChild(scrollView.view)
+    end
+end
+
+
+function ClanDialog:createCaesarsCupTab()
+
+    local bg = CCTouchLayer:create(display.DIALOG_PRI, true)
+    bg:setContentSize(CCSizeMake(1020, 765))
+    
+    temp = UI.createSpriteWithFile("images/dialogBackLeagueWeek.png",CCSizeMake(986, 204))
+    screen.autoSuitable(temp, {x=17, y=503})
+    bg:addChild(temp)
+    if UserData.leagueWarTime and UserData.leagueWarTime>timer.getTime() and (UserData.leagueWarTime<UserData.nextLeagueWarTime or UserData.nextLeagueWarTime<timer.getTime()) then
+        temp = UI.createLabel(StringManager.getTimeString(UserData.leagueWarTime-timer.getTime()), General.font3, 21, {colorR = 255, colorG = 255, colorB = 255})
+        screen.autoSuitable(temp, {x=508, y=545, nodeAnchor=General.anchorLeft})
+        bg:addChild(temp)
+        temp = UI.createLabel(StringManager.getString("labelTimeCount"), General.font3, 17, {colorR = 255, colorG = 170, colorB = 172})
+        screen.autoSuitable(temp, {x=499, y=546, nodeAnchor=General.anchorRight})
+        bg:addChild(temp)
+    else
+        temp = UI.createLabel(StringManager.getTimeString(UserData.nextLeagueWarTime-timer.getTime()), General.font3, 21, {colorR = 255, colorG = 255, colorB = 255})
+        screen.autoSuitable(temp, {x=508, y=545, nodeAnchor=General.anchorLeft})
+        bg:addChild(temp)
+        temp = UI.createLabel(StringManager.getString("labelNextTimeCount"), General.font3, 17, {colorR = 255, colorG = 170, colorB = 172})
+        screen.autoSuitable(temp, {x=499, y=546, nodeAnchor=General.anchorRight})
+        bg:addChild(temp)
+    end
+    temp = UI.createLabel(StringManager.getString("labelCaesarsCupIntro"), General.font1, 17, {colorR = 7, colorG = 7, colorB = 139, size=CCSizeMake(290, 60), align=kCCTextAlignmentLeft})
+    screen.autoSuitable(temp, {x=848, y=626, nodeAnchor=General.anchorCenter})
+    bg:addChild(temp)
+    temp = UI.createSpriteWithFile("images/leagueWarInfo.png", CCSizeMake(51, 51))
+    simpleRegisterButton(temp, {callback=display.showDialog, callbackParam=LeagueWarIntroDialog, nodeChangeHandler=UI.defaultButtonTouchHandler()})
+    screen.autoSuitable(temp, {x=685, y=555, nodeAnchor=General.anchorCenter})
+    bg:addChild(temp)
+    
+	network.httpRequest("getCaesarsCupRank", self.getCaesarsCupData, {callbackParam=bg, params={uid=UserData.userId}}, self)
+    return bg
 end
 
 local function updateLeagueCell(bg, scrollView, info)
