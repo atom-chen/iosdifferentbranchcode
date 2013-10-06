@@ -138,6 +138,15 @@ do
                 end
             end
 	    end
+	    if not BattleLogic.isGuide then
+    	    for i=1, 10 do
+    	        if costTroops[i]>1 then
+                    CCNative:showAlert(StringManager.getString("alertTitleOutsyn"), StringManager.getString("alertTextOutsyn"), 2, StringManager.getString("buttonClose"), 0, "")
+    	            return true
+    	        end
+    	    end
+	    end
+	    return false
 	end
 	
 	function SoldierLogic.deployZombies()

@@ -92,7 +92,7 @@ function BattleResultDialog:ctor(result)
 	        table.insert(items, {i, costTroops[i], UserData.researchLevel[i]})
 	    end
 	end
-	SoldierLogic.deploySoldier(costTroops)
+	local checkSyncError = SoldierLogic.deploySoldier(costTroops)
 	if result.zombieDeployed then
 	    table.insert(items, {0,0})
 	    SoldierLogic.deployZombies()
@@ -199,82 +199,88 @@ function BattleResultDialog:ctor(result)
 	bg:addChild(temp, 2)
 	temp:runAction(CCNumberTo:create(numberToTime, 0, result.percent, "", "%"))
 
-	EventManager.sendMessage("EVENT_BATTLE_END", result)
-	
-	-- begin syn network
-	local update = {}
-	local deleted = result.costTraps
-	local hits = {}
-	local scene = display.getCurrentScene()
-	for id, buildData in pairs(result.resourceBuilds) do
-	    local b = scene.builds[id]
-	    if buildData.resources and b.buildData.bid~=TOWN_BID and b.getExtendInfo then
-	        local ext = b:getExtendInfo()
-	        ext.resource = ext.resource - math.floor(buildData.resources[b.resourceType]*(1-buildData.hitpoints/buildData.max))
-	        table.insert(update, {id, json.encode(ext)})
-	    end
-	    if buildData.hitpoints<buildData.max then
-	        table.insert(hits, {id, buildData.hitpoints})
-	    end
-	end
-	local params = {}
-    if not BattleLogic.isLeagueBattle then
-    	if #update>0 then
-    	    params.eupdate = json.encode(update)
+	if not checkSyncError then
+    	EventManager.sendMessage("EVENT_BATTLE_END", result)
+    	
+    	-- begin syn network
+    	local update = {}
+    	local deleted = result.costTraps
+    	local hits = {}
+    	local scene = display.getCurrentScene()
+    	for id, buildData in pairs(result.resourceBuilds) do
+    	    local b = scene.builds[id]
+    	    if buildData.resources and b.buildData.bid~=TOWN_BID and b.getExtendInfo then
+    	        local ext = b:getExtendInfo()
+    	        ext.resource = ext.resource - math.floor(buildData.resources[b.resourceType]*(1-buildData.hitpoints/buildData.max))
+    	        table.insert(update, {id, json.encode(ext)})
+    	    end
+    	    if buildData.hitpoints<buildData.max then
+    	        table.insert(hits, {id, buildData.hitpoints})
+    	    end
     	end
-    	if #deleted>0 then
-    	    params.delete = json.encode(deleted)
+    	local params = {}
+        if not BattleLogic.isLeagueBattle then
+        	if #update>0 then
+        	    params.eupdate = json.encode(update)
+        	end
+        	if #deleted>0 then
+        	    params.delete = json.encode(deleted)
+        	end
+        	if #hits>0 then
+        	    params.hits = json.encode(hits)
+        	end
+        	params.isReverge = BattleLogic.isReverge
+        	BattleLogic.isReverge = nil
+        	local hitem = {-result.score, result.stars, result.percent, UserData.userScore, result.food, result.oil, UserData.userName, items}
+        	if UserData.clan>0 then
+        	    hitem[9] = UserData.clanInfo[2]
+        	    hitem[10] = UserData.clanInfo[5]
+        	end
+    	    params.history = json.encode(hitem)
+    	    params.score = -result.score
+    	    params.shieldTime = timer.getServerTime(result.shieldTime)
+    	else
+    	    params.isLeague = 1
+    	    params.lscore = 0
+    	    if result.stars>0 then
+    	        params.lscore = BattleLogic.enemyMtype*2+1
+    	        UserData.clanInfo[3] = UserData.clanInfo[3]+params.lscore
+    	    end
+    	    params.cid = UserData.clan
+    	    params.bid = BattleLogic.leagueBattleId
+    	    params.ecid = BattleLogic.enemyClan
     	end
-    	if #hits>0 then
-    	    params.hits = json.encode(hits)
-    	end
-    	params.isReverge = BattleLogic.isReverge
-    	BattleLogic.isReverge = nil
-    	local hitem = {-result.score, result.stars, result.percent, UserData.userScore, result.food, result.oil, UserData.userName, items}
-    	if UserData.clan>0 then
-    	    hitem[9] = UserData.clanInfo[2]
-    	    hitem[10] = UserData.clanInfo[5]
-    	end
-	    params.history = json.encode(hitem)
-	    params.score = -result.score
-	    params.shieldTime = timer.getServerTime(result.shieldTime)
-	else
-	    params.isLeague = 1
-	    params.lscore = 0
-	    if result.stars>0 then
-	        params.lscore = BattleLogic.enemyMtype*2+1
-	        UserData.clanInfo[3] = UserData.clanInfo[3]+params.lscore
-	    end
-	    params.cid = UserData.clan
-	    params.bid = BattleLogic.leagueBattleId
-	    params.ecid = BattleLogic.enemyClan
-	end
-	params.replay = json.encode({seed=ReplayLogic.randomSeed, data=ReplayLogic.buildData, cmdList=ReplayLogic.cmdList})
-	params.uid = UserData.userId
-	if params.isReverge and not BattleLogic.isLeagueBattle then
-        params.eid = BattleLogic.enemyId
-        BattleLogic.revergeItem.revenged = true
-        BattleLogic.revergeItem = nil
+    	params.replay = json.encode({seed=ReplayLogic.randomSeed, data=ReplayLogic.buildData, cmdList=ReplayLogic.cmdList})
+    	params.uid = UserData.userId
+    	if params.isReverge and not BattleLogic.isLeagueBattle then
+            params.eid = BattleLogic.enemyId
+            BattleLogic.revergeItem.revenged = true
+            BattleLogic.revergeItem = nil
+        else
+            assertNotEqual(UserData.enemyId, nil)
+        	params.eid = UserData.enemyId
+            UserData.enemyId = nil
+        end
+    	-- shieldTime
+        network.httpRequest("synBattleData", self.synBattleDone, {isPost=true, params=params}, self)
+        for key, value in pairs(params) do
+            print(key, value)
+        end
+        
+        --syn score to rank
+        if not BattleLogic.isLeagueBattle then
+            network.httpRequest(network.scoreUrl .. "updateScore", doNothing, {params={uid=UserData.userId, score=UserData.userScore}})
+            network.httpRequest(network.scoreUrl .. "updateScore", doNothing, {params={uid=params.eid, score=UserData.enemyScore-result.score}})
+        else
+            BattleLogic.isLeagueBattle = nil
+    		UserData.shouldOpenLeagueWar = true
+        end
+    	UserStat.stat(UserStatType.BATTLE_END)
     else
-        assertNotEqual(UserData.enemyId, nil)
-    	params.eid = UserData.enemyId
-        UserData.enemyId = nil
+        if display.getCurrentScene(0) then
+            display.getCurrentScene(0).synOver = false
+        end
     end
-	-- shieldTime
-    network.httpRequest("synBattleData", self.synBattleDone, {isPost=true, params=params}, self)
-    for key, value in pairs(params) do
-        print(key, value)
-    end
-    
-    --syn score to rank
-    if not BattleLogic.isLeagueBattle then
-        network.httpRequest(network.scoreUrl .. "updateScore", doNothing, {params={uid=UserData.userId, score=UserData.userScore}})
-        network.httpRequest(network.scoreUrl .. "updateScore", doNothing, {params={uid=params.eid, score=UserData.enemyScore-result.score}})
-    else
-        BattleLogic.isLeagueBattle = nil
-		UserData.shouldOpenLeagueWar = true
-    end
-	UserStat.stat(UserStatType.BATTLE_END)
 end
 
 function BattleResultDialog:endBattle()

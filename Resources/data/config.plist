@@ -62,7 +62,7 @@
           <key>aprefix</key>
           <string>task</string>
           <key>localVersion</key>
-          <string>2</string>
+          <string>3</string>
           <key>baseUrl</key>
           <string>http://23.21.135.42:9990/</string>
           <key>scoreUrl</key>
