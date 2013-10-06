@@ -87,7 +87,10 @@ function ClanDialog:ctor(index)
     temp = UI.createButton(CCSizeMake(55, 53), display.closeDialog, {image="images/buttonClose.png"})
     screen.autoSuitable(temp, {x=985, y=727, nodeAnchor=General.anchorCenter})
     bg:addChild(temp)
-    self:initTabView(tabs, changeTab)
+    num = self:initTabView(tabs, changeTab)
+    if index and index>#tabs then
+        index = #tabs
+    end
     changeTab(index or 1)
 end
 
@@ -333,10 +336,14 @@ end
 
 local function updateBattleClanMemberCell(bg, scrollView, info)
     local temp
+    local imageFile = "images/dialogItemLeagueA.png"
+    if info.uid==UserData.userId then
+        imageFile = "images/dialogItemLeagueA2.png"
+    end
+    temp = UI.createSpriteWithFile(imageFile,CCSizeMake(986, 58))
+    screen.autoSuitable(temp)
+    bg:addChild(temp)
     if info.binfo and info.binfo[4]>0 then
-        temp = UI.createSpriteWithFile("images/dialogItemLeagueC.png",CCSizeMake(986, 58))
-        screen.autoSuitable(temp) --{x=18, y=463})
-        bg:addChild(temp)
         temp = UI.createLabel(StringManager.getFormatString("labelDefeatBy", {name=info.binfo[3]}), General.font6, 20, {colorR = 251, colorG = 3, colorB = 3})
         screen.autoSuitable(temp, {x=433, y=29, nodeAnchor=General.anchorCenter})
         bg:addChild(temp)
@@ -345,13 +352,6 @@ local function updateBattleClanMemberCell(bg, scrollView, info)
         screen.autoSuitable(temp, {x=924, y=29, nodeAnchor=General.anchorCenter})
         bg:addChild(temp)
     else
-        local imageFile = "images/dialogItemLeagueA.png"
-        if info.uid==UserData.userId then
-            imageFile = "images/dialogItemLeagueA2.png"
-        end
-        temp = UI.createSpriteWithFile(imageFile,CCSizeMake(986, 58))
-        screen.autoSuitable(temp) --{x=18, y=463})
-        bg:addChild(temp)
         temp = UI.createLabel(StringManager.getString("labelExploits"), General.font1, 18, {colorR = 90, colorG = 81, colorB = 74})
         screen.autoSuitable(temp, {x=531, y=40, nodeAnchor=General.anchorCenter})
         bg:addChild(temp)
@@ -742,6 +742,23 @@ function ClanDialog:createLeagueWarTab()
                     screen.autoSuitable(temp, {x=914, y=576})
                     bg:addChild(temp)
                     
+                    local function sortBattleMember(m1, m2)
+                        local m1b, m2b = false, false
+                        if m1.binfo and m1.binfo[4]>0 then
+                            m1b = true
+                        end
+                        if m2.binfo and m2.binfo[4]>0 then
+                            m2b = true
+                        end
+                        if m1b and not m2b then
+                            return false
+                        elseif not m1b and m2b then
+                            return true
+                        else
+                            return m1.score>m2.score
+                        end
+                    end
+                    
                     --add scroll view
                     local memberMaps = {}
                     for _, item in ipairs(info.info[6]) do
@@ -753,7 +770,7 @@ function ClanDialog:createLeagueWarTab()
                         local item = infos[i]
                         infos[i] = {icon=UserData.clanInfo[2], uid=item[1], score=item[2], lscore=item[3], name=item[4], mtype=item[5], dialog=self, binfo=memberMaps[item[1]]}
                     end
-                    table.sort(infos, getSortFunction("score", true))
+                    table.sort(infos, sortBattleMember)
                     for i=1, #infos do
                         infos[i].rank = i
                     end
@@ -766,7 +783,7 @@ function ClanDialog:createLeagueWarTab()
                         local item = infos[i]
                         infos[i] = {icon=eclanInfo[2], uid=item[1], score=item[2], lscore=item[3], name=item[4], mtype=item[5], dialog=self, binfo=memberMaps[item[1]]}
                     end
-                    table.sort(infos, getSortFunction("score", true))
+                    table.sort(infos, sortBattleMember)
                     for i=1, #infos do
                         infos[i].rank = i
                     end
@@ -774,6 +791,7 @@ function ClanDialog:createLeagueWarTab()
                     screen.autoSuitable(scrollView2.view, {nodeAnchor=General.anchorLeftTop, x=12, y=526})
                     bg:addChild(scrollView2.view)
                     
+                    local detail1, detai2
                     local function onShowSelfDetail()
                         scrollView2.view:setVisible(false)
                         scrollView1.view:setVisible(true)
@@ -789,9 +807,11 @@ function ClanDialog:createLeagueWarTab()
                     temp = UI.createButton(CCSizeMake(99, 47), onShowSelfDetail, {image="images/buttonGreen.png", text=StringManager.getString("buttonDetail"), fontSize=22, fontName=General.font3})
                     screen.autoSuitable(temp, {x=176, y=584, nodeAnchor=General.anchorCenter})
                     bg:addChild(temp)
+                    detail1 = temp
                     temp = UI.createButton(CCSizeMake(99, 47), onShowEnemyDetail, {image="images/buttonGreen.png", text=StringManager.getString("buttonDetail"), fontSize=22, fontName=General.font3})
                     screen.autoSuitable(temp, {x=844, y=584, nodeAnchor=General.anchorCenter})
                     bg:addChild(temp)
+                    detail2 = temp
                 else
                     --notice?
                     display.closeDialog()
@@ -815,7 +835,7 @@ function ClanDialog:showPrepareView(view)
         local temp = UI.createButton(CCSizeMake(99, 47), onFindEnemy, {image="images/buttonGreen.png", text=StringManager.getString("buttonFindEnemy"), fontSize=20, fontName=General.font3, lineOffset=-12})
         screen.autoSuitable(temp, {x=175, y=583, nodeAnchor=General.anchorCenter})
         view:addChild(temp)
-        temp = UI.createLabel(StringManager.getString("labelLeagueBattle"), General.font3, 22+NORMAL_SIZE_OFF, {colorR = 255, colorG = 255, colorB = 255, size=CCSizeMake(900, 0)})
+        temp = UI.createLabel(StringManager.getString("labelLeagueBattle"), General.font3, 22+NORMAL_SIZE_OFF, {colorR = 205, colorG = 184, colorB = 137, size=CCSizeMake(900, 0)})
         screen.autoSuitable(temp, {x=510, y=373, nodeAnchor=General.anchorCenter})
         view:addChild(temp)
     else
