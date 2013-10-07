@@ -114,7 +114,7 @@ public class CaesarsActivity extends Cocos2dxActivity{
 	}
 	
 	
-	public Cocos2dxGLSurfaceView onCreateGLSurfaceView() {
+	public Cocos2dxGLSurfaceView onCreateView() {
     	return new LuaGLSurfaceView(this);
     }
 	@Override
