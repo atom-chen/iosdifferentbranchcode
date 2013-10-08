@@ -95,7 +95,15 @@ public class MyAds implements InterfaceAds {
 					@Override
 					public void onClick(View arg0) {
 						//sg.setVisibility(View.INVISIBLE);
-						closeAds();
+						PluginWrapper.runOnGLThread(new Runnable(){
+
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								closeAds();
+							}
+							
+						});
 					}
 					
 				});

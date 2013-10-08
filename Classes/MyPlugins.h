@@ -10,14 +10,21 @@
 #define __CAESARS_MY_PLUGINS_H__
 
 #include "ProtocolSocial.h"
+#include "ProtocolAds.h" 
+#include "ProtocolIAP.h"
 #include "cocoa/CCDictionary.h"
 #include "cocoa/CCArray.h"
-#include "ProtocolAds.h"
 
 class MyShareResult : public cocos2d::plugin::ShareResultListener
 {
 public:
 	virtual void onShareResult(cocos2d::plugin::ShareResultCode ret, const char* msg);
+};
+
+class MyPayResult : public cocos2d::plugin::PayResultListener
+{
+public:
+	virtual void onPayResult(cocos2d::plugin::PayResultCode ret, const char* msg, cocos2d::plugin::TProductInfo info) ;
 };
 
 class MyPlugins
@@ -29,7 +36,8 @@ public:
 	void unloadPlugins();
     void loadPlugins(cocos2d::CCDictionary* dict);
     void share(const char* sharedText, const char* sharedImagePath);
-    void sendCmd(const char *, const char *arg);
+    void pay(const char* productId);
+	void sendCmd(const char *, const char *arg);
     
 private:
     MyPlugins();
@@ -38,10 +46,11 @@ private:
     static MyPlugins* s_pPlugins;
     
     cocos2d::plugin::ProtocolSocial* m_pSharePlugin;
+	cocos2d::plugin::ProtocolIAP* m_pIAPPlugin;
+	cocos2d::plugin::ProtocolAds *m_pAds;
     MyShareResult* m_pRetListener;
+	MyPayResult* m_pIAPListener;
 	cocos2d::CCArray* m_pPluginNames;
-
-    cocos2d::plugin::ProtocolAds *m_ads;    
 };
 
 #endif //__CAESARS_MY_PLUGINS_H__

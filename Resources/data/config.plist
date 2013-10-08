@@ -14,21 +14,50 @@
                     <string>304997242960340</string>
                 </dict>
             </dict>
+            <key>iap</key>
+            <dict>
+                <key>name</key>
+                <string>GoogleIAB</string>
+                <key>config</key>
+                <dict>
+                    <key>GoogleIABKey</key>
+                    <string>MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsii/8hraULfd0wAmvwc7R12KYag2zbyDLkCnMq7oXthbhRFDhKKH+/HJYPCpv8abjVbTO8r3vmWfuo/KsDAEH0A8oTI9qEGn/P4vMgd4to2vVc+30B8ymiJnY7aB5qQMXgwGO4PGeJ8Fe75dP8Wf7sFa5fFZfvl4HOJWCQ9uxNg75QkvqqfM8dm3ZEj8TRvfonAa2+jnN6ly+umpDFgQavILvFyQj+Dkpn0zJtcgcKOx3Q0GBvFo3lKRVTALECLGmkJuCZFezDTXeRO/+AAKD/vX4j9iwVPSJNA2D+3cJhTxkGENphlaYWKSCen9/9K/ZIKozJAfZ7p/7dtPsMgAnwIDAQAB</string>
+                    <key>crystal0</key>
+                    <string>crystall1_pow</string>
+                    <key>crystal1</key>
+                    <string>crystall2_pow</string>
+                    <key>crystal2</key>
+                    <string>crystall3_pow</string>
+                    <key>crystal3</key>
+                    <string>crystall4_pow</string>
+                    <key>crystal4</key>
+                    <string>crystall5_pow</string>
+                    <key>crystal5</key>
+                    <string>sale_crystall_pow</string>
+                    <key>hideAds</key>
+                    <string>disable_ads_pow</string>
+                </dict>
+            </dict>
+            <key>ads</key>
+            <dict>
+                <key>name</key>
+                <string>MyAds</string>
+            </dict>
         </dict>
         <key>store</key>
         <dict>
             <key>crystal0</key>
-            <string>$4.99</string>
+            <string>Buy</string>
             <key>crystal1</key>
-            <string>$9.99</string>
+            <string>Buy</string>
             <key>crystal2</key>
-            <string>$19.99</string>
+            <string>Buy</string>
             <key>crystal3</key>
-            <string>$49.99</string>
+            <string>Buy</string>
             <key>crystal4</key>
-            <string>$99.99</string>
+            <string>Buy</string>
             <key>crystal5</key>
-            <string>$0.99</string>
+            <string>Buy</string>
             <key>cnum0</key>
             <string>500</string>
             <key>cnum1</key>
@@ -39,6 +68,8 @@
             <string>6500</string>
             <key>cnum4</key>
             <string>14000</string>
+            <key>cnum5</key>
+            <string>200</string>
         </dict>
         <key>default</key>
         <dict>
@@ -52,7 +83,7 @@
         <key>config</key>
         <dict>
           <key>pay</key>
-          <string>false</string>
+          <string>true</string>
           <key>gamecenter</key>
           <string>false</string>
           <key>video</key>
@@ -61,16 +92,18 @@
           <string>false</string>
           <key>chinese</key>
           <string>false</string>
+          <key>platform</key>
+          <string>android_german</string>
           <key>cprefix</key>
           <string>crystal</string>
           <key>baseUrl</key>
           <string>http://23.21.135.42:9998/</string>
           <key>scoreUrl</key>
-          <string>http://23.21.135.42:9968/</string>
+          <string>http://23.21.135.42:8998/</string>
           <key>chatUrl</key>
           <string>http://23.21.135.42:8005/</string>
-          <key>musicTail</key>
-          <string>wav</string>
-      </dict>
+          <key>purpleUrl</key>
+          <string>https://play.google.com/store/apps/details?id=code.softgames.pocketonlinewar</string>
+        </dict>
     </dict>
 </plist>

@@ -73,6 +73,7 @@
              android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"></activity>
         <activity android:name="mysoft.SDKDemoActivity" android:screenOrientation="landscape"></activity>
         <activity android:name="mysoft.MyMoreGames" ></activity>
+        <activity android:name="org.cocos2dx.plugin.GoogleIABActivity"></activity>
        
     </application>
     

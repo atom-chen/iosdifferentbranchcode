@@ -5,7 +5,7 @@ do
         --print("filterName", name)
         name = string.sub(name, 1, -4)
         local tail = CCUserDefault:sharedUserDefault():getStringForKey("musicTail")
-        if tail == nil then
+        if tail == nil or tail ~= "wav" then
             tail = "mp3"
         end
         name = name..tail
