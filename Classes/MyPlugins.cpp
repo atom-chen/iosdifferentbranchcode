@@ -117,6 +117,10 @@ void MyPlugins::sendCmd(const char *cmd, const char *args) {
             m_ads->showAds((ProtocolAds::AdsType)0, 0, (ProtocolAds::AdsPos)0);
         } else if(c == "hideAds") {
             m_ads->hideAds((ProtocolAds::AdsType)0);
+        } else if(c == "moregames") {
+            m_ads->spendPoints(0);
+        } else if(c == "hideMoreGames") {
+            m_ads->spendPoints(1);
         }
     }
 }

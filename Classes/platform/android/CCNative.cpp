@@ -9,6 +9,11 @@ void Java_com_caesars_lib_CaesarsActivity_setDeviceId(JNIEnv *env, jobject thiz,
     cocos2d::CCUserDefault::sharedUserDefault()->setStringForKey("username", s);
 }
 
+void Java_org_cocos2dx_plugin_MyAds_closeAds(JNIEnv *env, jobject thiz){
+    CCLOG("close Ads Now");
+	cocos2d::CCNotificationCenter::sharedNotificationCenter()->postNotification("EVENT_CLOSE_ADS");
+}
+
 NS_CC_EXT_BEGIN
 void CCNative::openURL(const char* pszUrl)
 {

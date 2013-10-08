@@ -38,6 +38,7 @@ do
 	EventManager.removeEventMonitor = removeEventMonitor
 	
 	local function sendMessage(event, eventParam)
+        print("sendMessage", event, eventParam)
 		if type(event) == "string" then
 			event = eventType[event]
 		end

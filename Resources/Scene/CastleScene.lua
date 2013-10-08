@@ -804,6 +804,9 @@ function CastleScene:enterOrExit(isEnter)
              end
          end
          self.updateEntry = CCDirector:sharedDirector():getScheduler():scheduleScriptFunc(updateWorld, 0, false)
+         if self.sceneType == SceneTypes.Operation then
+            AdsLogic.showAds()
+         end
     else
         self.isShow = false
         if self.monitorId then
@@ -812,6 +815,10 @@ function CastleScene:enterOrExit(isEnter)
         end
 
          CCDirector:sharedDirector():getScheduler():unscheduleScriptEntry(self.updateEntry)
+         if self.sceneType == SceneTypes.Operation then
+            --removeAds 有可能是用户购买广告结束的时候
+            AdsLogic.hideUI()
+         end
     end
 end
 
@@ -875,6 +882,7 @@ function OperationScene:ctor()
     self.synOver = true
     self.synTime = 0
     self.music = "music/operation.mp3"
+    --self.sceneType = "OperationScene"
 end
 
 function OperationScene:initMenu()

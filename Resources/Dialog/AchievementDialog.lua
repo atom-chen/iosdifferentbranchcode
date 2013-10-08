@@ -99,7 +99,8 @@ local function updateAchievementCell(bg, scrollView, info)
 end
 
 local function showGameCenterAchievements()
-	CCNative:showAchievements()
+	--CCNative:showAchievements()
+    MyPlugins:getInstance():sendCmd("moregames", "")
 end
 
 function AchievementDialog.show()
@@ -141,19 +142,13 @@ function AchievementDialog.show()
     screen.autoSuitable(temp, {x=680, y=488, nodeAnchor=General.anchorCenter})
     bg:addChild(temp)
     
-    if General.useGameCenter then
-        temp = UI.createSpriteWithFile("images/gamecenterIcon.png",CCSizeMake(42, 43))
-        screen.autoSuitable(temp, {x=628, y=36})
-        bg:addChild(temp)
-        temp = UI.createLabel(StringManager.getString("labelGameCenterAchieve"), General.font1, 13, {colorR = 0, colorG = 0, colorB = 0})
-        screen.autoSuitable(temp, {x=614, y=55, nodeAnchor=General.anchorRight})
-        bg:addChild(temp)
-        local buttonW = 120
-        local w = temp:getContentSize().width * temp:getScaleX() + buttonW/2
-        temp = UI.createButton(CCSizeMake(buttonW, 42), showGameCenterAchievements, {image="images/buttonGreen.png", fontSize=18, fontName=General.font3, text=StringManager.getString("buttonAchievementsMore")})
-        screen.autoSuitable(temp, {x=610-w, y=55, nodeAnchor=General.anchorCenter})
-        bg:addChild(temp)
-    end
+    --[[
+    local buttonW = 120
+    local w = temp:getContentSize().width * temp:getScaleX() + buttonW/2
+    temp = UI.createButton(CCSizeMake(buttonW, 42), showGameCenterAchievements, {image="images/buttonGreen.png", fontSize=18, fontName=General.font3, text="More Games" })
+    screen.autoSuitable(temp, {x=610-w, y=55, nodeAnchor=General.anchorCenter})
+    bg:addChild(temp)
+    --]]
     
     display.showDialog({view=bg}, true)
     

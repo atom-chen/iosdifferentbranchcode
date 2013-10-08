@@ -50,7 +50,7 @@
         <key>config</key>
         <dict>
           <key>pay</key>
-          <string>true</string>
+          <string>false</string>
           <key>gamecenter</key>
           <string>false</string>
           <key>video</key>
@@ -62,7 +62,7 @@
           <key>cprefix</key>
           <string>crystal</string>
           <key>baseUrl</key>
-          <string>http://23.21.135.42:9990/</string>
+          <string>http://23.21.135.42:9998/</string>
           <key>scoreUrl</key>
           <string>http://23.21.135.42:9968/</string>
           <key>chatUrl</key>

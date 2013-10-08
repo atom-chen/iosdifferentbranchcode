@@ -2,6 +2,7 @@ package org.cocos2dx.plugin;
 
 import java.util.Hashtable;
 
+import mysoft.MyMoreGames;
 import mysoft.SDKDemoActivity;
 
 import org.cocos2dx.plugin.InterfaceAds;
@@ -11,28 +12,69 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.util.AttributeSet;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import de.softgames.sdk.R;
+import de.softgames.sdk.ui.MoreGamesButton;
 import de.softgames.sdk.ui.SGAdView;
 
 public class MyAds implements InterfaceAds {
 	private SGAdView sg;
 	private Context mContext;
+	private MoreGamesButton moregames;
+	private RelativeLayout rl;
+	private LinearLayout bottom;
+	private static native void closeAds();
 	
 	public MyAds(Context c){
 		mContext = c;
+		/*
+		moregame = new MoreGamesButton(mContext);
+		*/
+		
+		
 	}
 	@Override
 	public void configDeveloperInfo(Hashtable<String, String> devInfo) {
 		// TODO Auto-generated method stub
 		
 	}
-
+	private void createLayout() {
+		if(rl == null) {
+			Activity act = (Activity)mContext;
+			FrameLayout con = (FrameLayout)act.findViewById(android.R.id.content);
+			/*
+			ViewGroup.LayoutParams sgparam =
+		            new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,
+		                                     ViewGroup.LayoutParams.WRAP_CONTENT);
+		    */
+			FrameLayout.LayoutParams fparam = new FrameLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+			fparam.gravity = Gravity.BOTTOM | Gravity.LEFT;
+			
+			rl = new RelativeLayout(mContext);
+			con.addView(rl, fparam);
+			
+			LinearLayout up = new LinearLayout(mContext);
+			rl.addView(up);
+			
+			bottom = new LinearLayout(mContext);
+			RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+			lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+			bottom.setOrientation(LinearLayout.VERTICAL);
+			
+			rl.addView(bottom, lp);
+			
+		}
+	}
 	@Override
 	public void showAds(int type, int sizeEnum, int pos) {
 		// TODO Auto-generated method stub
@@ -40,6 +82,7 @@ public class MyAds implements InterfaceAds {
 
 			@Override
 			public void run() {
+				createLayout();
 				// TODO Auto-generated method stub
 				if(sg != null) {
 					sg.setVisibility(View.VISIBLE);
@@ -51,16 +94,19 @@ public class MyAds implements InterfaceAds {
 
 					@Override
 					public void onClick(View arg0) {
-						sg.setVisibility(View.INVISIBLE);
+						//sg.setVisibility(View.INVISIBLE);
+						closeAds();
 					}
 					
 				});
-				Activity act = (Activity)mContext;
-				FrameLayout con = (FrameLayout)act.findViewById(android.R.id.content);
-				ViewGroup.LayoutParams sgparam =
-			            new ViewGroup.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,
-			                                       ViewGroup.LayoutParams.WRAP_CONTENT);
-				con.addView(sg, sgparam);
+				//Activity act = (Activity)mContext;
+				//FrameLayout con = (FrameLayout)act.findViewById(android.R.id.content);
+				LinearLayout.LayoutParams sgparam =
+			            new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+				//con.addView(sg, sgparam);
+				sgparam.weight = 1;
+				sgparam.setMargins(5, 5, 5, 5);
+				bottom.addView(sg, sgparam);
 				/*
 				Intent in = new Intent(mContext, SDKDemoActivity.class);
 				mContext.startActivity(in);
@@ -77,7 +123,7 @@ public class MyAds implements InterfaceAds {
 
 			@Override
 			public void run() {
-				// TODO Auto-generated method stub
+				//createLayout();
 				
 				if(sg != null) {
 					sg.setVisibility(View.GONE);
@@ -89,10 +135,44 @@ public class MyAds implements InterfaceAds {
 		});
 		
 	}
-
+	//lua 层召唤 moregames button
 	@Override
 	public void spendPoints(int points) {
-		// TODO Auto-generated method stub
+		final int v = points;
+		PluginWrapper.runOnMainThread(new Runnable() {
+			@Override
+			public void run() {
+				
+				createLayout();
+				// TODO Auto-generated method stub
+				//Intent inte = new Intent(mContext, MyMoreGames.class);
+				//mContext.startActivity(inte);
+				if(v == 0) {
+					if(moregames == null) {
+						//Activity act = (Activity)mContext;
+						//FrameLayout con = (FrameLayout)act.findViewById(android.R.id.content);
+						LinearLayout.LayoutParams sgparam =
+					            new LinearLayout.LayoutParams(ViewGroup.LayoutParams.FILL_PARENT,
+					                                       ViewGroup.LayoutParams.WRAP_CONTENT);
+						sgparam.weight = 1;
+						sgparam.setMargins(5, 5, 5, 5);
+						moregames = new MoreGamesButton(mContext);
+						//con.addView(moregames, sgparam);
+						bottom.addView(moregames, sgparam);
+					}
+					
+					//LayoutInflater inflater = (LayoutInflater) act
+				    //            .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				    //    inflater.inflate(de.softgames.sdk.R.layout.sg_button_more_games_layout, con, true);
+				} else if(v == 1){
+					if(moregames != null) {
+						moregames.setVisibility(View.GONE);
+						moregames = null;
+					}
+				}
+			}
+		
+		});
 		
 	}
 

@@ -9,6 +9,7 @@
 extern "C"
 {
 	void Java_com_caesars_lib_CaesarsActivity_setDeviceId(JNIEnv *env, jobject thiz, jstring url);
+    void Java_org_cocos2dx_plugin_MyAds_closeAds(JNIEnv *env, jobject thiz);
 }
 #endif
 
