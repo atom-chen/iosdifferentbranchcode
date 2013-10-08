@@ -189,7 +189,6 @@ do
         bg:addChild(temp)
 	end
 	
-    --显示水晶 和 其它资源图片
 	local function updateTreasureCell(cell, scrollView, info)
 		local bg, temp = cell
         print("updateTreasureCell", cell, scrollView, json.encode(info))
@@ -266,8 +265,6 @@ do
 			scrollView:addChildTouchNode(bg, CrystalLogic.buyResource, info)
 		end
 	end
-	--购买成功资源之后 调用特别的毁掉函数 resources 里面
-    --设置资源的 info
 	local function showTreasureTab(param)
 		local infos = {}
 		local crystals = {}
@@ -335,7 +332,6 @@ do
 		showStoreTab(param)
 	end
 	
-	-- 注意：1-6的ID实际对应1\4\2\5\3\6
 	local function updateMainTabCell(cell, scrollView, info)
 		cell:removeAllChildrenWithCleanup(true)
 		local temp

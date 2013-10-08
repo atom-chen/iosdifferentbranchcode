@@ -129,6 +129,7 @@ function LoadingScene:requestSelfData(isSuc, result)
     if self.deleted then return end
     self.requesting = nil
     if isSuc then
+        print(result)
         local data = json.decode(result)
         if data.attackTime then
             if not display.isDialogShow() then

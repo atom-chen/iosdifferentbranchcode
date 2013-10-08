@@ -537,10 +537,6 @@ function MenuLayer:eventHandler(eventType, param)
                 self.warIcon:removeFromParentAndCleanup(true)
                 self.warIcon = nil
             end
-            if self.newbieIcon then
-                self.newbieIcon:removeFromParentAndCleanup(true)
-                self.newbieIcon = nil
-            end
             local temp = UI.createButton(CCSizeMake(54, 70), self.openNozomiNewspaper, {image="images/newspaperIcon.png", callbackParam=self, priority=display.MENU_BUTTON_PRI})
             screen.autoSuitable(temp, {nodeAnchor=General.anchorCenter, screenAnchor=General.anchorRight, x=-51, y=19, scaleType=screen.SCALE_NORMAL})
             self.view:addChild(temp)
@@ -559,10 +555,6 @@ function MenuLayer:eventHandler(eventType, param)
             if self.warIcon then
                 self.warIcon:removeFromParentAndCleanup(true)
                 self.warIcon = nil
-            end
-            if self.newbieIcon then
-                self.newbieIcon:removeFromParentAndCleanup(true)
-                self.newbieIcon = nil
             end
             self.videoIcon = UI.createButton(CCSizeMake(70, 73), self.openNozomiVideo, {image="images/battleEndVideo.png", callbackParam=self, priority=display.MENU_BUTTON_PRI})
             screen.autoSuitable(self.videoIcon, {nodeAnchor=General.anchorCenter, screenAnchor=General.anchorRight, x=-51, y=19, scaleType=screen.SCALE_NORMAL})
@@ -704,6 +696,9 @@ function MenuLayer:update(diff)
             curDialog = FeedbackDialog.new()
             UserSetting.setValue("feadbackDialog", UserData.level)
             self.showFeedback = nil
+        elseif UserData.showLeagueWar then
+            UserData.showLeagueWar = nil
+            curDialog = RankDialog.new()
         elseif UserData.rewards then
             local rnum = #(UserData.rewards)
             if rnum>0 then
@@ -744,21 +739,6 @@ function MenuLayer:update(diff)
         if self.warIcon then
             self.warIcon:removeFromParentAndCleanup(true)
             self.warIcon = nil
-        end
-    end
-    
-    if UserData.clan>0 then
-        if UserData.leagueWarTime and UserData.leagueWarTime > timer.getTime() then
-            if not self.newspaperIcon and not self.videoIcon and not self.warIcon and not self.newbieIcon then
-                self.newbieIcon = UI.createButton(CCSizeMake(46, 54), display.showDialog, {image="images/score.png", callbackParam=RankDialog, priority=display.MENU_BUTTON_PRI})
-                screen.autoSuitable(self.newbieIcon, {nodeAnchor=General.anchorCenter, screenAnchor=General.anchorRight, x=-51, y=19, scaleType=screen.SCALE_NORMAL})
-                self.view:addChild(self.newbieIcon)
-            end
-        else
-            if self.newbieIcon then
-                self.newbieIcon:removeFromParentAndCleanup(true)
-                self.newbieIcon = nil
-            end
         end
     end
     

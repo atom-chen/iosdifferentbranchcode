@@ -138,6 +138,15 @@ do
                 end
             end
 	    end
+	    if not BattleLogic.isGuide then
+    	    for i=1, 10 do
+    	        if costTroops[i]>1 then
+                    CCNative:showAlert(StringManager.getString("alertTitleOutsyn"), StringManager.getString("alertTextOutsyn"), 2, StringManager.getString("buttonClose"), 0, "")
+    	            return true
+    	        end
+    	    end
+	    end
+	    return false
 	end
 	
 	function SoldierLogic.deployZombies()
@@ -223,6 +232,13 @@ do
 			    table.insert(updateList,barracks[i])
 			end
 		end
+		--[[
+		for i=1, #zbarracks do
+		    if zbarracks[i].buildState~=BuildStates.STATE_BUILDING and zbarracks[i].callList and #(zbarracks[i].callList)>0 then
+			    table.insert(updateList,zbarracks[i])
+			end
+		end
+		--]]
 		local curTime = timer.getTime()
 		local callSoldier = false
 		while #updateList>0 do

@@ -1,4 +1,4 @@
-CrystalLogic = {}
+CrystalLogic = {buyAction={}}
 
 function CrystalLogic.computeCostByResource(type, value)
 	if type=="food" or type=="oil" then
@@ -68,7 +68,6 @@ end
 
 EventManager.registerEventMonitor({"EVENT_BUY_SUCCESS", "EVENT_BUY_FAIL"}, CrystalLogic.buyOver)
 
-
 --need param cost and get
 function CrystalLogic.buyCrystal(param)
     if CrystalLogic.buyObj then return end
@@ -80,6 +79,7 @@ function CrystalLogic.buyCrystal(param)
 	else
     	CrystalLogic.buyObj = param
 	    CCNative:buyProductIdentifier(CRYSTAL_PREFIX .. (param.type-1))
+	    table.insert(CrystalLogic.buyAction, param.type-1)
 	end
 end
 

@@ -19,8 +19,9 @@ function SNSDialog:ctor()
     temp = UI.createSpriteWithFile("images/featureShadow.png",CCSizeMake(192, 74))
     screen.autoSuitable(temp, {x=53, y=70})
     bg:addChild(temp)
-    temp = UI.createSpriteWithFile("images/guideNpc2.png",CCSizeMake(180, 310))
-    screen.autoSuitable(temp, {x=56, y=98})
+    temp = UI.createSpriteWithFile("images/guideNpc2.png")
+    temp:setScale(0.786)
+    screen.autoSuitable(temp, {nodeAnchor=General.anchorCenter, x=146, y=253})
     bg:addChild(temp)
     if UserData.level>2 then
         temp = UI.createButton(CCSizeMake(135, 61), self.share, {callbackParam=self, image="images/buttonGreen.png", text=StringManager.getString("buttonShare"), fontSize=26, fontName=General.font3})
@@ -35,11 +36,6 @@ function SNSDialog:ctor()
     temp = UI.createLabel(self.shareText, General.font1, 25, {colorR = 75, colorG = 66, colorB = 46, size=CCSizeMake(400, 120), align=kCCTextAlignmentLeft})
     screen.autoSuitable(temp, {x=475, y=276, nodeAnchor=General.anchorCenter})
     bg:addChild(temp)
-    --[[
-    temp = UI.createLabel(StringManager.getString("tipsNozomiEscape"), General.font1, 20, {colorR = 75, colorG = 66, colorB = 46})
-    screen.autoSuitable(temp, {x=274, y=51, nodeAnchor=General.anchorLeft})
-    bg:addChild(temp)
-    --]]
     
     temp = UI.createLabel(StringManager.getString("titleSNS"), General.font3, 30, {colorR = 255, colorG = 255, colorB = 255})
     screen.autoSuitable(temp, {x=360, y=489, nodeAnchor=General.anchorCenter})

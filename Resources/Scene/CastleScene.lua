@@ -942,7 +942,6 @@ function OperationScene:initData()
         UserData.clan = initInfo.clan
         UserData.clanInfo = initInfo.clanInfo
         UserData.memberType = initInfo.mtype
-
         AdsLogic.checkAds()
         if getParam("switchZombieOpen", 0)~=0 then
             initInfo.zombieTime = 0
@@ -961,6 +960,11 @@ function OperationScene:initData()
         end
         if initInfo.leagueWarTime then
             UserData.leagueWarTime = timer.getTime(initInfo.leagueWarTime)
+            UserData.nextLeagueWarTime = timer.getTime(initInfo.nextLeagueWarTime)
+            if UserData.clan>0 and UserSetting.getValue("leagueWarOpened")==0 then
+                UserSetting.setValue("leagueWarOpened", 1)
+                UserData.showLeagueWar = true
+            end
         end
         UserData.obstacleTime = timer.getTime(initInfo.obstacleTime)
         if getParam("switchGuideOpen", 0)~=0 then
@@ -1142,7 +1146,6 @@ function OperationScene:synData(isAsyn)
             end
             local dis = CrystalLogic.initValue
             local cl = #(CrystalLogic.changeList)
-
             if cl>0 then
                 needSyn = true
                 params.bs = CrystalLogic.initValue
@@ -1157,6 +1160,12 @@ function OperationScene:synData(isAsyn)
                 CCNative:showAlert(StringManager.getString("alertTitleOutsyn"), StringManager.getString("alertTextOutsyn"), 2, StringManager.getString("buttonClose"), 0, "")
                 self.synOver = false
                 return
+            end
+            cl = #(CrystalLogic.buyAction)
+            if cl>0 then
+                needSyn = true
+                params.bcl = json.encode(CrystalLogic.buyAction)
+                CrystalLogic.buyAction = {}
             end
             if needSyn then
                 self.synOver = false
@@ -1321,22 +1330,12 @@ function OperationScene:eventHandler(eventType, params)
             self.visitUid = params
             network.httpRequest("getData", self.visitUser, {single=true, params={uid=params}}, self)
         end
-    elseif eventType == EventManager.eventType.EVENT_INIT_ADS then
-        if AdsLogic.hasAds == 0 then
-            print("showAds")
+    elseif eventType == EventManager.eventType.EVENT_INIT_ADS then  
+        if AdsLogic.hasAds == 0 then  
             AdsLogic.showAds()
-            --[[
-            self.ads = CCNode:create()
-            self.view:addChild(self.ads) 
-            --]]
-        end
-    elseif eventType == EventManager.eventType.EVENT_NOADS then
-        print("removeAds")
+        end  
+    elseif eventType == EventManager.eventType.EVENT_NOADS then  
         AdsLogic.removeAds()
-            --[[
-            self.ads:removeFromParentAndCleanup(true)
-            self.ads = nil
-            --]]
     end
 end
 

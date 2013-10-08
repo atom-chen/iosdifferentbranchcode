@@ -7,7 +7,9 @@ local function buyAdsOver()
     EventManager.sendMessage("EVENT_NOADS")
 end
 function AdsLogic.buyAds()
-    network.httpRequest("buyAds", buyAdsOver, {params={uid=UserData.userId}}) 
+    AdsLogic.buyObj = 1
+	CCNative:buyProductIdentifier("hideAds")
+    --network.httpRequest("buyAds", buyAdsOver, {params={uid=UserData.userId}}) 
 end
 local function checkAdsOver(suc, result)
     AdsLogic.hasAds = json.decode(result)["ads"]
@@ -31,3 +33,15 @@ function AdsLogic.removeAds()
         showAdsYet = false
     end
 end
+
+function AdsLogic.buyOver(eventType)
+    if eventType==EventManager.eventType.EVENT_BUY_SUCCESS then
+        if AdsLogic.buyObj then
+        	network.httpRequest("buyAds", buyAdsOver, {params={uid=UserData.userId}}) 
+        end
+    elseif eventType==EventManager.eventType.EVENT_BUY_FAIL then
+    end
+    AdsLogic.buyObj = nil
+end
+
+EventManager.registerEventMonitor({"EVENT_BUY_SUCCESS", "EVENT_BUY_FAIL"}, AdsLogic.buyOver)

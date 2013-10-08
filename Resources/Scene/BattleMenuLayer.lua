@@ -266,7 +266,7 @@ function BattleMenuLayer:initBottom()
         --for
         table.insert(items, item)
     end
-    if BattleLogic.clanTroops and #(BattleLogic.clanTroops)>0 then
+    if BattleLogic.clanTroops and #(BattleLogic.clanTroops)>0 and UserData.clan>0 and UserData.clanInfo then
         local item = {type="clan", id=1, num=1, delegate=self}
         --for
         table.insert(items, item)
@@ -604,7 +604,7 @@ end
 function BattleMenuLayer:showEndBattleDialog()
     --ReplayLogic.makeReplayResult("battle.txt")
 	table.insert(ReplayLogic.cmdList, {timer.getTime() - ReplayLogic.beginTime, "e"})
-	self.view:removeFromParentAndCleanup(true)
+	pcall(self.view.removeFromParentAndCleanup, self.view, true)
 	display.showDialog(BattleResultDialog.new(BattleLogic.getBattleResult()), false)
 end
 
