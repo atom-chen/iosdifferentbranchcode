@@ -98,8 +98,20 @@ local function main()
 	require "Scene.LoadingScene"
 	
 	math.randomseed(os.time())
-    --default:setStringForKey("username", "liyongtestbuild11")
-    default:setStringForKey("username", "G:1250553574")
+    default:setStringForKey("username", "liyongtestbuild12")
+    --default:setStringForKey("username", "G:1250553574")
+    local t = {240, 159, 148, 164}
+    function utf8_from(t)
+        local bytearr = {}
+        for _, v in ipairs(t) do
+            local utf8byte = v < 0 and (0xff + v + 1) or v
+            table.insert(bytearr, string.char(utf8byte))
+        end
+        return table.concat(bytearr)
+    end
+    local uf = utf8_from(t)
+    print("name uf", uf)
+    default:setStringForKey("nickname", "xiaoming"..uf)
     --default:setStringForKey("username", "CA26697A-CE15-45BF-A62B-C68906568202-del")
 
     display.runScene(OperationScene.new(), LoadingScene)
