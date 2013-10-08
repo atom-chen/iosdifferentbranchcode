@@ -126,8 +126,8 @@ public class MyAds implements InterfaceAds {
 				//createLayout();
 				
 				if(sg != null) {
-					sg.setVisibility(View.GONE);
-					sg = null;
+					sg.setVisibility(View.INVISIBLE);
+					//sg = null;
 				}
 				
 			}
@@ -159,6 +159,8 @@ public class MyAds implements InterfaceAds {
 						moregames = new MoreGamesButton(mContext);
 						//con.addView(moregames, sgparam);
 						bottom.addView(moregames, sgparam);
+					} else {
+						moregames.setVisibility(View.VISIBLE);
 					}
 					
 					//LayoutInflater inflater = (LayoutInflater) act
@@ -166,8 +168,8 @@ public class MyAds implements InterfaceAds {
 				    //    inflater.inflate(de.softgames.sdk.R.layout.sg_button_more_games_layout, con, true);
 				} else if(v == 1){
 					if(moregames != null) {
-						moregames.setVisibility(View.GONE);
-						moregames = null;
+						moregames.setVisibility(View.INVISIBLE);
+						//moregames = null;
 					}
 				}
 			}

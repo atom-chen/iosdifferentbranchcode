@@ -19,6 +19,7 @@ require "Dialog.DailyDialog"
 MenuLayer = class()
 
 local function createChildMenuButton(buttonImage, buttonText, callback, callbackParam, setting)
+    
     local params = setting or {}
     local buttonBg = params.background or "images/buttonChildMenu.png"
     local but = UI.createButton(CCSizeMake(93, 91), callback, {callbackParam=callbackParam, image=buttonBg, priority=display.MENU_BUTTON_PRI})
@@ -383,6 +384,7 @@ function MenuLayer:initLeftTop()
     end
 end
 
+local waitTime = 0
 function MenuLayer:closeChildMenu()
     local n = self.childMenu
     if n then
@@ -395,11 +397,17 @@ function MenuLayer:closeChildMenu()
         end
         delayRemove(ttime, self.childMenu)
         self.childMenu = nil
+        --waitTime = waitTime+1
+        --if waitTime > 5 then
+            --waitTime = 0
+        AdsLogic.showAds()
+        --end
     end
 end
 
 function MenuLayer:showChildMenu(buildView)
     self:closeChildMenu()
+    AdsLogic.hideUI()
     local build = buildView.buildMould
     local binfo = build.buildInfo
     local bdata = build.buildData

@@ -284,8 +284,8 @@ do
     	    end
 		end
 		
-        local info = {type=7, resource="ads", cost=1, get=1, text=StringManager.getString("noAds"), img="images/storeItemNoAds.png"}
-        table.insert(infos, info)
+        --local info = {type=7, resource="ads", cost=1, get=1, text=StringManager.getString("noAds"), img="images/storeItemNoAds.png"}
+        --table.insert(infos, info)
 		
 		local types = {"food", "oil", "person"}
 		local tmap = {food="Food", oil="Oil", person="Person"}
