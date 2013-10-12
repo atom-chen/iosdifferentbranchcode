@@ -10,6 +10,6 @@ need android sdk
 
 
 测试方法:
-安装amazon的 iap测试APK
+安装amazon的 用于 iap测试APK
 在手机sd卡的 根目录位置 放置一个 商品描述的json文件
 
