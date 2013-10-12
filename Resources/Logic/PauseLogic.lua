@@ -57,6 +57,7 @@ local function pauseAndResume(event)
         --GuideLogic.releaseAll()
         isPause = true
     elseif event==EventManager.eventType.EVENT_COCOS_RESUME and isPause then
+        
         CCNative:clearLocalNotification()
         isPause = false
         local delta = os.time()-pauseTime

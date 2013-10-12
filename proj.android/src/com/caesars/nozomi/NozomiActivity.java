@@ -1,6 +1,7 @@
 package com.caesars.nozomi;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import com.tapjoy.TapjoyConnect;
 
@@ -40,6 +41,7 @@ public class NozomiActivity extends CaesarsActivity {
     protected void onResume() {
         super.onResume();
         //AdjustIo.onResume(getResources().getString(R.string.sg_adjust_token), this);
+        Log.e("TapJoy", "resume tapjoy");
         TapjoyConnect.getTapjoyConnectInstance().appResume();
     }
 }
