@@ -32,10 +32,12 @@ import com.caesars.nozomiAmz.R;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+
 import android.os.Handler;
 import android.os.Looper;
 import android.telephony.TelephonyManager;
@@ -52,6 +54,11 @@ public class CaesarsActivity extends Cocos2dxActivity{
 	
 	
 	protected void onCreate(Bundle savedInstanceState){
+		Log.e("COCOS2D_ACTIVITY", "me activity is:"+me);
+		if(me!=null){
+			finish();
+			return;
+		}
 		super.onCreate(savedInstanceState);
 		PluginWrapper.init(this); 
 		me = this;
@@ -63,6 +70,17 @@ public class CaesarsActivity extends Cocos2dxActivity{
 		PluginWrapper.setGLSurfaceView(Cocos2dxGLSurfaceView.getInstance());
 	}
 	
+	@Override
+	public Cocos2dxGLSurfaceView onCreateView() {
+    	return new LuaGLSurfaceView(this);
+    }
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		//super.onActivityResult(requestCode, resultCode, data);
+		PluginResultHelper.onActivityResult(requestCode, resultCode, data);
+	}
+	
 	public static void openURL(String url) { 
         Intent i = new Intent(Intent.ACTION_VIEW);  
         i.setData(Uri.parse(url)); 
@@ -71,29 +89,6 @@ public class CaesarsActivity extends Cocos2dxActivity{
 	
 	public static void postNotification(final int duration, final String content)
 	{
-		/*
-		final int notifyId = ++notifyNum;
-		new Handler(Looper.getMainLooper()).postDelayed(new Runnable(){
-
-			@Override
-			public void run() {
-				if(notifyId<=deleteNum)
-					return;
-				String ns = Context.NOTIFICATION_SERVICE;
-				NotificationManager mNotificationManager = (NotificationManager)me.getSystemService(ns);
-				int icon = R.drawable.icon;
-
-				long when = System.currentTimeMillis() + duration*1000; //֪ͨ�����ʱ�䣬����֪ͨ��Ϣ����ʾ
-				Notification notification = new Notification(icon, content, when);
-				notification.number = notifyId-deleteNum;
-				
-				Intent notificationIntent = new Intent(me,me.getClass()); 
-				PendingIntent contentIntent = PendingIntent.getActivity(me,0,notificationIntent,0);
-				notification.setLatestEventInfo(me.getApplicationContext(),me.getApplicationContext().getPackageManager().getApplicationLabel(me.getApplicationInfo()), content, contentIntent);
-				mNotificationManager.notify(notifyId-deleteNum, notification);
-			}
-		}, duration*1000);
-		*/
 	}
 	
 	public static void clearLocalNotification()
@@ -106,26 +101,9 @@ public class CaesarsActivity extends Cocos2dxActivity{
 		*/
 	}
 	
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		//if(requestCode == SocialFacebook.REQUEST_FACEBOOK_CODE){
-		//	SocialFacebook.onActivityResult(this, requestCode, resultCode, data);
-		//}
-		PluginResultHelper.onActivityResult(requestCode, resultCode, data);
-	}
-	
-	
-	public Cocos2dxGLSurfaceView onCreateView() {
-    	return new LuaGLSurfaceView(this);
-    }
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		Log.e("Cocos2dX", "activity back key");
-    	if (keyCode == KeyEvent.KEYCODE_BACK) {
-    		android.os.Process.killProcess(android.os.Process.myPid());
-    	}
-        return super.onKeyDown(keyCode, event);
+	public static void showAlert(String title, String content, int button1, String button1Text, int button2, String button2Text)
+	{
+		//new CSAlertView(me, title, content, button1, button1Text, button2, button2Text);
 	}
 }
 
@@ -133,15 +111,23 @@ class LuaGLSurfaceView extends Cocos2dxGLSurfaceView{
 	
 	public LuaGLSurfaceView(Context context){
 		super(context);
-		setFocusable(true);
 	}
-	
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+	@Override
+	public boolean onKeyDown(final int pKeyCode, final KeyEvent pKeyEvent) {
     	// exit program when key back is entered
-		Log.e("Cocos2dX", "back on key");
-    	if (keyCode == KeyEvent.KEYCODE_BACK) {
-    		android.os.Process.killProcess(android.os.Process.myPid());
+    	if (pKeyCode == KeyEvent.KEYCODE_BACK) {
+    		Context me = this.getContext();
+
+			Cocos2dxGLSurfaceView.getInstance().onPause();
+			Cocos2dxGLSurfaceView.getInstance().onResume();
+			/*
+    		new CSAlertView(this.getContext(), me.getString(R.string.exit_title), 
+    				me.getString(R.string.exit_content), 2, me.getString(R.string.exit_ok), 
+    				1, me.getString(R.string.exit_cancel));
+    		*/
+    		//new com.android.game.api.api.DialogInterface((Activity)me, DialogType.EXITDIALOG);
     	}
-        return super.onKeyDown(keyCode, event);
+        return super.onKeyDown(pKeyCode, pKeyEvent);
     }
 }

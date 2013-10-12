@@ -1,6 +1,7 @@
 package com.caesars.nozomi;
 
 import android.os.Bundle;
+
 import com.tapjoy.TapjoyConnect;
 
 import com.adeven.adjustio.AdjustIo;
@@ -31,14 +32,14 @@ public class NozomiActivity extends CaesarsActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        AdjustIo.onPause();
+        //AdjustIo.onPause();
         TapjoyConnect.getTapjoyConnectInstance().appPause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        AdjustIo.onResume(getResources().getString(R.string.sg_adjust_token), this);
+        //AdjustIo.onResume(getResources().getString(R.string.sg_adjust_token), this);
         TapjoyConnect.getTapjoyConnectInstance().appResume();
     }
 }
