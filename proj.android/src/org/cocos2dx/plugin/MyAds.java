@@ -23,7 +23,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import de.softgames.sdk.R;
+import com.liyong.tearcloth.R;
 import de.softgames.sdk.ui.MoreGamesButton;
 import de.softgames.sdk.ui.SGAdView;
 

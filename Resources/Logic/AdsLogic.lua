@@ -50,14 +50,17 @@ end
 function AdsLogic.buyOver(eventType)
     print("AdsLogic receiveEvent", eventType)
     if eventType==EventManager.eventType.EVENT_BUY_SUCCESS then
-        if AdsLogic.buyObj then
+        if AdsLogic.buyObj == 1 then
         	network.httpRequest("buyAds", buyAdsOver, {params={uid=UserData.userId}}) 
+            AdsLogic.buyObj = nil
         end
     elseif eventType==EventManager.eventType.EVENT_BUY_FAIL then
+        if AdsLogic.buyObj == 1 then
+            AdsLogic.buyObj = nil
+        end
     elseif eventType==EventManager.eventType.EVENT_CLOSE_ADS then
         AdsLogic.buyAds()
     end
-    AdsLogic.buyObj = nil
 end
 function AdsLogic.showMoreGames()
     MyPlugins:getInstance():sendCmd("moregames", "")

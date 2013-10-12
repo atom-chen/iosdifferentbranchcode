@@ -26,7 +26,7 @@ import org.cocos2dx.lib.Cocos2dxActivity;
 import org.cocos2dx.lib.Cocos2dxGLSurfaceView;
 import org.cocos2dx.plugin.PluginWrapper;
 
-import com.caesars.nozomi.R;
+import com.liyong.tearcloth.R;
 
 import android.app.Notification;
 import android.app.NotificationManager;

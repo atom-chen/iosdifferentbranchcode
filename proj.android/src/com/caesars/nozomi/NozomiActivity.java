@@ -5,7 +5,7 @@ import android.os.Bundle;
 import com.adeven.adjustio.AdjustIo;
 import com.caesars.lib.CaesarsActivity;
 
-import de.softgames.sdk.R;
+import com.liyong.tearcloth.R;
 
 public class NozomiActivity extends CaesarsActivity {
 

@@ -1,5 +1,5 @@
 package mysoft;
-import com.caesars.nozomi.R;
+import com.liyong.tearcloth.R;
 
 import de.softgames.sdk.SoftgamesAbstractActivity;
 import de.softgames.sdk.ui.SGAdView;
