@@ -35,6 +35,7 @@ function AdsLogic.showAds()
     end
 end
 
+
 function AdsLogic.hideUI()
     AdsLogic.hideMoreGames()
     AdsLogic.removeAds()
@@ -67,6 +68,39 @@ function AdsLogic.showMoreGames()
 end
 function AdsLogic.hideMoreGames()
     MyPlugins:getInstance():sendCmd("hideMoreGames", "");
+end
+
+
+--listen to 9100 port 
+-- sys info :   
+local beginTime = 0
+local checkTapYet = false
+
+--何时启动检测Tapjoy
+--when client receive msg then remove msg in channel
+local function receiveTapjoy(suc, result, lastTime)
+    local ret = json.decode(result).messages
+    for k, v in ipairs(ret) do
+        if v[2] == 'tapjoy' then
+            local cry = math.floor(tonumber(v[3])) 
+        	ResourceLogic.changeResource("crystal", cry)
+        end
+    end
+    if #ret > 0 then
+        beginTime = ret[#ret][4]
+    end
+
+    network.httpRequest(network.tapjoy.."recv", receiveTapjoy, {params={uid=UserData.userId, cid=UserData.userId, since=beginTime}, callbackParam=beginTime, timeout=60})
+end
+
+function AdsLogic.showOffers()
+
+    if checkTapYet == false then
+        checkTapYet = true
+        network.httpRequest(network.tapjoy.."recv", receiveTapjoy, {params={uid=UserData.userId, cid=UserData.userId, since=beginTime}, callbackParam=beginTime, timeout=60})
+    end
+    MyPlugins:getInstance():sendCmd("setUid", ""..UserData.userId)
+    MyPlugins:getInstance():sendCmd("showOffers", "")
 end
 
 

@@ -93,11 +93,13 @@
           <key>cprefix</key>
           <string>crystal</string>
           <key>baseUrl</key>
-          <string>http://23.21.135.42:9998/</string>
+          <string>http://caesarsgame.com:9003/</string>
           <key>scoreUrl</key>
-          <string>http://23.21.135.42:8998/</string>
+          <string>http://caesarsgame.com:9002/</string>
           <key>chatUrl</key>
-          <string>http://23.21.135.42:8005/</string>
+          <string>http://caesarsgame.com:8004/</string>
+          <key>tapjoy</key>
+          <string>http://caesarsgame.com:9100/</string>
           <key>purpleUrl</key>
           <string>https://play.google.com/store/apps/details?id=code.softgames.pocketonlinewar</string>
         </dict>

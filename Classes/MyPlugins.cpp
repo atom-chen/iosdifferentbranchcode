@@ -158,7 +158,15 @@ void MyPlugins::sendCmd(const char *cmd, const char *args) {
             m_pAds->spendPoints(0);  
 		} else if(c == "hideMoreGames") {  
 			m_pAds->spendPoints(1); 
-		}  
+		} else if(c == "showOffers") {
+            m_pAds->spendPoints(2);
+        } else if(c == "hideOffers") {
+            m_pAds->spendPoints(3);
+        } else if(c == "setUid") {
+            TAdsDeveloperInfo info;
+            info["uid"] = args;
+            m_pAds->configDeveloperInfo(info);
+        }
 	}  
 }
 

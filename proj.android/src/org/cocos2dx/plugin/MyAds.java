@@ -24,6 +24,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.caesars.nozomiAmz.R;
+import com.tapjoy.TapjoyConnect;
+
 import de.softgames.sdk.ui.MoreGamesButton;
 import de.softgames.sdk.ui.SGAdView;
 
@@ -35,6 +37,7 @@ public class MyAds implements InterfaceAds {
 	private LinearLayout bottom;
 	private static native void closeAds();
 	
+	public static String uid;
 	public MyAds(Context c){
 		mContext = c;
 		/*
@@ -46,7 +49,8 @@ public class MyAds implements InterfaceAds {
 	@Override
 	public void configDeveloperInfo(Hashtable<String, String> devInfo) {
 		// TODO Auto-generated method stub
-		
+		uid = devInfo.get("uid");
+		TapjoyConnect.getTapjoyConnectInstance().setUserID(uid);
 	}
 	private void createLayout() {
 		if(rl == null) {
@@ -179,6 +183,12 @@ public class MyAds implements InterfaceAds {
 						moregames.setVisibility(View.INVISIBLE);
 						//moregames = null;
 					}
+				//显示推广墙
+				} else if(v == 2){
+					TapjoyConnect.getTapjoyConnectInstance().showOffers();
+				//隐藏推广墙 tapjoy
+				} else if(v == 3) {
+					
 				}
 			}
 		
