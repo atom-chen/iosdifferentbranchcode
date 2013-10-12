@@ -1,0 +1,15 @@
+only android project add
+need android sdk
+
+添加Amazon IAP 支持
+
+
+增加库文件 inapp .jar
+增加Amazon java接口文件
+改变包名
+
+
+测试方法:
+安装amazon的 iap测试APK
+在手机sd卡的 根目录位置 放置一个 商品描述的json文件
+

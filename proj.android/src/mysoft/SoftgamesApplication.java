@@ -1,7 +1,7 @@
 package mysoft;
 
 import com.caesars.nozomi.NozomiActivity;
-import com.liyong.tearcloth.R;
+import com.caesars.nozomiAmz.R;
 
 import de.softgames.sdk.util.SGSettings;
 import android.app.Application;

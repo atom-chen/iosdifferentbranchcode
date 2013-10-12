@@ -24,9 +24,10 @@ THE SOFTWARE.
 package com.caesars.lib;
 import org.cocos2dx.lib.Cocos2dxActivity;
 import org.cocos2dx.lib.Cocos2dxGLSurfaceView;
+import org.cocos2dx.plugin.PluginResultHelper;
 import org.cocos2dx.plugin.PluginWrapper;
 
-import com.liyong.tearcloth.R;
+import com.caesars.nozomiAmz.R;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -111,6 +112,7 @@ public class CaesarsActivity extends Cocos2dxActivity{
 		//if(requestCode == SocialFacebook.REQUEST_FACEBOOK_CODE){
 		//	SocialFacebook.onActivityResult(this, requestCode, resultCode, data);
 		//}
+		PluginResultHelper.onActivityResult(requestCode, resultCode, data);
 	}
 	
 	

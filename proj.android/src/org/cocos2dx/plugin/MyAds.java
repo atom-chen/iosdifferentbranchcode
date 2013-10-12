@@ -23,7 +23,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.liyong.tearcloth.R;
+import com.caesars.nozomiAmz.R;
 import de.softgames.sdk.ui.MoreGamesButton;
 import de.softgames.sdk.ui.SGAdView;
 

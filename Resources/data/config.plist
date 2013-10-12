@@ -17,25 +17,21 @@
             <key>iap</key>
             <dict>
                 <key>name</key>
-                <string>GoogleIAB</string>
+                <string>Amazon</string>
                 <key>config</key>
                 <dict>
-                    <key>GoogleIABKey</key>
-                    <string>MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqx49w8AVd22wNK1PJPjbaCasGnGdMKGPOLw6NjwmmLyLzP26EM02wCp9H8vKtb2gfCTUj9uuU4StaHeZIs+sqN0Y5qa7sCbQtGU5nf8BKECmRNIrPZ0LVh8OBykc/12dzvaIqyjPbNCd6mXmSH55u1HCtvM/qv1NytbkO8FDyf4ik3rrrFVv5UA/htMBxq3pJMqzA+tpPsFitUVqwYV7XRbUs7UBiu35BUyI1cDB/KQE5MdHIiLLbqI1uz5ObwUE9N63Su+kzpR9hjx3zSff9RfPikmbi7YMqctZK1sTerInX+Ljj/C8LkSSzI7IIDOzpBxultjNKnRbMMYe+BgTcwIDAQAB</string>
                     <key>crystal0</key>
-                    <string>crystall1_pow</string>
+                    <string>crystal0</string>
                     <key>crystal1</key>
-                    <string>crystall2_pow</string>
+                    <string>crystal1</string>
                     <key>crystal2</key>
-                    <string>crystall3_pow</string>
+                    <string>crystal2</string>
                     <key>crystal3</key>
-                    <string>crystall4_pow</string>
+                    <string>crystal3</string>
                     <key>crystal4</key>
-                    <string>crystall5_pow</string>
+                    <string>crystal4</string>
                     <key>crystal5</key>
-                    <string>sale_crystall_pow</string>
-                    <key>hideAds</key>
-                    <string>disable_ads_pow1</string>
+                    <string>crystal5</string>
                 </dict>
             </dict>
             <key>ads</key>
