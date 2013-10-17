@@ -17,21 +17,25 @@
             <key>iap</key>
             <dict>
                 <key>name</key>
-                <string>Amazon</string>
+                <string>GoogleIAB</string>
                 <key>config</key>
                 <dict>
+                    <key>GoogleIABKey</key>
+                    <string>MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsii/8hraULfd0wAmvwc7R12KYag2zbyDLkCnMq7oXthbhRFDhKKH+/HJYPCpv8abjVbTO8r3vmWfuo/KsDAEH0A8oTI9qEGn/P4vMgd4to2vVc+30B8ymiJnY7aB5qQMXgwGO4PGeJ8Fe75dP8Wf7sFa5fFZfvl4HOJWCQ9uxNg75QkvqqfM8dm3ZEj8TRvfonAa2+jnN6ly+umpDFgQavILvFyQj+Dkpn0zJtcgcKOx3Q0GBvFo3lKRVTALECLGmkJuCZFezDTXeRO/+AAKD/vX4j9iwVPSJNA2D+3cJhTxkGENphlaYWKSCen9/9K/ZIKozJAfZ7p/7dtPsMgAnwIDAQAB</string>
                     <key>crystal0</key>
-                    <string>crystal0</string>
+                    <string>crystall1_pow</string>
                     <key>crystal1</key>
-                    <string>crystal1</string>
+                    <string>crystall2_pow</string>
                     <key>crystal2</key>
-                    <string>crystal2</string>
+                    <string>crystall3_pow</string>
                     <key>crystal3</key>
-                    <string>crystal3</string>
+                    <string>crystall4_pow</string>
                     <key>crystal4</key>
-                    <string>crystal4</string>
+                    <string>crystall5_pow</string>
                     <key>crystal5</key>
-                    <string>crystal5</string>
+                    <string>sale_crystall_pow</string>
+                    <key>hideAds</key>
+                    <string>disable_ads_pow1</string>
                 </dict>
             </dict>
             <key>ads</key>
@@ -93,13 +97,11 @@
           <key>cprefix</key>
           <string>crystal</string>
           <key>baseUrl</key>
-          <string>http://caesarsgame.com:9003/</string>
+          <string>http://23.21.135.42:9990/</string>
           <key>scoreUrl</key>
-          <string>http://caesarsgame.com:9002/</string>
+          <string>http://23.21.135.42:8998/</string>
           <key>chatUrl</key>
-          <string>http://caesarsgame.com:8004/</string>
-          <key>tapjoy</key>
-          <string>http://caesarsgame.com:9100/</string>
+          <string>http://23.21.135.42:8005/</string>
           <key>purpleUrl</key>
           <string>https://play.google.com/store/apps/details?id=code.softgames.pocketonlinewar</string>
         </dict>
