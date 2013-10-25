@@ -15,7 +15,8 @@ end
 function WeaponHelper.create(wid, wlevel, scene,seed, x, y)
     local winfo = StaticData.getWeaponInfo(wid)
     if wid==2 then
-        local weapon = MissileSplash.new(winfo.levels[wlevel].value, 71, x, y+200, x, y, winfo.range, GroupTypes.Attack, 1, wid)
+        --1000 height
+        local weapon = MissileSplash.new(winfo.levels[wlevel].value, 200, x, y+500, x, y, winfo.range, GroupTypes.Attack, 1, wid)
 	    weapon:addToScene(scene)
 	elseif wid==1 then
         local a,b,c=4253,7027,9973
@@ -26,7 +27,8 @@ function WeaponHelper.create(wid, wlevel, scene,seed, x, y)
 	        d = (a*d+b)%c
 	        local r = d/c*winfo.radius
 	        local px, py = x+r*math.cos(angle)*scene.mapGrid.sizeX, y+r*math.sin(angle)*scene.mapGrid.sizeY
-            local weapon = MissileSplash.new(winfo.levels[wlevel].value/winfo.num, 50, px, py+100, px, py, winfo.range, GroupTypes.Attack, 1, wid)
+            --missile
+            local weapon = MissileSplash.new(winfo.levels[wlevel].value/winfo.num, 100, px, py+600, px, py, winfo.range, GroupTypes.Attack, 1, wid)
     	    weapon:addToScene(scene)
 	    end
 	    scene.ground:runAction(CCRepeat:create(CCSequence:createWithTwoActions(CCCallFunc:create(addMissile),CCDelayTime:create(winfo.interval)),6))
