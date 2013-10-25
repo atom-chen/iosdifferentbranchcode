@@ -50,17 +50,15 @@ do
 				else
 					local handler = monitors[v]
 					if handler.delegate then
-						handler.callback(handler.delegate, event, eventParam)
+						pcall(handler.callback, handler.delegate, event, eventParam)
 					else
-						handler.callback(event, eventParam)
+						pcall(handler.callback, event, eventParam)
 					end
 				end
 			end
 		end
 	end
 	EventManager.sendMessage = sendMessage
-	-- 同样采用通知技术来进行C++对LUA的通讯
-	--CCNotificationCenter:sharedNotificationCenter():registerScriptObserver(sendMessage)
 	function EventManager.registerEventsToCpp(eventTypes)
 	    for _, eventType in ipairs(eventTypes) do
     	    CCNotificationCenter:sharedNotificationCenter():registerScriptObserver(CCNotificationCenter:sharedNotificationCenter(), sendMessage, eventType)

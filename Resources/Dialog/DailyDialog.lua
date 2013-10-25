@@ -1,8 +1,7 @@
 DailyDialog = class()
 
 function DailyDialog:share()
-    local text = self.shareText
-	SNS.share(text, nil, self)
+	SNS.share(SNS.shareText, nil, self)
 	UserStat.stat(UserStatType.SHARE)
 end
 
@@ -62,8 +61,7 @@ end
 VipDialog = class()
 
 function VipDialog:share()
-
-	SNS.share(StringManager.getString("shareTextVip", nil, self))
+	SNS.share(SNS.shareText, nil, self)
 	UserStat.stat(UserStatType.SHARE)
 end
 
@@ -127,7 +125,6 @@ function RewardDialog:ctor(reward, remark)
 end
 
 function RewardDialog:share()
-    local text = self.shareText
-	SNS.share(text, nil, self)
+	SNS.share(SNS.shareText, nil, self)
 	UserStat.stat(UserStatType.SHARE)
 end

@@ -21,7 +21,6 @@ local function onSendMessage(input)
         if str=="" then return end
         input:setString("")
         local function send()
-            print("message sended")
             network.httpRequest(network.chatUrl .. "send", doNothing, {params={uid=UserData.userId, cid=UserData.clan, name=UserData.userName, text=str}, timeout=30})
         end
         
@@ -36,7 +35,6 @@ local function onSendMessageGlobal(input)
     	if text~="" then
     	    input:setString("")
             local function send()
-                print("global message sended")
                 network.httpRequest(network.chatUrl .. "send", doNothing, {params={uid=UserData.userId, cid=0, name=UserData.userName, text=text}, timeout=30})
             end
             network.checkWord(text, send)
@@ -58,7 +56,6 @@ function ChatRoom.checkChat()
         ChatRoom.chatChannel = ChatRoom.chatChannel + 1
         local beginTime = (ChatRoom.beginTime or 0)
     	network.httpRequest(network.chatUrl .. "recv", ChatRoom.receiveChat, {params={uid=UserData.userId, cid=UserData.clan, since=beginTime}, callbackParam=beginTime, timeout=30})
-                print("clan chatting")
     end
     if UserData.totalCrystal>=0 then
         if ChatRoom.globalChannel>0 then
@@ -71,13 +68,11 @@ function ChatRoom.checkChat()
         ChatRoom.globalChannel = ChatRoom.globalChannel + 1
         local beginTime = (ChatRoom.globalBeginTime or 0)
     	network.httpRequest(network.chatUrl .. "recv", ChatRoom.receiveGlobalChat, {params={uid=UserData.userId, cid=0, since=beginTime}, callbackParam=beginTime, timeout=30})
-                print("global chatting")
     end
 end
 
 function ChatRoom.receiveChat(suc, result, lastTime)
     ChatRoom.chatChannel = 0
-                print("clan chated", result, lastTime)
     ChatRoom.lastChatTime = timer.getTime()
     if ChatRoom.beginTime-lastTime>0 then return end
 	if suc then
@@ -104,14 +99,26 @@ function ChatRoom.receiveChat(suc, result, lastTime)
     			        UserData.clanInfo[10] = 0
     			        UserData.clanInfo[11] = 0
     			        UserData.clanBattleEnd = winClan
+    			    elseif stype=="l" then
+    			        local linfo = json.decode(msg[3])
+    			        if linfo.k==1 and linfo.uid==UserData.userId then
+    			            display.pushNotice(UI.createNotice(StringManager.getString("noticeBeKickout"), 255))
+    			            UserData.clan = 0
+    			            UserData.clanInfo = nil
+    			            UserData.memberType = 0
+                            return EventManager.sendMessage("EVENT_JOIN_CLAN", 0)
+    			        end
     			    end
     			end
     			if stype=="l" or stype=="j" then
-    			    print(msg[3])
     			    local minfo = json.decode(msg[3])
     			    newMsg.uid = minfo.uid
     			    newMsg.name = minfo.name
-    			    newMsg.text = StringManager.getFormatString("textChatSys" .. stype, {name=minfo.name})
+    			    if stype=="l" and minfo.k==1 then
+    			        newMsg.text = StringManager.getFormatString("textChatSysk", {name=minfo.name})
+    			    else
+    			        newMsg.text = StringManager.getFormatString("textChatSys" .. stype, {name=minfo.name})
+    			    end
     			    newMsg.type = "msg"
     			    if stype=="l" then
         			    newMsg.color = {252, 7, 7}
@@ -171,7 +178,6 @@ end
 
 function ChatRoom.receiveGlobalChat(suc, result, lastTime)
     ChatRoom.globalChannel = 0
-                print("global chated", result, lastTime)
     ChatRoom.lastGlobalTime = timer.getTime()
     if ChatRoom.globalBeginTime-lastTime>0 then return end
 	if suc then
@@ -694,20 +700,25 @@ function ChatRoom.onTouchEnded(x, y)
 end
 
 function ChatRoom.showNotice()
-    if not ChatRoom.visible and not ChatRoom.deleted and ChatRoom.view then
-        local temp = UI.createSpriteWithFile("images/numIcon.png",CCSizeMake(29, 29))
-        screen.autoSuitable(temp, {nodeAnchor=General.anchorCenter, x=411, y=439})
-        if not pcall(ChatRoom.view.addChild, ChatRoom.view, temp, 0, TAG_ACTION) then
-            ChatRoom.view = nil
-            return
+    local function tempShowNotice()
+        if not ChatRoom.visible and not ChatRoom.deleted and ChatRoom.view then
+            local temp = ChatRoom.view:getChildByTag(TAG_ACTION)
+            if not temp then
+                temp = UI.createSpriteWithFile("images/numIcon.png",CCSizeMake(29, 29))
+                screen.autoSuitable(temp, {nodeAnchor=General.anchorCenter, x=411, y=439})
+                ChatRoom.view:addChild(temp, 0, TAG_ACTION)
+            end
+            local t = getParam("actionTimeButtonNotice", 400)/1000
+            local s = getParam("actionScaleButtonNotice", 120)/100
+            local n = getParam("actionNumButtonNotice", 1)
+            local array = CCArray:create()
+            array:addObject(CCEaseSineOut:create(CCScaleTo:create(t/2, s, s)))
+            array:addObject(CCEaseSineIn:create(CCScaleTo:create(t/2, 1, 1)))
+            temp:runAction(CCRepeat:create(CCSequence:create(array), n))
         end
-        local t = getParam("actionTimeButtonNotice", 400)/1000
-        local s = getParam("actionScaleButtonNotice", 120)/100
-        local n = getParam("actionNumButtonNotice", 1)
-        local array = CCArray:create()
-        array:addObject(CCEaseSineOut:create(CCScaleTo:create(t/2, s, s)))
-        array:addObject(CCEaseSineIn:create(CCScaleTo:create(t/2, 1, 1)))
-        temp:runAction(CCRepeat:create(CCSequence:create(array), n))
+    end
+    if not pcall(tempShowNotice) then
+        ChatRoom.view = nil
     end
 end
 

@@ -74,12 +74,6 @@ end
 
 -- 延时删除节点，主要用于某些显示之后不需要维持其存在，但仍需要动画完毕后才进行的自动删除
 function delayRemove(delay, node)
-	--node:retain()
-	--local function removeAndRelease()
-	--	node:removeFromParentAndCleanup(true)
-	--	node:release()
-	--end
-	--delayCallback(delay, removeAndRelease)
 	local array = CCArray:create()
 	array:addObject(CCDelayTime:create(delay))
 	array:addObject(CCCallFuncN:create(removeSelf))
@@ -184,6 +178,10 @@ function simpleRegisterButton(node, setting)
 	local callbackParam = params.callbackParam
 	local alphaTouch = params.alphaTouch
 	
+	local function pcallback()
+	    clickedCallback(callbackParam)
+	end
+	
 	local function onTouchBegan(x, y)
 		if not isTouched and isTouchInNode(layer, x, y, alphaTouch) then
 			isTouched = true
@@ -217,7 +215,7 @@ function simpleRegisterButton(node, setting)
 				buttonTouched(isTouched, node)
 			end
 			if eventType==CCTOUCHENDED then
-				clickedCallback(callbackParam)
+		        xpcall(pcallback, __G__TRACKBACK__)
 			end
 		end
 	end

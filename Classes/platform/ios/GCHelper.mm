@@ -61,6 +61,8 @@ static GCHelper* instance = nil;
             userDefault->setBoolForKey("gamecenter", true);
             userDefault->setStringForKey("nickname", [[GKLocalPlayer localPlayer].alias UTF8String]);
             NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+            [userDefaults setValue:[GKLocalPlayer localPlayer].playerID forKey:@"GCName"];
+            [userDefaults setBool:YES forKey:@"GCLogined"];
             if(![userDefaults boolForKey:@"UUIDSYN"])
             {
                 NSString* uuid = [userDefaults stringForKey:@"UUID"];
@@ -121,19 +123,25 @@ static GCHelper* instance = nil;
             {
                 NSLog(@"Error msg:%@", [error localizedDescription]);
                 NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-                [userDefaults setBool:NO forKey:@"UUIDSYN"];
-                NSString* uuid = [userDefaults stringForKey:@"UUID"];
-                if(uuid==nil)
-                {
-                    CFUUIDRef uuidRef = CFUUIDCreate(nil);
-                    CFStringRef uuidString = CFUUIDCreateString(nil, uuidRef);
-                    uuid = (NSString *)CFStringCreateCopy(NULL, uuidString);
-                    [userDefaults setObject:uuid forKey:@"UUID"];
-                    CFRelease(uuidRef);
-                    CFRelease(uuidString);
-                    [uuid autorelease];
+                if([userDefaults boolForKey:@"GCLogined"]){
+                    NSString* gcname = [userDefaults valueForKey:@"GCName"];
+                    cocos2d::CCUserDefault::sharedUserDefault()->setStringForKey("username", [gcname UTF8String]);
                 }
-                cocos2d::CCUserDefault::sharedUserDefault()->setStringForKey("tempname", [uuid UTF8String]);
+                else{
+                    [userDefaults setBool:NO forKey:@"UUIDSYN"];
+                    NSString* uuid = [userDefaults stringForKey:@"UUID"];
+                    if(uuid==nil)
+                    {
+                        CFUUIDRef uuidRef = CFUUIDCreate(nil);
+                        CFStringRef uuidString = CFUUIDCreateString(nil, uuidRef);
+                        uuid = (NSString *)CFStringCreateCopy(NULL, uuidString);
+                        [userDefaults setObject:uuid forKey:@"UUID"];
+                        CFRelease(uuidRef);
+                        CFRelease(uuidString);
+                        [uuid autorelease];
+                    }
+                    cocos2d::CCUserDefault::sharedUserDefault()->setStringForKey("tempname", [uuid UTF8String]);
+                }
                 cocos2d::CCUserDefault::sharedUserDefault()->setBoolForKey("gamecenter", false);
                 /*
                 NSString* alertText = [NSString stringWithFormat:@"If you don't use game center, your data will be lose .", [error localizedDescription]];

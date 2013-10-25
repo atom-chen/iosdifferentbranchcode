@@ -101,7 +101,7 @@ function OilFactory:showCollectAnimation(incNum)
 		blevel=8
 	end
 	local x, y = self.buildView.view:getPosition()
-	local i = math.floor(incNum*20/self.buildData.extendValue2)
+	local i = math.ceil(incNum*20/self.buildData.extendValue2)
 	local temp = UI.createWaterSplashEffect(i)
 	screen.autoSuitable(temp.view, {x=x, y=y + OIL_SETTING[blevel][3]})
 	self.buildView.scene.ground:addChild(temp.view, self.buildView.scene.SIZEY-y)

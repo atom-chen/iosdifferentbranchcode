@@ -30,7 +30,7 @@ function UpdateLogic.executeUpdate(diff)
 			table.remove(UpdateLogic.list, index)
 			delNum = delNum + 1
 		else
-			pair[2](pair[1], diff)
+			pcall(pair[2], pair[1], diff)
 		end
 	end
 	

@@ -931,6 +931,11 @@ function OperationScene:initData()
     end
     
     self.researchLevel = initInfo.researches
+    for i=11,12 do
+        if not self.researchLevel[i] then
+            self.researchLevel[i] = 1
+        end
+    end
     
     if initInfo.serverTime then
         timer.setServerTime(initInfo.serverTime)
@@ -946,9 +951,19 @@ function OperationScene:initData()
         end
         UserData.zombieShieldTime = timer.getTime(initInfo.zombieTime)
         UserData.crystal = initInfo.crystal
+        UserData.totalCrystal = initInfo.totalCrystal or 0
+        UserData.lastOffTime = timer.getTime(initInfo.lastOffTime or 0)
         CrystalLogic.initCrystal(initInfo.crystal)
         if PauseLogic.pauseBuyObj then
-            UserData.crystal = UserData.crystal + PauseLogic.pauseBuyObj.get
+                CrystalLogic.changeCrystal(PauseLogic.pauseBuyObj.get)
+            	if UserData.totalCrystal==0 then
+            	    UserData.isNewVip = true
+            	end
+            	UserData.totalCrystal = UserData.totalCrystal + PauseLogic.pauseBuyObj.get
+            	if PauseLogic.pauseBuyObj.type==6 then
+            	    UserData.lastOffTime = timer.getTime()
+            	end
+            UserStat.addCrystalLog(-1, timer.getTime(), PauseLogic.pauseBuyObj.get, PauseLogic.pauseBuyObj.type-1)
             PauseLogic.pauseBuyObj = nil
         end
         UserData.rewards = initInfo.rewards
@@ -969,8 +984,6 @@ function OperationScene:initData()
             initInfo.guide = 0
         end
         UserData.researchLevel = copyData(self.researchLevel)
-        UserData.totalCrystal = initInfo.totalCrystal or 0
-        UserData.lastOffTime = timer.getTime(initInfo.lastOffTime or 0)
         
         if initInfo.guide>=1400 then
             network.httpRequest("getBattleHistory", loadBattleHistory, {params={uid=UserData.userId}})
@@ -1167,7 +1180,6 @@ function OperationScene:synData(isAsyn)
             end
             if needSyn then
                 self.synOver = false
-                print(json.encode(params))
                 if UserData.enemyId then
                     params.eid = UserData.enemyId
                     UserData.enemyId = nil
@@ -1344,7 +1356,7 @@ end
 
 function OperationScene:checkCanBuild()
     if not GuideLogic.complete then return end
-    local checkList = {{1000, 1001, 1002}, {2000, 2001, 2002, 2003, 2005, 0}, {3000, 3001, 3002, 3003, 3004, 3005, 3006, 3007}}
+    local checkList = {{1000, 1001, 1002, 1005}, {2000, 2001, 2002, 2003, 2005, 0}, {3000, 3001, 3002, 3003, 3004, 3005, 3006, 3007}}
     local num = {0, 0, 0}
     for i=1, 3 do
         local bids = checkList[i]
@@ -1611,7 +1623,7 @@ function ReplayScene:initMenu()
 end
 
 function ReplayScene:updateLogic(diff)
-    if not self.pause then
+    if not self.pause and self.initOver then
 		UpdateLogic.executeUpdate(diff)
         self.time = (self.time or 0)+ diff
         while not self.cmdTime or self.time>self.cmdTime do
@@ -1627,6 +1639,8 @@ function ReplayScene:updateLogic(diff)
                     local zombie = Zombie.new(self.cmd[3]+10, {isFighting=true})
                     zombie:addToScene(self, {self.cmd[4], self.cmd[5]})
                     table.insert(self.soldiers, zombie)
+                elseif self.cmd[2]=="w" then
+                    WeaponHelper.create(self.cmd[3], self.cmd[6], self, ReplayLogic.randomSeed, self.cmd[4], self.cmd[5])
                 elseif self.cmd[2]=="zb" then
                     local zombieTomb = ZombieTomb.new(1004, {level=self.cmd[5]})
     			    zombieTomb:addToScene(self, {initGridX=self.cmd[3], initGridY=self.cmd[4]})

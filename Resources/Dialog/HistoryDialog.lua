@@ -177,7 +177,11 @@ local function updateHistoryCell(bg, scrollView, info)
 		cell:addChild(temp)
 		
 		if item[1]>0 then
-    		SoldierHelper.addSoldierHead(cell, item[1], 0.42)
+		    if item[1]<=10 then
+    		    SoldierHelper.addSoldierHead(cell, item[1], 0.42)
+    		elseif item[1]<=15 then
+    		    WeaponHelper.addWeaponHead(cell, item[1]-10, 0.42)
+    		end
     		temp = UI.createStar(item[3], 10, 8)
     		screen.autoSuitable(temp, {x=2, y=4})
     		cell:addChild(temp)

@@ -92,7 +92,12 @@ function BattleResultDialog:ctor(result)
 	        table.insert(items, {i, costTroops[i], UserData.researchLevel[i]})
 	    end
 	end
-	local checkSyncError = SoldierLogic.deploySoldier(costTroops)
+	for i=1, 5 do
+	    if result.costWeapons[i]>0 then
+	        table.insert(items, {i+10, result.costWeapons[i], UserData.researchLevel[i+10]})
+	    end
+	end
+	local checkSyncError = SoldierLogic.deploySoldier(costTroops) or BattleLogic.costWeapon(result.costWeapons)
 	if result.zombieDeployed then
 	    table.insert(items, {0,0})
 	    SoldierLogic.deployZombies()
@@ -100,20 +105,26 @@ function BattleResultDialog:ctor(result)
 	if result.clanDeployed then
 	    table.insert(items, {0,UserData.clanInfo[2]})
 	end
-	for i=1, 12 do
+	local len = #items
+	local bx = 454-26*len
+	for i=1, len do
 		local cell = CCNode:create()
 		cell:setContentSize(CCSizeMake(48, 63))
-		screen.autoSuitable(cell, {x=142+52*i, y=179})
+		screen.autoSuitable(cell, {x=bx+52*i, y=179})
 		bg:addChild(cell)
 		if items[i] then
 			temp = UI.createSpriteWithFile("images/dialogItemBattleResultItemB.png",CCSizeMake(48, 63))
 			screen.autoSuitable(temp, {x=0, y=0})
 			cell:addChild(temp)
 			if items[i][1]>0 then
-    			SoldierHelper.addSoldierHead(cell, items[i][1], 0.42)
-    			temp = UI.createStar(items[i][3], 11, 9)
-    			screen.autoSuitable(temp, {x=2, y=3})
-    			cell:addChild(temp)
+			    if items[i][1]<=10 then
+        			SoldierHelper.addSoldierHead(cell, items[i][1], 0.42)
+        	    elseif items[i][1]<=15 then
+        			WeaponHelper.addWeaponHead(cell, items[i][1]-10, 0.42)
+        	    end
+        		temp = UI.createStar(items[i][3], 11, 9)
+        		screen.autoSuitable(temp, {x=2, y=3})
+        		cell:addChild(temp)
     		elseif items[i][2]==0 then
     		    temp = UI.createSpriteWithFile("images/zombieTombIcon.png",CCSizeMake(24, 47))
                 screen.autoSuitable(temp, {x=12, y=3})
@@ -198,7 +209,10 @@ function BattleResultDialog:ctor(result)
 	screen.autoSuitable(temp, {x=512, y=600, nodeAnchor=General.anchorCenter})
 	bg:addChild(temp, 2)
 	temp:runAction(CCNumberTo:create(numberToTime, 0, result.percent, "", "%"))
-
+    
+    if (not BattleLogic.isReverge or BattleLogic.isLeagueBattle) and UserData.enemyId==nil then
+        checkSyncError = true
+    end
 	if not checkSyncError then
     	EventManager.sendMessage("EVENT_BATTLE_END", result)
     	
@@ -257,7 +271,6 @@ function BattleResultDialog:ctor(result)
             BattleLogic.revergeItem.revenged = true
             BattleLogic.revergeItem = nil
         else
-            assertNotEqual(UserData.enemyId, nil)
         	params.eid = UserData.enemyId
             UserData.enemyId = nil
         end
@@ -269,8 +282,8 @@ function BattleResultDialog:ctor(result)
         
         --syn score to rank
         if not BattleLogic.isLeagueBattle then
-            network.httpRequest(network.scoreUrl .. "updateScore", doNothing, {params={uid=UserData.userId, score=UserData.userScore}})
-            network.httpRequest(network.scoreUrl .. "updateScore", doNothing, {params={uid=params.eid, score=UserData.enemyScore-result.score}})
+            --network.httpRequest(network.scoreUrl .. "updateScore", doNothing, {params={uid=UserData.userId, score=UserData.userScore}})
+            --network.httpRequest(network.scoreUrl .. "updateScore", doNothing, {params={uid=params.eid, score=UserData.enemyScore-result.score}})
         else
             BattleLogic.isLeagueBattle = nil
     		UserData.shouldOpenLeagueWar = true

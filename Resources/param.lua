@@ -5,7 +5,7 @@ PARAM = {
     buildViewOffy4007=42, buildViewOffy4008=49, buildViewOffy4009=70, buildViewOffy4012=43, buildViewOffy4013=41, buildViewOffy4014=52,
     buildViewOffy4015=35, buildViewOffy4016=49, buildViewOffy4017=28, buildViewOffy4018=26,
     buildViewOffy5002=27, buildViewOffy3007=71, buildViewOffy3005=25, buildViewOffy3004=59, buildViewOffy3003=45, buildViewOffy3002=60,
-    buildViewOffy3001=71, buildViewOffy2003=26, buildViewOffy2001=65, buildViewOffy1002=68, buildViewOffy1004=132,
+    buildViewOffy3001=71, buildViewOffy2003=26, buildViewOffy2001=65, buildViewOffy1002=68, buildViewOffy1004=132,buildViewOffy1005=48,
     buildViewOffy6001=52, buildViewOffy6002=52, buildViewOffy6003=52, buildViewOffy3006=9, 
     -- db's data
     actionNumButtonNotice=3, actionScaleButtonNotice=230,
