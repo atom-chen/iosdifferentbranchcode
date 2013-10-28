@@ -55,7 +55,11 @@ function AlertDialog:ctor(title, text, setting, delegate)
     	screen.autoSuitable(temp, {x=319, y=66, nodeAnchor=General.anchorCenter})
     	bg:addChild(temp)
     end
-	temp = UI.createLabel(title, General.font3, 25, {colorR = 255, colorG = 255, colorB = 255})
+    if setting.forceTTF then
+        temp = UI.createLabel(title, General.font6, 25, {colorR = 255, colorG = 255, colorB = 255})
+    else
+        temp = UI.createLabel(title, General.font3, 25, {colorR = 255, colorG = 255, colorB = 255})
+    end
 	screen.autoSuitable(temp, {x=222, y=233, nodeAnchor=General.anchorCenter})
 	bg:addChild(temp)
 	
@@ -63,11 +67,19 @@ function AlertDialog:ctor(title, text, setting, delegate)
 	    temp = UI.createScaleSprite(setting.img,CCSizeMake(77, 90))
         screen.autoSuitable(temp, {x=102, y=158, nodeAnchor=General.anchorCenter})
         bg:addChild(temp)
-    	temp = UI.createLabel(text, General.font1, 18, {colorR = 75, colorG = 66, colorB = 46, size=CCSizeMake(340, 60)})
+        if setting.forceTTF then
+    	    temp = UI.createLabel(text, General.font5, 18, {colorR = 75, colorG = 66, colorB = 46, size=CCSizeMake(340, 60)})
+    	else
+    	    temp = UI.createLabel(text, General.font1, 18, {colorR = 75, colorG = 66, colorB = 46, size=CCSizeMake(340, 60)})
+    	end
     	screen.autoSuitable(temp, {x=268, y=167, nodeAnchor=General.anchorCenter})
     	bg:addChild(temp)
     else
-    	temp = UI.createLabel(text, General.font1, 18, {colorR = 75, colorG = 66, colorB = 46, size=CCSizeMake(386, 60)})
+        if setting.forceTTF then
+    	    temp = UI.createLabel(text, General.font5, 18, {colorR = 75, colorG = 66, colorB = 46, size=CCSizeMake(386, 60)})
+    	else
+    	    temp = UI.createLabel(text, General.font1, 18, {colorR = 75, colorG = 66, colorB = 46, size=CCSizeMake(386, 60)})
+    	end
     	screen.autoSuitable(temp, {x=222, y=167, nodeAnchor=General.anchorCenter})
     	bg:addChild(temp)
 	end

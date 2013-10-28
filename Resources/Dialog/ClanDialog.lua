@@ -405,7 +405,7 @@ end
 local function kickoutOver(suc, data, param)
     if suc and json.decode(data).code==0 then
         display.closeDialog()
-        display.pushNotice(UI.createNotice(StringManager.getFormatString("noticeSuccessKickout", {name=param[2]}),255))
+        display.pushNotice(UI.createNotice(StringManager.getFormatString("noticeSuccessKickout", {name=param[2]}),255,true))
         network.httpRequest(network.chatUrl .. "sys", doNothing, {params={cid=param[3], type="l", info=json.encode({uid=param[1],name=param[2],k=1})}})
     else
         display.pushNotice(UI.createNotice(StringManager.getString("noticeErrorKickout")))
@@ -417,7 +417,7 @@ local function kickoutClan(param)
         network.httpRequest("leaveClan", kickoutOver, {isPost=true, callbackParam=param, params={uid=param[1], cid=param[3]}})
     else
         local nparam = {param[1],param[2],param[3],true}
-        display.showDialog(AlertDialog.new(StringManager.getFormatString("alertTitleKickout", {name=param[2]}), StringManager.getFormatString("alertTextKickout", {name=param[2]}),{callback=kickoutClan, param=nparam}))
+        display.showDialog(AlertDialog.new(StringManager.getFormatString("alertTitleKickout", {name=param[2]}), StringManager.getFormatString("alertTextKickout", {name=param[2]}),{callback=kickoutClan, param=nparam,forceTTF=true}))
     end
 end
 

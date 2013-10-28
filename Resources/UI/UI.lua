@@ -404,15 +404,16 @@ do
     	return node
     end
     
-    local function createNotice(text, colorGB)
-        local isFnt = string.find(General.font3, ".fnt")
+    local function createNotice(text, colorGB, forceTTF)
+        local isFnt = (not forceTTF) and string.find(General.font3, ".fnt")
+        print("createNotice", text, colorGB,  forceTTF, isFnt)
         if isFnt then
             local scale = screen.getScalePolicy()[screen.SCALE_WIDTH_FIRST]
             local bg = createBMFontLabel(text, General.font3, 30*scale, {colorR=255, colorG=colorGB or 0, colorB=colorGB or 0, size=CCSizeMake(900*scale, 0)})
 		    screen.autoSuitable(bg, {x=General.winSize.width/2, y=General.winSize.height-160*scale, nodeAnchor=General.anchorTop})
             return bg
         else
-    	    local bg = createTTFLabel(text, General.font3, 30, {colorR=255, colorG=colorGB or 0, colorB=colorGB or 0, size=CCSizeMake(900, 0)})
+    	    local bg = createTTFLabel(text, General.font6, 30, {colorR=255, colorG=colorGB or 0, colorB=colorGB or 0, size=CCSizeMake(900, 0)})
 		    screen.autoSuitable(bg, {screenAnchor=General.anchorTop, y=-160, scaleType = screen.SCALE_WIDTH_FIRST})
     		return bg
         end
