@@ -89,14 +89,6 @@ function MenuLayer:enterBattleScene()
     if BattleLogic.checkBattleEnable(self.scene, self.enterBattleScene, self) and not network.single then
         self.scene:synData()
         UserStat.stat(UserStatType.ATTACK)
-        -- add clan troops here
-        for _, build in pairs(self.scene.builds) do
-            if build.buildData.bid == 2 then
-                BattleLogic.clanTroops = build.troops
-            elseif build.buildData.bid==1005 then
-                BattleLogic.weaponBuild = build
-            end
-        end
         display.pushScene(BattleScene.new(), PreBattleScene)
     end
 end

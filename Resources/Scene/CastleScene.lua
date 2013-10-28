@@ -405,7 +405,43 @@ function CastleScene:initBuilds()
     local bnum = #(initInfo.builds)
     local bcache = {}
     self.asynBuilds = {}
-    --按道理讲是不会有这个问题的
+    --repair build datas first
+    local b0b,b1b,bub = {}, {}, {}
+    local builderNum = 0
+    for i=1, bnum do
+        local build = initInfo.builds[i]
+        if build[3]==2004 then
+            local ext = json.decode(build[7])
+            if ext.resource==0 then
+                builderNum = builderNum + 1
+                table.insert(b0b, build)
+            else
+                table.insert(b1b, build)
+            end
+        elseif build[5]>0 then
+            builderNum = builderNum - 1
+            table.insert(bub, build)
+        end
+    end
+    if builderNum~=0 then
+        print("builderNum is " .. builderNum)
+        while builderNum>0 do
+            builderNum = builderNum-1
+            table.remove(b0b)[7] = json.encode({resource=1})
+        end
+        while builderNum<0 do
+            builderNum = builderNum+1
+            if #b1b>0 then
+                table.remove(b1b)[7] = json.encode({resource=0})
+            else
+                local b = table.remove(bub)
+                b[5]=0
+                if b[4]==0 then
+                    b[4]=1
+                end
+            end
+        end
+    end
     for i=1, bnum do
         local build = initInfo.builds[i]
         if build then
@@ -1030,16 +1066,22 @@ function OperationScene:synData(isAsyn)
             end
             local delete, update={}, {}
             local newBuilds = {}
+            local builderError = false
+            local builderNum = 0
             for i, build in pairs(self.builds) do
                 if build.deleted then
                     table.insert(deleteIndex, i)
                 else
+                    if build.buildData.bid==2004 and build.resource==0 then
+                        builderNum = builderNum+1
+                    elseif build.buildState==BuildStates.STATE_BUILDING then
+                        builderNum = builderNum-1
+                    end
                     local binfo = build:getBaseInfo()
                     binfo[1] = i
                     if not buildMap[i] then
                         build.id = i
                         table.insert(update, binfo)
-                        --table.insert(self.initInfo.builds, binfo)
                         table.insert(newBuilds, binfo)
                     else
                         if not cmpData(binfo, buildMap[i].info) then
@@ -1050,6 +1092,9 @@ function OperationScene:synData(isAsyn)
                         buildMap[i] = nil
                     end
                 end
+            end
+            if builderNum~=0 then
+                builderError = true
             end
             --删除无用的build mould
             for _, i in pairs(deleteIndex) do
@@ -1167,7 +1212,7 @@ function OperationScene:synData(isAsyn)
                 end
                 CrystalLogic.initCrystal(UserData.crystal)
             end
-            if dis~=UserData.crystal then
+            if dis~=UserData.crystal or ResourceLogic.checkResourceError() or builderError then
                 CCNative:showAlert(StringManager.getString("alertTitleOutsyn"), StringManager.getString("alertTextOutsyn"), 2, StringManager.getString("buttonClose"), 0, "")
                 self.synOver = false
                 return

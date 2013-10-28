@@ -4,7 +4,7 @@ do
 	local resourceTypes = {"oil", "food", "person", "builder"}
 	local resourceItems = {}
 	for _, resouceType in pairs(resourceTypes) do
-		resourceItems[resouceType] = {num=0, max=0, maxs={}, storages={}} 
+		resourceItems[resouceType] = {num=0, max=0, maxs={}, storages={}, base=0, changelist={}} 
 	end
 	
 	function ResourceLogic.setResourceMax(resourceType, buildIndex, max)
@@ -22,7 +22,26 @@ do
 		for i, storage in pairs(resourceItems[resourceType].storages) do
 			num = num + storage.resource
 		end
+		if resourceItems[resourceType].num~=num then
+		    resourceItems[resourceType].base = -num
+		    resourceItems[resourceType].changelist = {}
+		end
 		resourceItems[resourceType].num = num
+	end
+	
+	function ResourceLogic.checkResourceError()
+    	for _, resouceType in pairs(resourceTypes) do
+    	    local item = resourceItems[resouceType]
+    	    local cc = 0
+    	    for _, value in ipairs(item.changelist) do
+    	        cc = cc+value
+    	    end
+    	    if cc-item.base<item.num then
+    	        return true
+    	    end
+    	    item.base = -item.num
+    	    item.changelist = {}
+    	end
 	end
 	
 	function ResourceLogic.getResource(resourceType)
@@ -54,7 +73,11 @@ do
 		else
 			k = -1
 			value = -value
+			if item.num-value<0 then
+			    value = item.num
+			end
 		end
+		table.insert(item.changelist, k*value)
 		local retValue = value
 		item.num = item.num + k*value
 		for i, max in pairs(item.maxs) do

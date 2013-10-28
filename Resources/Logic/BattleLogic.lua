@@ -210,5 +210,14 @@ function BattleLogic.checkBattleEnable(scene, callback, callbackParam)
         display.showDialog(AlertDialog.new(StringManager.getString("alertTitleShield"), StringManager.getString("alertTextShield"), {callback=forceEnterBattle}))
         return false
     end
+    
+    -- add clan troops here
+    for _, build in pairs(scene.builds) do
+        if build.buildData.bid == 2 then
+            BattleLogic.clanTroops = build.troops
+        elseif build.buildData.bid==1005 then
+            BattleLogic.weaponBuild = build
+        end
+    end
     return true
 end

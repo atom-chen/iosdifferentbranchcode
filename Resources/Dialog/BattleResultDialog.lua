@@ -125,6 +125,9 @@ function BattleResultDialog:ctor(result)
         		temp = UI.createStar(items[i][3], 11, 9)
         		screen.autoSuitable(temp, {x=2, y=3})
         		cell:addChild(temp)
+    			temp = UI.createLabel("x" .. items[i][2], General.font4, 15, {colorR = 255, colorG = 121, colorB = 123})
+    			screen.autoSuitable(temp, {x=6, y=55, nodeAnchor=General.anchorLeft})
+    			cell:addChild(temp)
     		elseif items[i][2]==0 then
     		    temp = UI.createSpriteWithFile("images/zombieTombIcon.png",CCSizeMake(24, 47))
                 screen.autoSuitable(temp, {x=12, y=3})
@@ -134,9 +137,6 @@ function BattleResultDialog:ctor(result)
                 screen.autoSuitable(temp, {x=8, y=8})
                 cell:addChild(temp)
     		end
-			temp = UI.createLabel("x" .. items[i][2], General.font4, 15, {colorR = 255, colorG = 121, colorB = 123})
-			screen.autoSuitable(temp, {x=6, y=55, nodeAnchor=General.anchorLeft})
-			cell:addChild(temp)
 		else
 			temp = UI.createSpriteWithFile("images/dialogItemBattleResultItemB.png",CCSizeMake(48, 63))
 			screen.autoSuitable(temp, {x=0, y=0})
@@ -282,8 +282,8 @@ function BattleResultDialog:ctor(result)
         
         --syn score to rank
         if not BattleLogic.isLeagueBattle then
-            --network.httpRequest(network.scoreUrl .. "updateScore", doNothing, {params={uid=UserData.userId, score=UserData.userScore}})
-            --network.httpRequest(network.scoreUrl .. "updateScore", doNothing, {params={uid=params.eid, score=UserData.enemyScore-result.score}})
+            network.httpRequest(network.scoreUrl .. "updateScore", doNothing, {params={uid=UserData.userId, score=UserData.userScore}})
+            network.httpRequest(network.scoreUrl .. "updateScore", doNothing, {params={uid=params.eid, score=UserData.enemyScore-result.score}})
         else
             BattleLogic.isLeagueBattle = nil
     		UserData.shouldOpenLeagueWar = true

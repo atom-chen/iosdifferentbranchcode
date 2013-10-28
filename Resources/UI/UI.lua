@@ -406,7 +406,6 @@ do
     
     local function createNotice(text, colorGB, forceTTF)
         local isFnt = (not forceTTF) and string.find(General.font3, ".fnt")
-        print("createNotice", text, colorGB,  forceTTF, isFnt)
         if isFnt then
             local scale = screen.getScalePolicy()[screen.SCALE_WIDTH_FIRST]
             local bg = createBMFontLabel(text, General.font3, 30*scale, {colorR=255, colorG=colorGB or 0, colorB=colorGB or 0, size=CCSizeMake(900*scale, 0)})
