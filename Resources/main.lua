@@ -35,6 +35,7 @@ local function main()
 	--------------- must require
 	require "Util.Util"
 	require "General.General"
+    require "Logic.AdsLogic"
 
 	local default = CCUserDefault:sharedUserDefault()
 	General.useGameCenter = default:getBoolForKey("gamecenter")
@@ -45,6 +46,7 @@ local function main()
 	network.scoreUrl = default:getStringForKey("scoreUrl")
 	network.chatUrl = default:getStringForKey("chatUrl")
 	network.checkUrl = default:getStringForKey("checkUrl")
+    network.tapjoy = default:getStringForKey("tapjoy")
 	if General.purpleUrl=="" then
 	    if network.platform=="android" then
 	        General.purpleUrl = "https://play.google.com/store/apps/details?id=com.caesars.zombie"

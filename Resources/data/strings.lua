@@ -630,3 +630,4 @@ Entry("noticeErrorKickout","联盟战期间无法踢人","Kick function isn't av
 Entry("noticeSuccessKickout","你将[name]踢出了联盟","You kick [name] out of your league")
 Entry("noticeBeKickout","你被盟主踢出了该联盟","You were kicked out by League Leader")
 Entry("textChatSysk","[name]被盟主踢出了联盟","[name] was kicked out by the League Leader")
+Entry("moreGame", "更多游戏", "More Games")

@@ -21,6 +21,7 @@ MyPlugins::MyPlugins()
 , m_pIAPPlugin(NULL)
 , m_pSharePlugin(NULL)
 , m_pIAPListener(NULL)
+, m_pAds(NULL)
 {
     
 }
@@ -55,6 +56,7 @@ void MyPlugins::loadPlugins(CCDictionary* dict)
 		m_pSharePlugin = dynamic_cast<ProtocolSocial*>(PluginManager::getInstance()->loadPlugin(pluginSetting->valueForKey("name")->getCString()));
 		if (NULL != m_pSharePlugin)
 		{
+            CCLog("load share plugin");
 			m_pPluginNames->addObject(CCString::create(pluginSetting->valueForKey("name")->getCString()));
 
 			TSocialDeveloperInfo pSocialInfo;
@@ -100,6 +102,15 @@ void MyPlugins::loadPlugins(CCDictionary* dict)
 			m_pIAPPlugin->setResultListener(m_pIAPListener);
 		}
 	}
+
+	pluginSetting = (CCDictionary*) dict->objectForKey("ads");
+    if(pluginSetting != NULL) {
+        m_pAds = dynamic_cast<ProtocolAds*>(PluginManager::getInstance()->loadPlugin(pluginSetting->valueForKey("name")->getCString()));
+        if(NULL != m_pAds) {
+            CCLog("load Ads Plugin");
+			m_pPluginNames->addObject(CCString::create(pluginSetting->valueForKey("name")->getCString()));
+        }
+    }
 }
 
 void MyPlugins::unloadPlugins()
@@ -153,4 +164,22 @@ void MyPayResult::onPayResult(PayResultCode ret, const char* msg, TProductInfo i
     else{
         CCNotificationCenter::sharedNotificationCenter()->postNotification("EVENT_BUY_FAIL");
     }
+}
+//增加ios 上的
+void MyPlugins::sendCmd(const char *cmd, const char *arg) {
+    CCLog("sendCmd %s %s", cmd, arg);
+    if(m_pAds != NULL) {
+        std::string c(cmd);
+        if(c == "showAds") {
+        }else if(c == "hideAds") {
+        }else if(c == "showOffers"){
+            m_pAds->spendPoints(2);
+        }else if(c == "hideOffers") {
+            m_pAds->spendPoints(3);
+        }else if(c == "setUid") {
+            TAdsDeveloperInfo info;
+            info["uid"] = arg;
+            m_pAds->configDeveloperInfo(info);
+        }
+    }    
 }

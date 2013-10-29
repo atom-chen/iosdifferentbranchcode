@@ -11,6 +11,7 @@
 
 #include "ProtocolSocial.h"
 #include "ProtocolIAP.h"
+#include "ProtocolAds.h"
 #include "cocoa/CCDictionary.h"
 #include "cocoa/CCArray.h"
 
@@ -36,6 +37,7 @@ public:
     void loadPlugins(cocos2d::CCDictionary* dict);
     void share(const char* sharedText, const char* sharedImagePath);
     void pay(const char* productId);
+    void sendCmd(const char *cmd, const char *arg);
     
 private:
     MyPlugins();
@@ -48,6 +50,8 @@ private:
     MyShareResult* m_pRetListener;
 	MyPayResult* m_pIAPListener;
 	cocos2d::CCArray* m_pPluginNames;
+
+    cocos2d::plugin::ProtocolAds *m_pAds;
 };
 
 #endif //__CAESARS_MY_PLUGINS_H__

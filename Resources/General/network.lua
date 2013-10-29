@@ -36,36 +36,47 @@ network.httpRequest = function (url, callback, setting, delegate)
 	    network.single = true
 	end
 	local request = nil
+    local noRetry = setting.noRetry
 	local function httpOver(isSuc)
 		if not isSuc then
 		    local retry = setting.retry or 0
 		    if retry>2 then
-    			print("HTTP Canceled")
-    			EventManager.sendMessage("EVENT_NETWORK_OFF")
+    			print("HTTP Canceled 超时不要报错", url, json.encode(setting))
+    			--EventManager.sendMessage("EVENT_NETWORK_OFF")
 				if delegate then
-					callback(delegate, false, nil, setting.callbackParam)
+					callback(delegate, false, nil, setting.callbackParam, request)
 				else
-					callback(false, nil, setting.callbackParam)
+					callback(false, nil, setting.callbackParam, request)
 				end
     	    else
     	        setting.retry = retry + 1
-    	        network.httpRequest(url, callback, setting, delegate)
+                --如何避免两个请求？
+                print("retry request", url, json.encode(setting))
+                if noRetry then
+                    if delegate then
+                        callback(delegate, false, nil, setting.callbackParam, request)
+                    else
+                        callback(false, nil, setting.callbackParam, request)
+                    end
+                else
+    	            network.httpRequest(url, callback, setting, delegate)
+                end
     	    end
 		else
 			local hcode = request:getResponseStatusCode()
 			if hcode==200 then
 				local responseStr = request:getResponseString()
 				if delegate then
-					callback(delegate, true, responseStr, setting.callbackParam)
+					callback(delegate, true, responseStr, setting.callbackParam, request)
 				else
-					callback(true, responseStr, setting.callbackParam)
+					callback(true, responseStr, setting.callbackParam, request)
 				end
 			else
 				print("HTTP Failed " .. hcode)
 				if delegate then
-					callback(delegate, false, nil, setting.callbackParam)
+					callback(delegate, false, nil, setting.callbackParam, request)
 				else
-					callback(false, nil, setting.callbackParam)
+					callback(false, nil, setting.callbackParam, request)
 				end
     			EventManager.sendMessage("EVENT_NETWORK_OFF")
 			end

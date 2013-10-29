@@ -105,6 +105,9 @@ end
 local function showGameCenterAchievements()
 	CCNative:showAchievements()
 end
+local function showMoreGame()
+    AdsLogic.showOffers()
+end
 
 function AchievementDialog.show()
     local temp, bg = nil
@@ -157,6 +160,11 @@ function AchievementDialog.show()
         local w = temp:getContentSize().width * temp:getScaleX() + buttonW/2
         temp = UI.createButton(CCSizeMake(buttonW, 42), showGameCenterAchievements, {image="images/buttonGreen.png", fontSize=18, fontName=General.font3, text=StringManager.getString("buttonAchievementsMore")})
         screen.autoSuitable(temp, {x=610-w, y=55, nodeAnchor=General.anchorCenter})
+        bg:addChild(temp)
+
+
+        temp = UI.createButton(CCSizeMake(buttonW, 42), showMoreGame, {image="images/buttonGreen.png", fontSize=18, fontName=General.font3, text=StringManager.getString("moreGame")})
+        screen.autoSuitable(temp, {x=610+120-w, y=55, nodeAnchor=General.anchorCenter})
         bg:addChild(temp)
     end
     
