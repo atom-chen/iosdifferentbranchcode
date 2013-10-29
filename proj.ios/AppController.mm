@@ -30,6 +30,7 @@
 #import "RootViewController.h"
 
 #import "platform/ios/GCHelper.h"
+#include <Tapjoy/Tapjoy.h>
 
 @implementation AppController
 
@@ -78,9 +79,13 @@ static AppDelegate s_sharedApplication;
     [[UIApplication sharedApplication] setStatusBarHidden: YES];
     [[GCHelper sharedGameCenter] authenticateLocalUser:viewController];
     
+    [Tapjoy requestTapjoyConnect:@"fbcade92-d386-49fb-993c-8e61e5253274" secretKey:@"VEXFiWnRw3jxbNCs2oNY"];
+    
     NSString *country = [[NSLocale currentLocale] objectForKey:NSLocaleCountryCode];
     cocos2d::CCUserDefault::sharedUserDefault()->setStringForKey("country", [country UTF8String]);
     cocos2d::CCApplication::sharedApplication()->run();
+    
+    
     return YES;
 }
 
