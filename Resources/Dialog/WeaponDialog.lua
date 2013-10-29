@@ -1,5 +1,6 @@
 WeaponDialog = {}
 
+
 do
 	local showMainTab
 	
@@ -122,6 +123,7 @@ do
 	local function callSoldier(param)
 		local wid = param.wid
 		local build = param.build
+		if wid>2 then return false end
 		build:callWeapon(wid)
 	end
 	
@@ -272,12 +274,20 @@ do
 			soldierButtons[i] = soldierButton
 			
 			if i>build.buildLevel then
-				temp =  UI.createLabel(StringManager.getFormatString("needLevel", {level=i, name=StringManager.getString("dataBuildName" .. build.buildData.bid)}), General.font2, 15, {size=CCSizeMake(67, 49)})
-				screen.autoSuitable(temp, {x=59, y=37, nodeAnchor=General.anchorCenter})
-				soldierButton:addChild(temp)
 				
+				if i<=2 then
+    			    local head = WeaponHelper.addWeaponHead(soldierButton, i, 1)
+				    head:setOpacity(204)
+			
+        			temp = UI.createButton(CCSizeMake(30, 30), showSoldierTab, {image="images/dialogItemButtonInfo.png", callbackParam={bg=bg, wid=i,build=build}}) --, useExtendNode=true
+        			screen.autoSuitable(temp, {nodeAnchor=General.anchorCenter, x=95, y=94})
+        			soldierButton:addChild(temp)
+        			
+    				temp =  UI.createLabel(StringManager.getFormatString("needLevel", {level=i, name=StringManager.getString("dataBuildName" .. build.buildData.bid)}), General.font2, 15, {size=CCSizeMake(67, 80)})
+    				screen.autoSuitable(temp, {x=59, y=42, nodeAnchor=General.anchorCenter})
+    				soldierButton:addChild(temp)
+				end
 				soldierButton:setSatOffset(-100, true)
-				--head:setOpacity(204)
 			else
 			
 			    local head = WeaponHelper.addWeaponHead(soldierButton, i, 1)
