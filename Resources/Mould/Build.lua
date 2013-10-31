@@ -31,6 +31,7 @@ require "Mould.Build.Wall"
 require "Mould.Build.Obstacle"
 require "Mould.Build.Trap"
 require "Mould.Build.Dector"
+require "Mould.Build.WeaponBase"
 
 do	
 	local num_cache = {}
@@ -93,7 +94,7 @@ do
 	
 	pluginMap={[2000]={OilFactory, "oil"}, [2002]={FoodFactory, "food"},
 				[2001]={OilStorage, "oil"}, [2003]={FoodStorage, "food"}, [2004]={BuilderRoom, "builder"}, [2005]={House, "person"}, [2006]={SpecialStorage, "food"}, 
-				[1000]={Camp}, [1001]={Barrack}, [1002]={Laboratory}, [1003]={ZombieBarrack},[1004]={ZombieCamp},
+				[1000]={Camp}, [1001]={Barrack}, [1002]={Laboratory}, [1003]={ZombieBarrack},[1004]={ZombieCamp},[1005]={WeaponBase},
 				[3000]={Cannon}, [3001]={ArcherTower}, [3002]={Mortar}, [3003]={WizardTower}, [3004]={AirDefense}, [3005]={Hidden}, [3007]={Xbow}, 
 				[3006]={Wall},
 				[4000]={Obstacle}, [4001]={Obstacle}, [4002]={Obstacle}, [4003]={Obstacle}, [4004]={Obstacle}, [4005]={Obstacle}, [4006]={Obstacle}, [4007]={Obstacle}, [4008]={Obstacle}, [4009]={Obstacle}, [4010]={Obstacle}, [4011]={Obstacle}, [4012]={Obstacle}, [4013]={Obstacle}, [4014]={Obstacle}, [4015]={Obstacle}, [4016]={Obstacle}, [4017]={Obstacle}, [4018]={Obstacle}, 

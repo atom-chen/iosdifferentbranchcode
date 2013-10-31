@@ -4,6 +4,7 @@ function UI.registerAsProcess(filler, fillerTable)
 	fillerTable.baseY = origin.y
 	fillerTable.baseW = size.width
 	fillerTable.baseH = size.height
+	fillerTable.width = -1
 end
 
 function UI.setProcess(filler, fillerTable, bl, reverse)
@@ -200,10 +201,19 @@ function UI.showVisitControl(param)
     temp = UI.createButton(CCSizeMake(128, 58), EventManager.sendMessageCallback, {callbackParam={event="EVENT_VISIT_USER", eventParam=param.uid}, image="images/buttonGreen.png", text=StringManager.getString("buttonVisit"), fontSize=25, fontName=General.font3, priority=display.DIALOG_BUTTON_PRI-2})
     screen.autoSuitable(temp, {x=108, y=215, nodeAnchor=General.anchorCenter})
     visitBg:addChild(temp)
+    
+    if param.others then
+        for i=1, #(param.others) do
+            local item = param.others[i]
+            temp = UI.createButton(CCSizeMake(128, 58), item.callback, {callbackParam=item.callbackParam, image="images/buttonGreen.png", text=item.text, fontSize=25, fontName=General.font3, priority=display.DIALOG_BUTTON_PRI-2})
+            screen.autoSuitable(temp, {x=108, y=215-i*63, nodeAnchor=General.anchorCenter})
+            visitBg:addChild(temp)
+        end
+    end
 end
 
-function UI.registerVisitIcon(cell, scrollView, dialogBack, visitUid, visitIcon)
-    local item = {bg=dialogBack, icon=visitIcon or cell, uid=visitUid}
+function UI.registerVisitIcon(cell, scrollView, dialogBack, visitUid, visitIcon, others)
+    local item = {bg=dialogBack, icon=visitIcon or cell, uid=visitUid, others=others}
     scrollView:addChildTouchNode(cell, UI.showVisitControl, item, {nodeChangeHandler=doNothing, priority=display.DIALOG_BUTTON_PRI})
     scrollView.moveCallback = UI.closeVisitControl
     scrollView.moveCallbackDelegate = dialogBack

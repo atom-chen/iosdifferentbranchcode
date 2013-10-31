@@ -13,16 +13,18 @@ function UI.updateScrollItemStyle1(bg, scrollView, info)
             screen.autoSuitable(temp, {nodeAnchor=General.anchorCenter, x=37, y=46})
             bg:addChild(temp)
         end
-        if info.num then
-            if info.level then
-                temp = UI.createStar(info.level, 15, 13)
-                screen.autoSuitable(temp, {x=3, y=6})
-                bg:addChild(temp)
-            end
-            temp = UI.createLabel("x" .. info.num, General.font4, 18, {colorR = 255, colorG = 255, colorB = 255})
-            screen.autoSuitable(temp, {x=37, y=81, nodeAnchor=General.anchorCenter})
+    elseif info.wid then
+        WeaponHelper.addWeaponHead(bg, info.wid, 0.64)
+    end
+    if info.num then
+        if info.level then
+            temp = UI.createStar(info.level, 15, 13)
+            screen.autoSuitable(temp, {x=3, y=6})
             bg:addChild(temp)
         end
+        temp = UI.createLabel("x" .. info.num, General.font4, 18, {colorR = 255, colorG = 255, colorB = 255})
+        screen.autoSuitable(temp, {x=37, y=81, nodeAnchor=General.anchorCenter})
+        bg:addChild(temp)
     end
 end
 

@@ -12,8 +12,6 @@ function LoadingScene:ctor(fromScene, toScene)
     
     CCTextureCache:sharedTextureCache():removeTextureForKey("images/loadingBack.png")
     
-    --temp = UI.createSpriteWithFile("images/loadingTitle.png")
-    --screen.autoSuitable(temp, {screenAnchor=General.anchorTop, scaleType=screen.SCALE_NORMAL, x=-22, y=63})
     temp = UI.createSpriteWithFile("images/loadingTitle.png")
     screen.autoSuitable(temp, {screenAnchor=General.anchorTop, scaleType=screen.SCALE_NORMAL, x=-12, y=33})
     bg:addChild(temp)
@@ -85,6 +83,25 @@ function LoadingScene:requestData()
             params.check=1
             params.country = default:getStringForKey("localCountry")
         end
+        if PauseLogic.pauseBuyObj then
+            params.lastbuy = PauseLogic.pauseBuyObj.get
+            params.lastbase = PauseLogic.pauseBuyObj.base
+            params.lasttype = PauseLogic.pauseBuyObj.type
+            --[[
+                --if initInfo.baseCrystal==PauseLogic.pauseBuyObj.base then
+                    CrystalLogic.changeCrystal(PauseLogic.pauseBuyObj.get)
+                	if UserData.totalCrystal==0 then
+                	    UserData.isNewVip = true
+                	end
+                	UserData.totalCrystal = UserData.totalCrystal + PauseLogic.pauseBuyObj.get
+                	if PauseLogic.pauseBuyObj.type==6 then
+                	    UserData.lastOffTime = timer.getTime()
+                	end
+                --end
+                UserStat.addCrystalLog(-1, timer.getTime(), PauseLogic.pauseBuyObj.get, PauseLogic.pauseBuyObj.type-1)
+                PauseLogic.pauseBuyObj = nil
+            --]]
+        end
         network.httpRequest("getData", self.requestSelfData, {params=params}, self)
     end
 end
@@ -129,7 +146,6 @@ function LoadingScene:requestSelfData(isSuc, result)
     if self.deleted then return end
     self.requesting = nil
     if isSuc then
-        print(result)
         local data = json.decode(result)
         if data.attackTime then
             if not display.isDialogShow() then
@@ -155,6 +171,9 @@ function LoadingScene:requestSelfData(isSuc, result)
             end
             self.loadMax = self.loadMax+30
             self.toScene.initInfo = data
+            if PauseLogic.pauseBuyObj and data.lastsynover then
+                PauseLogic.pauseBuyObj = nil
+            end
         end
     end
 end

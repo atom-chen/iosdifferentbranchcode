@@ -185,7 +185,7 @@ do
 	end
 	
 	function display.pushScene(scene, delegate)
-	    if display.isSceneChange then return end
+	    if display.isSceneChange or #sceneStack>=2 then return end
 	    changeScene(sceneStack[#sceneStack], scene, delegate)
 	    sceneStack[1 + #sceneStack] = scene
 	end

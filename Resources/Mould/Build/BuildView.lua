@@ -809,6 +809,9 @@ end
 function BuildView:updateTimeProcess()
 	local leftTime = squeeze(self.timeProcess.endTime - timer.getTime(), 0, self.timeProcess.totalTime)
 	local labelText = StringManager.getTimeString(leftTime)
+	if labelText==StringManager.getString("none") then
+	    labelText = "0s"
+	end
 	if labelText~=self.timeProcess.labelText then
 		self.timeProcess.labelText = labelText
 		self.timeProcess.timeLabel:setString(labelText)

@@ -1,8 +1,7 @@
 SNSDialog = class()
 
 function SNSDialog:share()
-    local text = self.shareText
-	SNS.share(text, nil, self)
+	SNS.share(SNS.shareText, nil, self, 10)
 	UserStat.stat(UserStatType.SHARE)
 end
 
@@ -34,7 +33,13 @@ function SNSDialog:ctor()
     end
     self.shareText = StringManager.getFormatString("labelShareNozomi", {level=UserData.level})
     temp = UI.createLabel(self.shareText, General.font1, 25, {colorR = 75, colorG = 66, colorB = 46, size=CCSizeMake(400, 120), align=kCCTextAlignmentLeft})
-    screen.autoSuitable(temp, {x=475, y=276, nodeAnchor=General.anchorCenter})
+    screen.autoSuitable(temp, {x=475, y=311, nodeAnchor=General.anchorCenter})
+    bg:addChild(temp)
+    local s = temp:getScaleY()
+    local disy = temp:getContentSize().height * s
+    temp = UI.createLabel(StringManager.getFormatString("labelShareReward", {crystal=10}), General.font1, 25, {colorr=239, colorG=26, colorB=66, size=CCSizeMake(400, 80), align=kCCTextAlignmentLeft})
+    screen.autoSuitable(temp, {x=475, y=281-disy/2, nodeAnchor=General.anchorCenter})
+    temp:setScale(s)
     bg:addChild(temp)
     
     temp = UI.createLabel(StringManager.getString("titleSNS"), General.font3, 30, {colorR = 255, colorG = 255, colorB = 255})
