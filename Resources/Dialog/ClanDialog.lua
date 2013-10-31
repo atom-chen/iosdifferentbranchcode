@@ -140,7 +140,7 @@ function ClanDialog:createLeagueOver(suc, result)
             end
             EventManager.sendMessage("EVENT_JOIN_CLAN", UserData.clan)
         else
-            UserDat.clan = data.info[1]
+            UserData.clan = data.info[1]
             display.pushNotice(UI.createNotice(StringManager.getString("noticeCreateLeagueError")))
         end
     end
