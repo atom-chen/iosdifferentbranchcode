@@ -27,7 +27,7 @@ public class SoftgamesApplication extends Application {
          * game
          */
         SGSettings.setTeaserImage(getResources().getDrawable(
-                R.drawable.downloadicon));
+                R.drawable.icon540));
 
         /*
          * Set the name of the game.

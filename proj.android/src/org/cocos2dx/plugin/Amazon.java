@@ -12,6 +12,7 @@ import android.util.Log;
 
 import com.amazon.inapp.purchasing.BasePurchasingObserver;
 import com.amazon.inapp.purchasing.PurchasingManager;
+
 import com.liyong.iap.AmazonIAP;
 
 public class Amazon  implements InterfaceIAP{
@@ -31,6 +32,7 @@ public class Amazon  implements InterfaceIAP{
 			} else if(resultCode == Activity.RESULT_CANCELED) {
 				if(data!=null && !data.getBooleanExtra("available", true))
 				{
+					/*
 					AlertDialog alert = new AlertDialog.Builder(mContext)
 					.setTitle(R.string.pay_not_available_title)
 					.setMessage(R.string.pay_not_available_message)
@@ -38,6 +40,7 @@ public class Amazon  implements InterfaceIAP{
 					.create();
 					alert.show();
 					IAPWrapper.onPayResult(mAdapter, IAPWrapper.PAYRESULT_FAIL, "Amazon not available!");
+					*/
 				}
 				else
 				{

@@ -12,35 +12,35 @@ public final class R {
 		public static final int sg_anim_slide_out = 0x7f040001;
 	}
 	public static final class bool {
-		public static final int ga_autoActivityTracking = 0x7f070000;
-		public static final int ga_reportUncaughtExceptions = 0x7f070001;
+		public static final int ga_autoActivityTracking = 0x7f080000;
+		public static final int ga_reportUncaughtExceptions = 0x7f080001;
 	}
 	public static final class dimen {
-		public static final int sg_notification_large_icon_height = 0x7f080001;
-		public static final int sg_notification_large_icon_width = 0x7f080000;
+		public static final int sg_notification_large_icon_height = 0x7f050003;
+		public static final int sg_notification_large_icon_width = 0x7f050002;
 	}
 	public static final class drawable {
-		public static final int sg_bg_darktransparent = 0x7f020003;
-		public static final int sg_bg_dialog = 0x7f020004;
-		public static final int sg_bg_xpromo = 0x7f020005;
-		public static final int sg_button_close_dialog = 0x7f020006;
-		public static final int sg_button_close_dialog_pressed = 0x7f020007;
-		public static final int sg_button_close_dialog_selector = 0x7f020008;
-		public static final int sg_button_more_games = 0x7f020009;
-		public static final int sg_button_more_games_pressed = 0x7f02000a;
-		public static final int sg_button_more_games_selector = 0x7f02000b;
-		public static final int sg_button_more_pressed = 0x7f02000c;
-		public static final int sg_button_no_ads = 0x7f02000d;
-		public static final int sg_button_play = 0x7f02000e;
-		public static final int sg_button_play_pressed = 0x7f02000f;
-		public static final int sg_button_play_selector = 0x7f020010;
-		public static final int sg_dialog_more_games_logo = 0x7f020011;
-		public static final int sg_gradient_dialog_title = 0x7f020012;
-		public static final int sg_gradient_divider = 0x7f020013;
-		public static final int sg_ic_notify_msg = 0x7f020014;
-		public static final int sg_ticker_new_games = 0x7f020015;
-		public static final int sg_xpromo_pattern_bg = 0x7f020016;
-		public static final int sg_xpromo_teaser = 0x7f020017;
+		public static final int sg_bg_darktransparent = 0x7f020004;
+		public static final int sg_bg_dialog = 0x7f020005;
+		public static final int sg_bg_xpromo = 0x7f020006;
+		public static final int sg_button_close_dialog = 0x7f020007;
+		public static final int sg_button_close_dialog_pressed = 0x7f020008;
+		public static final int sg_button_close_dialog_selector = 0x7f020009;
+		public static final int sg_button_more_games = 0x7f02000a;
+		public static final int sg_button_more_games_pressed = 0x7f02000b;
+		public static final int sg_button_more_games_selector = 0x7f02000c;
+		public static final int sg_button_more_pressed = 0x7f02000d;
+		public static final int sg_button_no_ads = 0x7f02000e;
+		public static final int sg_button_play = 0x7f02000f;
+		public static final int sg_button_play_pressed = 0x7f020010;
+		public static final int sg_button_play_selector = 0x7f020011;
+		public static final int sg_dialog_more_games_logo = 0x7f020012;
+		public static final int sg_gradient_dialog_title = 0x7f020013;
+		public static final int sg_gradient_divider = 0x7f020014;
+		public static final int sg_ic_notify_msg = 0x7f020015;
+		public static final int sg_ticker_new_games = 0x7f020016;
+		public static final int sg_xpromo_pattern_bg = 0x7f020017;
+		public static final int sg_xpromo_teaser = 0x7f020018;
 	}
 	public static final class id {
 		public static final int admobView = 0x7f0a000a;
@@ -61,38 +61,38 @@ public final class R {
 		public static final int xpromo = 0x7f0a0009;
 	}
 	public static final class layout {
-		public static final int sg_activity_xpromotion = 0x7f030000;
-		public static final int sg_ads_layout = 0x7f030001;
-		public static final int sg_bg_darktransparent = 0x7f030002;
-		public static final int sg_button_more_games_layout = 0x7f030003;
-		public static final int sg_dialog_more_games = 0x7f030004;
-		public static final int sg_master_layout = 0x7f030005;
+		public static final int sg_activity_xpromotion = 0x7f030001;
+		public static final int sg_ads_layout = 0x7f030002;
+		public static final int sg_bg_darktransparent = 0x7f030003;
+		public static final int sg_button_more_games_layout = 0x7f030004;
+		public static final int sg_dialog_more_games = 0x7f030005;
+		public static final int sg_master_layout = 0x7f030006;
 	}
 	public static final class plurals {
 		public static final int sg_server_register_error = 0x7f090000;
 	}
 	public static final class string {
-		public static final int app_name = 0x7f050000;
-		public static final int ga_trackingId = 0x7f050004;
-		public static final int sg_adjust_token = 0x7f050007;
-		public static final int sg_admob_key = 0x7f050006;
-		public static final int sg_app_name = 0x7f050005;
-		public static final int sg_button_exit = 0x7f05000d;
-		public static final int sg_button_play = 0x7f05000e;
-		public static final int sg_button_retry = 0x7f05000c;
-		public static final int sg_more_games_title = 0x7f05000f;
-		public static final int sg_offline_retry_msg = 0x7f05000b;
-		public static final int sg_zoneLoadingId = 0x7f050008;
-		public static final int sg_zoneMoreGameButtonId = 0x7f05000a;
-		public static final int sg_zoneXpromoId = 0x7f050009;
+		public static final int app_name = 0x7f070001;
+		public static final int ga_trackingId = 0x7f070000;
+		public static final int sg_adjust_token = 0x7f070004;
+		public static final int sg_admob_key = 0x7f070003;
+		public static final int sg_app_name = 0x7f070002;
+		public static final int sg_button_exit = 0x7f07000a;
+		public static final int sg_button_play = 0x7f07000b;
+		public static final int sg_button_retry = 0x7f070009;
+		public static final int sg_more_games_title = 0x7f07000c;
+		public static final int sg_offline_retry_msg = 0x7f070008;
+		public static final int sg_zoneLoadingId = 0x7f070005;
+		public static final int sg_zoneMoreGameButtonId = 0x7f070007;
+		public static final int sg_zoneXpromoId = 0x7f070006;
 	}
 	public static final class style {
-		public static final int SGDialogTitleText = 0x7f060008;
-		public static final int SGDivider = 0x7f060005;
-		public static final int SGMoreGamesDialog = 0x7f060006;
-		public static final int SGMoreGamesDialogAnimation = 0x7f060007;
-		public static final int SGText = 0x7f060002;
-		public static final int SGText_Button = 0x7f060004;
-		public static final int SGText_Divider = 0x7f060003;
+		public static final int SGDialogTitleText = 0x7f060009;
+		public static final int SGDivider = 0x7f060006;
+		public static final int SGMoreGamesDialog = 0x7f060007;
+		public static final int SGMoreGamesDialogAnimation = 0x7f060008;
+		public static final int SGText = 0x7f060003;
+		public static final int SGText_Button = 0x7f060005;
+		public static final int SGText_Divider = 0x7f060004;
 	}
 }
