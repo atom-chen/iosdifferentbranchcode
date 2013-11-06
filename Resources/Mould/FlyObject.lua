@@ -390,7 +390,7 @@ function LaserShot2:update(diff)
 	diff = diff * (self.scene.speed or 1)
 	local stateTime = self.stateTime + diff
 	local state = self.state
-	if stateTime >= self.time[state] then
+	if self.time[state] and stateTime >= self.time[state] then
 		self.state = state+1
 		stateTime = stateTime - self.time[state]
 		if state==1 then
@@ -668,7 +668,6 @@ function AreaSplash:executeDamage()
 				if not enemy.deleted and enemy.info.unitType<=self.unitType then
 					local x, y = enemy.view:getPosition()
 					local dis = self.scene.mapGrid:getGridDistance(self.targetPos[1]-x, self.targetPos[2]-y)
-					--print(dis, self.damageRange)
 					if dis < self.damageRange then
 						enemy:damage(self.attackValue)
 					    --num=num+1
@@ -866,6 +865,91 @@ function BalloonSplash:resetView()
 		simpleRegisterEvent(self.view, {update={inteval=self.time[2], callback=self.update}}, self)
 		self.scene.sky:addChild(self.view)
 		
+	end
+end
+
+MissileSplash = class(AreaSplash)
+
+function MissileSplash:ctor(attackValue, speed, x, y, targetX, targetY, damageRange, group, unitType, weaponId)
+    self.weaponId = weaponId
+	
+	local frame = CCSpriteFrameCache:sharedSpriteFrameCache():spriteFrameByName("balloon1_1.png")
+	if not frame then
+        CCSpriteFrameCache:sharedSpriteFrameCache():addSpriteFramesWithFile("animate/effects/balloonAttack.plist")
+    end
+end
+
+
+function MissileSplash:update(diff)
+	diff = diff * (self.scene.speed or 1)
+	local stateTime = self.stateTime + diff
+	local state = self.state
+	if self.time[state] and stateTime >= self.time[state] then
+		self.state = state+1
+		stateTime = stateTime - self.time[state]
+		self.view:removeFromParentAndCleanup(true)
+		if state==1 then
+			self:executeDamage()
+			self:resetView()
+		end
+	end
+	self.stateTime = stateTime
+end
+
+function MissileSplash:initView()
+	local distance = self.scene.mapGrid:getGridDistance(0, self.targetPos[2]-self.initPos[2])
+	self.time = {distance*10/self.speed, 1.4}
+	self.state = 1
+	self:resetView()
+end
+
+function MissileSplash:resetView()
+	if self.state==1 then
+		local oy = self.targetPos[2] - self.initPos[2]
+		
+		self.view = UI.createSpriteWithFile("images/flyweapon" .. self.weaponId .. ".png")
+		local flame = UI.createAnimateWithSpritesheet(getParam("flameActionTime", 1000)/1000, "flame_", 19, {plist="animate/builder/flame.plist"})
+		flame:setRotation(180)
+		if self.weaponId==1 then
+		    screen.autoSuitable(flame, {nodeAnchor=General.anchorTop, x=30, y=96})
+		    self.view:addChild(flame,-1)
+		    self.view:setScale(0.6)
+		elseif self.weaponId==2 then
+		    screen.autoSuitable(flame, {nodeAnchor=General.anchorTop, x=39, y=124})
+		    self.view:addChild(flame)
+		    self.view:setScale(0.8)
+		end
+		screen.autoSuitable(self.view, {nodeAnchor=General.anchorBottom, x=self.initPos[1], y=self.initPos[2]})
+		
+		self.view:runAction(CCEaseIn:create(CCMoveBy:create(self.time[1], CCPointMake(0, oy)), 2))
+		
+		simpleRegisterEvent(self.view, {update={inteval=self.time[1], callback=self.update}}, self)
+		self.scene.sky:addChild(self.view)
+	elseif self.state==2 then
+		local sc = 1
+		if self.weaponId==2 then
+		    sc=1.5
+		end
+		local temp = UI.createAnimateWithSpritesheet(self.time[2], "bombNormal_", 13, {plist="animate/effects/normalEffect.plist", isRepeat=false})
+		screen.autoSuitable(temp, {nodeAnchor=General.anchorCenter, x=self.targetPos[1], y=self.targetPos[2]})
+		self.scene.effectBatch:addChild(temp)
+		temp:setScale(sc)
+		delayRemove(self.time[2], temp)
+		
+		local t = 1
+		self.view = UI.createAnimateWithSpritesheet(1, "balloonAttacked_", 9, {plist="animate/effects/balloonAttack.plist"})
+		screen.autoSuitable(self.view, {nodeAnchor=General.anchorCenter, x=self.targetPos[1], y=self.targetPos[2]})
+		self.view:setScale(sc)
+		
+		local array = CCArray:create()
+		array:addObject(CCEaseSineOut:create(CCMoveBy:create(t/3, CCPointMake(0, 40))))
+		array:addObject(CCEaseIn:create(CCMoveBy:create(t/3, CCPointMake(0, -40)), 2))
+		self.view:runAction(CCSequence:create(array))
+		self.view:runAction(CCFadeOut:create(t*2/3))
+		
+		simpleRegisterEvent(self.view, {update={inteval=self.time[2], callback=self.update}}, self)
+		self.scene.sky:addChild(self.view)
+		self.scene.ground:runAction(CCShake:create(self.time[2], 10*sc*self.scene.ground:getScale()))
 	end
 end
 

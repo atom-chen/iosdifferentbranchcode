@@ -38,7 +38,6 @@ public:
     void share(const char* sharedText, const char* sharedImagePath);
     void pay(const char* productId);
 	void sendCmd(const char *, const char *arg);
-    
 private:
     MyPlugins();
     virtual ~MyPlugins();

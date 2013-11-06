@@ -8,15 +8,20 @@ CCTOUCHMOVED="moved"
 CCTOUCHENDED="ended"
 CCTOUCHCANCELLED="cancelled"
 
+local lastsynluatime = 0
+
 -- for CCLuaEngine traceback
 function __G__TRACKBACK__(msg)
     cclog("----------------------------------------")
     cclog("LUA ERROR: " .. tostring(msg) .. "\n")
     cclog(debug.traceback())
     cclog("----------------------------------------")
-    local uid = CCUserDefault:sharedUserDefault():getIntegerForKey("userId")
-    local test=tostring(msg) .. "\n" .. debug.traceback()
-    network.httpRequest("synLuaError", doNothing, {isPost=true, params={uid=uid, error=test}})
+    if os.time()-lastsynluatime>10 then
+        lastsynluatime = os.time()
+        local uid = CCUserDefault:sharedUserDefault():getIntegerForKey("userId")
+        local test=tostring(msg) .. "\n" .. debug.traceback()
+        network.httpRequest("synLuaError", doNothing, {isPost=true, params={uid=uid, error=test}})
+    end
 end
 
 local function main()
@@ -55,7 +60,9 @@ local function main()
 	        network.checkUrl = "http://www.caesarsgame.com:9090/"
 	    elseif network.platform=="android_astep" then
 	        General.purpleUrl = "http://www.baidu.com/s?wd=%E5%B8%8C%E6%9C%9B%E5%8F%B7"
-	    elseif network.platform=="android_wiipay" then
+	    elseif network.platform=="android_aibei" then
+	        General.purpleUrl = "http://soft.crossmo.com/softinfo_358203.html"
+	    else
 	        General.purpleUrl = "http://tieba.baidu.com/f?ie=utf-8&amp;kw=%E8%BF%9B%E5%87%BB%E7%9A%84%E5%83%B5%E5%B0%B8online"
 	    end
 	end
@@ -99,12 +106,13 @@ local function main()
 	require "Scene.LoadingScene"
 	
 	math.randomseed(os.time())
+	
     
     --default:setStringForKey("username","G:1528922569-del22-del")
     --default:setStringForKey("username","4B957C79-544A-4A0E-B634-2A00D4491CFB-delete")
 
     display.runScene(OperationScene.new(), LoadingScene)
-    EventManager.registerEventsToCpp({"EVENT_COCOS_PAUSE", "EVENT_COCOS_RESUME", "EVENT_BUY_SUCCESS", "EVENT_BUY_FAIL", "EVENT_SHARE_SUCCESS", "EVENT_SHARE_FAIL", "EVENT_CLOSE_ADS"})
+    EventManager.registerEventsToCpp({"EVENT_COCOS_PAUSE", "EVENT_COCOS_RESUME", "EVENT_BUY_SUCCESS", "EVENT_BUY_CANCEL", "EVENT_BUY_FAIL", "EVENT_SHARE_SUCCESS", "EVENT_SHARE_FAIL", "EVENT_CLOSE_ADS" })
 end
 
 xpcall(main, __G__TRACKBACK__)

@@ -1,13 +1,17 @@
 AchievementDialog = {}
 
+local canGetReward = false
+
 local function onGetRewards(info)
-    display.closeDialog()
-    Achievements.completeAchievement(info.id)
-    CrystalLogic.changeCrystal(info.crystal)
-    --UserData.changeValue("exp", info.exp)
-    display.pushNotice(UI.createNotice(StringManager.getFormatString("noticeGetReward", {num=info.crystal}), 255))
-    
-	EventManager.sendMessage("EVENT_NOTICE_BUTTON", {name="achieve"})
+    if canGetReward then
+        canGetReward = false
+        display.closeDialog()
+        Achievements.completeAchievement(info.id)
+        CrystalLogic.changeCrystal(info.crystal)
+        display.pushNotice(UI.createNotice(StringManager.getFormatString("noticeGetReward", {num=info.crystal}), 255))
+        
+    	EventManager.sendMessage("EVENT_NOTICE_BUTTON", {name="achieve"})
+    end
 end
 
 local function updateAchievementCell(bg, scrollView, info)
@@ -107,6 +111,7 @@ end
 
 function AchievementDialog.show()
     local temp, bg = nil
+    canGetReward = true
     bg = UI.createButton(CCSizeMake(720, 526), doNothing, {image="images/dialogBgA.png", priority=display.DIALOG_PRI, nodeChangeHandler = doNothing})
     screen.autoSuitable(bg, {screenAnchor=General.anchorCenter, scaleType = screen.SCALE_DIALOG_CLEVER})
     UI.setShowAnimate(bg)

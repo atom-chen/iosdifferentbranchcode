@@ -19,12 +19,12 @@ end
 
 local function revergeGetData(isSuc, result)
     local mainScene = display.getCurrentScene(1)
-    if isSuc and display.getCurrentScene()==mainScene then
+    if isSuc and not display.isSceneChange and display.getCurrentScene()==mainScene then
         local data = json.decode(result)
         if data.code~=0 then
             display.pushNotice(UI.createNotice(StringManager.getString("noticeRevergeFail" .. data.code)))
         else
-	        mainScene:updateLogic(300)
+	        mainScene:synData()
 	        BattleLogic.isReverge = 1
     		BattleLogic.enemyId = HistoryDialog.revergeId
             UserData.enemyId = HistoryDialog.revergeId
@@ -177,9 +177,17 @@ local function updateHistoryCell(bg, scrollView, info)
 		cell:addChild(temp)
 		
 		if item[1]>0 then
-    		SoldierHelper.addSoldierHead(cell, item[1], 0.42)
+		    if item[1]<=10 then
+    		    SoldierHelper.addSoldierHead(cell, item[1], 0.42)
+    		elseif item[1]<=15 then
+    		    WeaponHelper.addWeaponHead(cell, item[1]-10, 0.42)
+    		end
     		temp = UI.createStar(item[3], 10, 8)
     		screen.autoSuitable(temp, {x=2, y=4})
+    		cell:addChild(temp)
+		
+    		temp = UI.createLabel("x" .. item[2], General.font4, 15, {colorR = 255, colorG = 255, colorB = 255})
+    		screen.autoSuitable(temp, {x=4, y=56, nodeAnchor=General.anchorLeft})
     		cell:addChild(temp)
     	elseif item[2]==0 then
     	    temp = UI.createSpriteWithFile("images/zombieTombIcon.png",CCSizeMake(24, 47))
@@ -190,10 +198,6 @@ local function updateHistoryCell(bg, scrollView, info)
             screen.autoSuitable(temp, {x=8, y=8})
             cell:addChild(temp)
     	end
-		
-		temp = UI.createLabel("x" .. item[2], General.font4, 15, {colorR = 255, colorG = 255, colorB = 255})
-		screen.autoSuitable(temp, {x=4, y=56, nodeAnchor=General.anchorLeft})
-		cell:addChild(temp)
 		
 	end
 	

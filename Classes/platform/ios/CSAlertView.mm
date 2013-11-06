@@ -9,6 +9,7 @@
 #import "CSAlertView.h"
 
 #import "CCDirector.h"
+#import "support/user_default/CCUserDefault.h"
 
 @implementation CSAlertView
 
@@ -37,7 +38,13 @@
     int type = button[buttonIndex];
     if (type==2){
         cocos2d::CCDirector::sharedDirector()->end();
-        exit(-1);
+        exit(0);
+    }
+    else if(type==3){
+        NSString* url = [NSString stringWithUTF8String:cocos2d::CCUserDefault::sharedUserDefault()->getStringForKey("versionUpdateUrl").c_str()];
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
+        cocos2d::CCDirector::sharedDirector()->end();
+        exit(0);
     }
     [self release];
 }

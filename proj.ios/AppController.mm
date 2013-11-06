@@ -79,7 +79,7 @@ static AppDelegate s_sharedApplication;
     [[GCHelper sharedGameCenter] authenticateLocalUser:viewController];
     
     NSString *country = [[NSLocale currentLocale] objectForKey:NSLocaleCountryCode];
-    cocos2d::CCUserDefault::sharedUserDefault()->setStringForKey("country", [country UTF8String]);
+    cocos2d::CCUserDefault::sharedUserDefault()->setStringForKey("localCountry", [country UTF8String]);
     cocos2d::CCApplication::sharedApplication()->run();
     return YES;
 }

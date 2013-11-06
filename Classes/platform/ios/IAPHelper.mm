@@ -118,7 +118,7 @@ static IAPHelper * _sharedHelper;
 - (BOOL)verifyOnServer:(SKPaymentTransaction *)transaction{
     NSString* requestString = [NSString stringWithFormat:@"%sverify", cocos2d::CCUserDefault::sharedUserDefault()->getStringForKey("baseUrl").c_str()];
     NSMutableURLRequest *request = [[[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:requestString]] autorelease];
-    NSString *postStr = [NSString stringWithFormat:@"receipt=%@",[self base64Encode:transaction.transactionReceipt]];
+    NSString *postStr = [NSString stringWithFormat:@"receipt=%@&uid=%d",[self base64Encode:transaction.transactionReceipt], cocos2d::CCUserDefault::sharedUserDefault()->getIntegerForKey("userId",0)];
     NSData* postData = [postStr dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:YES];
     [request setHTTPMethod:@"post"];
     [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];

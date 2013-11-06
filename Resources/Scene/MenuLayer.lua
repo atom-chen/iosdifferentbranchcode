@@ -15,6 +15,7 @@ require "Dialog.ZombieResultDialog"
 require "Dialog.VideoDialog"
 require "Dialog.RenameDialog"
 require "Dialog.DailyDialog"
+require "Dialog.WeaponDialog"
 
 MenuLayer = class()
 
@@ -89,13 +90,6 @@ function MenuLayer:enterBattleScene()
     if BattleLogic.checkBattleEnable(self.scene, self.enterBattleScene, self) and not network.single then
         self.scene:synData()
         UserStat.stat(UserStatType.ATTACK)
-        -- add clan troops here
-        for _, build in pairs(self.scene.builds) do
-            if build.buildData.bid == 2 then
-                BattleLogic.clanTroops = build.troops
-                break
-            end
-        end
         display.pushScene(BattleScene.new(), PreBattleScene)
     end
 end
@@ -540,6 +534,9 @@ function MenuLayer:eventHandler(eventType, param)
         if param>UserSetting.getValue("feadbackDialog") and param>=3 then
             self.showFeedback = true
         end
+        if not display.isSceneChange then
+            display.showDialog(SNSDialog.new(), false)
+        end
         if not self.newspaperIcon and UserSetting.getValue("nozomiNewspaper")<param and param>=2 then
             if self.warIcon then
                 self.warIcon:removeFromParentAndCleanup(true)
@@ -550,10 +547,6 @@ function MenuLayer:eventHandler(eventType, param)
             self.view:addChild(temp)
             self.newspaperIcon = temp
             CCTextureCache:sharedTextureCache():removeTextureForKey("images/newspaperIcon.png")
-            
-            if not display.isSceneChange then
-                display.showDialog(SNSDialog.new(), false)
-            end
             
             local sc = self.newspaperIcon:getScale()
             self.newspaperIcon:setScale(0)

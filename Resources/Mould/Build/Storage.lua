@@ -10,14 +10,10 @@ function Storage:getExtendInfo()
 end
 
 function Storage:getBattleResource()
-	--if self.resourceType=="special" then
-	--	return {[self.resourceType]=math.floor(self.resource*0.05)}
 	if self.resourceType=="food" or self.resourceType=="oil" then
-	    local resource = math.floor(self.resource*0.25)
+	    local resource = squeeze(math.floor(self.resource*0.25), 0, nil)
 	    self.resourceMax = self.buildData.extendValue1
 		return {[self.resourceType]=resource}
-	--elseif self.resourceType=="person" then
-	--	return {person=self.resource}
 	end
 end
 

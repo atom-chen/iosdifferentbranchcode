@@ -112,4 +112,19 @@ do
 	function StaticData.getResearchInfo(lid, level)
 		return research_info_cache[lid][level]
 	end
+	
+	local weapon_info_cache = {}
+	Entry = function(id, radius, range, num, interval, time, need_level, max_level)
+	    weapon_info_cache[id] = {wid=id, radius=radius/10, range=range/10, num=num, interval=interval/10, time=time, needLevel=need_level, maxLevel=max_level, levels={}}
+	end
+	require "data.weaponInfos"
+	
+	Entry = function(id, level, cost, value)
+	    weapon_info_cache[id].levels[level] = {cost=cost, value=value}
+	end
+	require "data.weaponDatas"
+	
+	function StaticData.getWeaponInfo(wid)
+	    return weapon_info_cache[wid]
+	end
 end

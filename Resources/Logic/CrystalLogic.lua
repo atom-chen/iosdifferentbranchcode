@@ -43,36 +43,36 @@ end
 function CrystalLogic.buyOver(eventType)
     if eventType==EventManager.eventType.EVENT_BUY_SUCCESS then
         if CrystalLogic.buyObj then
-        	ResourceLogic.changeResource("crystal", CrystalLogic.buyObj.get)
-        	--if CCUserDefault:sharedUserDefault():getBoolForKey("pay") then
-        		UserStat.addCrystalLog(-1, timer.getTime(), CrystalLogic.buyObj.get, CrystalLogic.buyObj.type-1)
-        		if UserData.totalCrystal==0 then
-        		    UserData.isNewVip = true
-        		end
-        		UserData.totalCrystal = UserData.totalCrystal + CrystalLogic.buyObj.get
-        		if CrystalLogic.buyObj.type==6 then
-        		    UserData.lastOffTime = timer.getTime()
-        		end
-        	--end
-        	display.closeDialog()
         	if PauseLogic.isPause() then
         	    PauseLogic.pauseBuyObj = CrystalLogic.buyObj
+        	    PauseLogic.pauseBuyObj.base = UserData.crystal
+        	else
+            	ResourceLogic.changeResource("crystal", CrystalLogic.buyObj.get)
+            	UserStat.addCrystalLog(-1, timer.getTime(), CrystalLogic.buyObj.get, CrystalLogic.buyObj.type-1)
+            	if UserData.totalCrystal==0 then
+            	    UserData.isNewVip = true
+            	end
+            	UserData.totalCrystal = UserData.totalCrystal + CrystalLogic.buyObj.get
+            	if CrystalLogic.buyObj.type==6 then
+            	    UserData.lastOffTime = timer.getTime()
+            	end
+        	    display.closeDialog()
         	end
         end
         CrystalLogic.buyObj = nil
     elseif eventType==EventManager.eventType.EVENT_BUY_FAIL then
         showErrorNotice()
         CrystalLogic.buyObj = nil
+    elseif eventType==EventManager.eventType.EVENT_BUY_CANCEL then
+        CrystalLogic.buyObj = nil
     end
 end
 
-EventManager.registerEventMonitor({"EVENT_BUY_SUCCESS", "EVENT_BUY_FAIL"}, CrystalLogic.buyOver)
+EventManager.registerEventMonitor({"EVENT_BUY_SUCCESS", "EVENT_BUY_FAIL", "EVENT_BUY_CANCEL"}, CrystalLogic.buyOver)
 
 --need param cost and get
 function CrystalLogic.buyCrystal(param)
     if CrystalLogic.buyObj then return end
-	--ResourceLogic.changeResource("crystal", param.get)
-	--display.closeDialog()
 	if param.type==6 and timer.getTime()-UserData.lastOffTime<86400*7 then
 	    local day = 7-math.floor((timer.getTime()-UserData.lastOffTime)/86400)
 	    display.pushNotice(UI.createNotice(StringManager.getFormatString("noticeSaleOffLimit", {days=day})))

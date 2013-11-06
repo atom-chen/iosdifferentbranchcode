@@ -58,8 +58,6 @@ function BuildMould:onEnterScene()
 			end
 			BattleLogic.addBuild(self.id, battleData)
 		end
-		--BattleLogic.id = (BattleLogic.id or 0)+1
-		--self.buildView.id = BattleLogic.id
 		if self.enterBattle then
 			self:enterBattle()
 		end

@@ -76,6 +76,7 @@ do
     	            s.view:removeFromParentAndCleanup(true)
     	            s.view = nil
     	        end
+                break
 	        end
 	    end
 	end

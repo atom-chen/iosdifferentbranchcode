@@ -21,6 +21,11 @@ local function updateBattleCell(bg, scrollView, item)
 			temp = UI.createStar(UserData.researchLevel[item.id], 17, 14)
 			screen.autoSuitable(temp, {x=3, y=6})
 			bg:addChild(temp)
+		elseif item.type=="weapon" then
+		    WeaponHelper.addWeaponHead(bg, item.id, 0.7)
+			temp = UI.createStar(UserData.researchLevel[item.id+10], 17, 14)
+			screen.autoSuitable(temp, {x=3, y=6})
+			bg:addChild(temp)
 		elseif item.type=="zombie" then
 		    temp = UI.createSpriteWithFile("images/zombieTombIcon.png",CCSizeMake(41, 79))
             screen.autoSuitable(temp, {x=20, y=6})
@@ -261,6 +266,14 @@ function BattleMenuLayer:initBottom()
     if BattleLogic.isGuide then
         table.insert(items, {id=9, num=3, level=1, type="soldier", delegate=self})
     end
+    if BattleLogic.weaponBuild then
+        local weapons = BattleLogic.weaponBuild.weapons
+        for i=1, 5 do
+            if weapons[i]>0 then
+                table.insert(items, {id=i, num=weapons[i], level=UserData.researchLevel[i+10], type="weapon", delegate=self})
+            end
+        end
+    end
     if SoldierLogic.getCurZombieSpace()>0 then
         local item = {type="zombie", id=1, num=1, level=SoldierLogic.getMaxZombieCampLevel(), delegate=self}
         --for
@@ -375,8 +388,9 @@ function BattleMenuLayer:executeSelectItem(touchPoint)
 			display.pushNotice(UI.createNotice(StringManager.getString("noticeSelectItemEmpty")))
 			return false
 		end
+    	
+		local p = self.scene.ground:convertToNodeSpace(CCPointMake(touchPoint[1], touchPoint[2]))
 		if item.type=="soldier" then
-			local p = self.scene.ground:convertToNodeSpace(CCPointMake(touchPoint[1], touchPoint[2]))
 			local grid = self.scene.mapGridView:convertToGrid(p.x, p.y)
 			
 			local inBigArea = (grid.gridPosX>=-1 and grid.gridPosX<=42 and grid.gridPosY>=-1 and grid.gridPosY<=42)
@@ -401,9 +415,16 @@ function BattleMenuLayer:executeSelectItem(touchPoint)
         		end
     		    return false
     		end
+    	elseif item.type=="weapon" then
+    		local x, y = math.floor(p.x), math.floor(p.y)
+    		if not self.battleBegin then
+    			self:beginBattle()
+    		end
+    		self.troopsCost = true
+            local weapon = WeaponHelper.create(item.id, item.level, self.scene, ReplayLogic.randomSeed, x, y)
+    		table.insert(ReplayLogic.cmdList, {math.floor((timer.getTime()-ReplayLogic.beginTime)*1000)/1000, "w", item.id, x, y, item.level})
+    		BattleLogic.incWeapon(item.id)
     	elseif item.type=="zombie" or item.type=="clan" then
-    	
-			local p = self.scene.ground:convertToNodeSpace(CCPointMake(touchPoint[1], touchPoint[2]))
 			local grid = self.scene.mapGridView:convertToGrid(p.x, p.y, 2)
 			
 			if self.scene.mapGridView:checkGridEmpty(GridKeys.Build, grid.gridPosX, grid.gridPosY, 2) and self.scene.mapGrid:checkGridEmpty(GridKeys.Build, grid.gridPosX, grid.gridPosY, 2) then
@@ -602,9 +623,8 @@ function BattleMenuLayer:updateOthers()
 end
 
 function BattleMenuLayer:showEndBattleDialog()
-    --ReplayLogic.makeReplayResult("battle.txt")
 	table.insert(ReplayLogic.cmdList, {timer.getTime() - ReplayLogic.beginTime, "e"})
-	pcall(self.view.removeFromParentAndCleanup, self.view, true)
+	if self.view then pcall(self.view.removeFromParentAndCleanup, self.view, true) end
 	display.showDialog(BattleResultDialog.new(BattleLogic.getBattleResult()), false)
 end
 

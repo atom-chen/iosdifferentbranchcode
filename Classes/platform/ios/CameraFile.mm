@@ -234,6 +234,7 @@ void CameraFile::compressFrame() {
         
     }
     CVPixelBufferUnlockBaseAddress(pixel_buffer, 0);
+    NSLog(@"compress Frame");
     //不能释放 pixel_buffer
     //CVPixelBufferRelease(pixel_buffer);
     

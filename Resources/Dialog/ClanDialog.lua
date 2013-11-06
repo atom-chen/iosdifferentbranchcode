@@ -5,6 +5,8 @@ local TEMP_CLAN_ID, TEMP_MIN_SCORE, IS_CREATING=1, 0, false
 local LABEL_SIZE = 15
 local LABEL_BASE_Y = 666
 
+local editTabIndex=4
+
 local LeagueWarIntroDialog = class()
 
 function LeagueWarIntroDialog:ctor()
@@ -74,7 +76,11 @@ function ClanDialog:ctor(index)
     local function changeTab(index)
         local cache = CCTextureCache:sharedTextureCache()
         if self.curTab ~= 0 then
-            tabs[((self.curTab-1)%3)+1]:setTexture(cache:addImage("images/leagueTab0.png"))
+            if self.curTab==editTabIndex then
+                tabs[1]:setTexture(cache:addImage("images/leagueTab0.png"))
+            else
+                tabs[((self.curTab-1)%3)+1]:setTexture(cache:addImage("images/leagueTab0.png"))
+            end
         end
         self.curTab = index
         tabs[self.curTab]:setTexture(cache:addImage("images/leagueTab1.png"))
@@ -117,6 +123,7 @@ function ClanDialog:initTabView(tabs, changeTab)
         self.tabview.addTab({create=createTab, tabname=tabTitles[i], handler=self})
     end
     self.tabview.addTab({create=createTab, tabname="tabEdit", handler=self})
+    editTabIndex = 1+ #tabTitles
 end
 
 function ClanDialog:createLeagueOver(suc, result)
@@ -395,6 +402,25 @@ local function updateBattleClanMemberCell(bg, scrollView, info)
     bg:addChild(temp)
 end
 
+local function kickoutOver(suc, data, param)
+    if suc and json.decode(data).code==0 then
+        display.closeDialog()
+        display.pushNotice(UI.createNotice(StringManager.getFormatString("noticeSuccessKickout", {name=param[2]}),255,true))
+        network.httpRequest(network.chatUrl .. "sys", doNothing, {params={cid=param[3], type="l", info=json.encode({uid=param[1],name=param[2],k=1})}})
+    else
+        display.pushNotice(UI.createNotice(StringManager.getString("noticeErrorKickout")))
+    end
+end
+
+local function kickoutClan(param)
+    if param[4] then
+        network.httpRequest("leaveClan", kickoutOver, {isPost=true, callbackParam=param, params={uid=param[1], cid=param[3]}})
+    else
+        local nparam = {param[1],param[2],param[3],true}
+        display.showDialog(AlertDialog.new(StringManager.getFormatString("alertTitleKickout", {name=param[2]}), StringManager.getFormatString("alertTextKickout", {name=param[2]}),{callback=kickoutClan, param=nparam,forceTTF=true}))
+    end
+end
+
 local function updateClanMemberCell(bg, scrollView, info)
     bg:removeAllChildrenWithCleanup(true)
     local imageFile = "images/dialogItemLeagueB.png"
@@ -416,7 +442,11 @@ local function updateClanMemberCell(bg, scrollView, info)
         temp = UI.createSpriteWithFile("images/chatRoomItemVisit.png",CCSizeMake(26, 26))
         screen.autoSuitable(temp, {x=84+w, y=23})
         bg:addChild(temp)
-    	UI.registerVisitIcon(bg, scrollView, info.dialog.view, info.uid, temp)
+        local others = nil
+        if info.clan and UserData.memberType==2 and UserData.clan==info.clan then
+            others = {{text=StringManager.getString("buttonKick"), callbackParam={info.uid, info.name, info.clan}, callback=kickoutClan}}
+        end
+    	UI.registerVisitIcon(bg, scrollView, info.dialog.view, info.uid, temp, others)
     end
     temp = UI.createLabel(StringManager.getString("mtype" .. info.mtype), General.font1, 15, {colorR = 90, colorG = 81, colorB = 74})
     screen.autoSuitable(temp, {x=80, y=15, nodeAnchor=General.anchorLeft})
@@ -451,7 +481,7 @@ function ClanDialog:loadMembersOver(suc, result, setting)
         end
         for i=1, #data do
             local temp = data[i]
-            data[i] = {icon=setting.icon, dialog=self, uid=temp[1], score=temp[2], lscore=temp[3], name=temp[4], mtype=temp[5]}
+            data[i] = {icon=setting.icon, dialog=self, uid=temp[1], score=temp[2], lscore=temp[3], name=temp[4], mtype=temp[5], clan=clan}
         end
         table.sort(data, getSortFunction("score", true))
         for i=1, #data do
@@ -708,7 +738,7 @@ function ClanDialog:createLeagueWarTab()
                     screen.autoSuitable(temp, {x=128, y=631})
                     bg:addChild(temp)
                     local labels = {StringManager.getString("labelTotalScore"), StringManager.getString("labelLeftMembers")}
-                    local values = {tostring(UserData.clanInfo[3]),  left1 .. "/" .. UserData.clanInfo[7]}
+                    local values = {tostring(UserData.clanInfo[3]),  (UserData.clanInfo[7]-left1) .. "/" .. UserData.clanInfo[7]}
                     for i=1, 2 do
                         temp = UI.createLabel(labels[i], General.font3, LABEL_SIZE, {colorR = 255, colorG = 255, colorB = 255})
                         screen.autoSuitable(temp, {x=129, y=LABEL_BASE_Y-i*23, nodeAnchor=General.anchorLeft})
@@ -726,7 +756,7 @@ function ClanDialog:createLeagueWarTab()
                     screen.autoSuitable(temp, {x=901, y=663, nodeAnchor=General.anchorRight})
                     bg:addChild(temp)
                     local labels = {StringManager.getString("labelTotalScore"), StringManager.getString("labelLeftMembers")}
-                    local values = {tostring(eclanInfo[3]), left2 .. "/" .. eclanInfo[7]}
+                    local values = {tostring(eclanInfo[3]), (eclanInfo[7]-left2) .. "/" .. eclanInfo[7]}
                     for i=1, 2 do
                         temp = UI.createLabel(labels[i], General.font3, LABEL_SIZE, {colorR = 255, colorG = 255, colorB = 255})
                         screen.autoSuitable(temp, {x=630, y=LABEL_BASE_Y-i*23, nodeAnchor=General.anchorLeft})
@@ -1005,8 +1035,8 @@ function ClanDialog:createMyLeagueTab()
     
     if UserData.memberType==2 then
         local function onEdit()
-            self.curTab = 4
-            self.tabview.changeTab(4)
+            self.curTab = editTabIndex
+            self.tabview.changeTab(editTabIndex)
         end
         temp = UI.createButton(CCSizeMake(117, 43), onEdit, {image="images/buttonGreen.png", text=StringManager.getString("buttonEdit"), fontSize=20, fontName=General.font3})
         screen.autoSuitable(temp, {x=937, y=638, nodeAnchor=General.anchorCenter})
@@ -1073,7 +1103,7 @@ function ClanDialog:editLeagueOver(suc, result)
             UserData.clanInfo[6] = data.desc
             UserData.clanInfo[8] = data.min
         end
-        if self.curTab==4 then
+        if self.curTab==editTabIndex then
             self.curTab = 1
             self.tabview.changeTab(1)
         end
@@ -1170,8 +1200,11 @@ function ClanDialog:createCreateTab(isEdit)
             local leagueType=1
             local minScore = TEMP_MIN_SCORE
             if name=="" or IS_CREATING then return end
-            IS_CREATING=true
-            network.httpRequest("editClan", self.editLeagueOver, {isPost=true, params={cid=UserData.clan, icon=clanIconId, min=minScore, name=name, desc=desc, type=leagueType, uid=UserData.userId}}, self)
+            local function send()
+                IS_CREATING=true
+                network.httpRequest("editClan", self.editLeagueOver, {isPost=true, params={cid=UserData.clan, icon=clanIconId, min=minScore, name=name, desc=desc, type=leagueType, uid=UserData.userId}}, self)
+            end
+            network.checkWord(name .. " " .. desc, send)
         end
         
         temp = UI.createButton(CCSizeMake(172, 76), editLeague, {image="images/buttonGreen.png", text=StringManager.getString("buttonSave"), fontSize=28, fontName=General.font3})
@@ -1275,9 +1308,6 @@ function ClanNoticeDialog:openClanDialog()
 end
 
 function ClanNoticeDialog:share()
-    local text = self.shareText
-    --SNS.weibo:request("https://api.weibo.com/2/statuses/update.json",{status=text, visible=2})
-    --SNS.facebook:request("https://graph.facebook.com/me/feed",{message=text})
-	SNS.share(text, nil, self)
+	SNS.share(SNS.shareText, nil, self, 1)
 	UserStat.stat(UserStatType.SHARE)
 end

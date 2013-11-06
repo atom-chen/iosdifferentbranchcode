@@ -42,7 +42,6 @@ bool VideoCamera::init()
 
 void VideoCamera::startRecord(CCNode *showScene)
 {
-    //这里开始录制
     CCDirector *director = CCDirector::sharedDirector();
     CCRenderTexture *render = CCRenderTexture::create(director->getWinSizeInPixels().width, director->getWinSizeInPixels().height, kTexture2DPixelFormat_RGBA8888);
     render->beginWithClear(0, 0, 0, 0, 0);
@@ -70,7 +69,6 @@ void VideoCamera::endRecord()
 {
     m_bPaused = true;
     ((CameraFile*)camera)->stopWork();
-    //录制结束退出游戏
 }
 
 void VideoCamera::update(float dt)

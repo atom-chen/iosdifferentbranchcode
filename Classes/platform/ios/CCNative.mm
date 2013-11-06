@@ -18,7 +18,7 @@ NS_CC_EXT_BEGIN
 
 void CCNative::openURL(const char *url)
 {
-    NSString *urlStr = [NSString stringWithCString:url encoding:NSASCIIStringEncoding];
+    NSString *urlStr = [NSString stringWithUTF8String:url];
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlStr]];
 }
 
@@ -85,10 +85,7 @@ void CCNative::showAlert(const char* title, const char* content, int button1, co
     NSString* nsTitle = [NSString stringWithUTF8String:title];
     NSString* nsContent  = [NSString stringWithUTF8String:content];
     NSString* nsButton1Text = [NSString stringWithUTF8String:button1Text];
-    NSString* nsButton2Text = nil;
-    if(button2>0){
-        nsButton2Text = [NSString stringWithUTF8String:button2Text];
-    }
+    NSString* nsButton2Text = [NSString stringWithUTF8String:button2Text];
     [[[CSAlertView alloc] initWithTitle:nsTitle content:nsContent button1:button1 button1Text:nsButton1Text button2:button2 button2Text:nsButton2Text] autorelease];
 }
 

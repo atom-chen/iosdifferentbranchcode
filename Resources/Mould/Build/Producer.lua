@@ -11,8 +11,6 @@ function Producer:getExtendInfo()
 end
 
 function Producer:getBattleResource()
-	--if self.resourceType=="special" then
-	--	return {[self.resourceType]=math.floor(self:getResource()*0.75)}
 	if self.resourceType=="food" or self.resourceType=="oil" then
 	    local resource = math.floor(self:getResource()*0.5)
 	    self.resourceMax = self.buildData.extendValue2

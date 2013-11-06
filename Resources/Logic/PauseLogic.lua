@@ -3,6 +3,7 @@ PauseLogic.renderTextures = {}
 local pauseTime = 0
 local pauseGameTime = 0
 local isPause = false
+local restarting = false
 local function pauseAndResume(event)
     if event==EventManager.eventType.EVENT_COCOS_PAUSE then
         CCNative:clearLocalNotification()
@@ -64,8 +65,8 @@ local function pauseAndResume(event)
         local curSceneType = display.getCurrentScene().sceneType
         if delta>60 or (curSceneType==SceneTypes.Battle and delta>10) then
             display.closeDialog()
-            --delay 1 second to prepare image data
             delayCallback(1, PauseLogic.restart)
+            restarting = true
         else
             timer.synLocalTime(pauseGameTime, delta)
             PauseLogic.pauseBuyObj = nil
@@ -79,10 +80,11 @@ function PauseLogic.restart()
     GuideLogic.releaseAll()
     UserSetting.init()
     display.restartWithScene(OperationScene.new(), LoadingScene)
+    restarting = false
 end
 
 function PauseLogic.isPause()
-    return isPause
+    return isPause or restarting
 end
 
 EventManager.registerEventMonitor({"EVENT_COCOS_PAUSE", "EVENT_COCOS_RESUME", "EVENT_NETWORK_OFF"}, pauseAndResume)

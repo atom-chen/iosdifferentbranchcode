@@ -402,7 +402,7 @@ do
 			if info.tid==2 then
 				info.bids = {2000, 2001, 2002, 2003, 0, 2004, 2005}
 			elseif info.tid==4 then
-				info.bids = {1000, 1001, 1002}
+				info.bids = {1000, 1001, 1002, 1005}
 			elseif info.tid==5 then
 				info.bids = {3000, 3001, 3006, 5000, 3002, 3004, 5001, 3003, 5002, 3005, 3007}
 			else

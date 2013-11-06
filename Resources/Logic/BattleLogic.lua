@@ -9,6 +9,7 @@ function BattleLogic.init()
 	BattleLogic.destroys = {}
 	BattleLogic.costTraps = {}
 	BattleLogic.soldiers = {0,0,0,0,0,0,0,0,0,0}
+	BattleLogic.weapons = {0,0,0,0,0}
 	BattleLogic.battleEnd = false
 	BattleLogic.zombieDeployed = false
 	BattleLogic.clanDeployed = false
@@ -24,6 +25,24 @@ end
 
 function BattleLogic.incSoldier(sid)
     BattleLogic.soldiers[sid] = BattleLogic.soldiers[sid]+1
+end
+
+function BattleLogic.incWeapon(wid)
+    BattleLogic.weapons[wid] = BattleLogic.weapons[wid]+1
+end
+
+function BattleLogic.costWeapon(costs)
+    local weapons = (BattleLogic.weaponBuild and BattleLogic.weaponBuild.initSetting.weapons) or {0,0,0,0,0}
+    BattleLogic.weaponBuild = nil
+    for i=1, 5 do
+        if costs[i]>0 then
+            if costs[i]>weapons[i] then
+                return true
+            else
+                weapons[i] = weapons[i] - costs[i]
+            end
+        end
+    end
 end
 
 local BATTLE_K = {0.05, 0.25, 0.5, 1, 1, 1, 1.25, 1.5}
@@ -158,6 +177,7 @@ function BattleLogic.getBattleResult()
 	result.zombieDeployed = BattleLogic.zombieDeployed
 	result.clanDeployed = BattleLogic.clanDeployed
 	result.costTraps = BattleLogic.costTraps
+	result.costWeapons = BattleLogic.weapons
 	result.resourceBuilds = BattleLogic.builds
 	result.shieldTime = timer.getTime() + BattleLogic.shieldHour*3600
 	BattleLogic.init()
@@ -189,6 +209,15 @@ function BattleLogic.checkBattleEnable(scene, callback, callbackParam)
         end
         display.showDialog(AlertDialog.new(StringManager.getString("alertTitleShield"), StringManager.getString("alertTextShield"), {callback=forceEnterBattle}))
         return false
+    end
+    
+    -- add clan troops here
+    for _, build in pairs(scene.builds) do
+        if build.buildData.bid == 2 then
+            BattleLogic.clanTroops = build.troops
+        elseif build.buildData.bid==1005 then
+            BattleLogic.weaponBuild = build
+        end
     end
     return true
 end
