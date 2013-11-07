@@ -69,6 +69,8 @@ local function pauseAndResume(event)
             restarting = true
         else
             timer.synLocalTime(pauseGameTime, delta)
+            CrystalLogic.buyObj = PauseLogic.pauseBuyObj
+            if CrystalLogic.buyObj then EventManager.sendMessage("EVENT_BUY_SUCCESS") end
             PauseLogic.pauseBuyObj = nil
         end
     elseif event==EventManager.eventType.EVENT_NETWORK_OFF then
