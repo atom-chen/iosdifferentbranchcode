@@ -10,7 +10,7 @@ local function onGetRewards(info)
         CrystalLogic.changeCrystal(info.crystal)
         display.pushNotice(UI.createNotice(StringManager.getFormatString("noticeGetReward", {num=info.crystal}), 255))
         
-    	EventManager.sendMessage("EVENT_NOTICE_BUTTON", {name="achieve"})
+        EventManager.sendMessage("EVENT_NOTICE_BUTTON", {name="achieve"})
     end
 end
 
@@ -103,7 +103,7 @@ local function updateAchievementCell(bg, scrollView, info)
 end
 
 local function showGameCenterAchievements()
-	CCNative:showAchievements()
+    CCNative:showAchievements()
 end
 
 function AchievementDialog.show()
@@ -163,10 +163,10 @@ function AchievementDialog.show()
     display.showDialog({view=bg}, true)
     
     if GuideLogic.step==13 and GuideLogic.pointer then
-		GuideLogic.clearPointer()
-		GuideLogic.step = 14
-		GuideLogic.complete = true
-		display.getCurrentScene():checkCanBuild()
-		ChatRoom.showNotice()
-	end
+        GuideLogic.clearPointer()
+        GuideLogic.step = 14
+        GuideLogic.complete = true
+        display.getCurrentScene():checkCanBuild()
+        ChatRoom.showNotice()
+    end
 end

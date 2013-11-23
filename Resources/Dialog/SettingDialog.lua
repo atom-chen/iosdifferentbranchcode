@@ -12,10 +12,10 @@ function SettingDialog.onFeedback()
 end
 
 function SettingDialog.create()
-	local temp, bg = nil
+    local temp, bg = nil
     bg = UI.createButton(CCSizeMake(503, 438), doNothing, {image="images/dialogBgA.png", priority=display.DIALOG_PRI, nodeChangeHandler = doNothing})
     screen.autoSuitable(bg, {screenAnchor=General.anchorCenter, scaleType = screen.SCALE_DIALOG_CLEVER})
-	UI.setShowAnimate(bg)
+    UI.setShowAnimate(bg)
     temp = UI.createSpriteWithFile("images/dialogItemSettingSeperator.png",CCSizeMake(447, 2))
     screen.autoSuitable(temp, {x=26, y=163})
     bg:addChild(temp)
@@ -67,6 +67,6 @@ function SettingDialog.create()
         temp = UI.createLabel(StringManager.getString("labelGameCenter"), General.font1, 13, {colorR = 0, colorG = 0, colorB = 0, size=CCSizeMake(390, 40), align=kccTextAlignmentLeft})
         screen.autoSuitable(temp, {x=95, y=53, nodeAnchor=General.anchorLeft})
         bg:addChild(temp)
-	end
-	return bg
+    end
+    return bg
 end

@@ -143,7 +143,7 @@ end
 
 function ZombieTomb:getBuildView()
     local build = UI.createSpriteWithFrame("build" .. self.buildData.bid .. ".png")
-	return build
+    return build
 end
 
 function ZombieTomb:updateBattle(diff)
@@ -153,13 +153,13 @@ function ZombieTomb:updateBattle(diff)
             local zid = i+10
             self.zombies[i] = self.zombies[i]-1
             local zombie = Zombie.new(zid, {isFighting=true})
-    		local x, y = zombie:getMoveArroundPosition(self)
-    		x, y = math.floor(x), math.floor(y)
-    		zombie:addToScene(self.buildView.scene, {x, y})
-    		table.insert(self.buildView.scene.soldiers, zombie)
-    		zombie:playAppearSound()
-    		table.insert(ReplayLogic.cmdList, {math.floor((timer.getTime()-ReplayLogic.beginTime)*1000)/1000, "z", i, x, y})
-    		break
+            local x, y = zombie:getMoveArroundPosition(self)
+            x, y = math.floor(x), math.floor(y)
+            zombie:addToScene(self.buildView.scene, {x, y})
+            table.insert(self.buildView.scene.soldiers, zombie)
+            zombie:playAppearSound()
+            table.insert(ReplayLogic.cmdList, {math.floor((timer.getTime()-ReplayLogic.beginTime)*1000)/1000, "z", i, x, y})
+            break
         end
         if i==8 then
             self.buildView.scene.menu.hasZombie = nil

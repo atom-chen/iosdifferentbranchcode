@@ -29,81 +29,81 @@ function network.checkWord(word, checkCallback)
 end
 
 network.httpRequest = function (url, callback, setting, delegate)
-	local paramStr = ""
-	setting = setting or {}
-	if setting.single then
-	    if network.single then return false end
-	    network.single = true
-	end
-	local request = nil
-	local function httpOver(isSuc)
-		if not isSuc then
-		    local retry = setting.retry or 0
-		    if retry>2 then
-    			print("HTTP Canceled")
-    			EventManager.sendMessage("EVENT_NETWORK_OFF")
-				if delegate then
-					callback(delegate, false, nil, setting.callbackParam)
-				else
-					callback(false, nil, setting.callbackParam)
-				end
-    	    else
-    	        setting.retry = retry + 1
-    	        network.httpRequest(url, callback, setting, delegate)
-    	    end
-		else
-			local hcode = request:getResponseStatusCode()
-			if hcode==200 then
-				local responseStr = request:getResponseString()
-				if delegate then
-					callback(delegate, true, responseStr, setting.callbackParam)
-				else
-					callback(true, responseStr, setting.callbackParam)
-				end
-			else
-				print("HTTP Failed " .. hcode)
-				if delegate then
-					callback(delegate, false, nil, setting.callbackParam)
-				else
-					callback(false, nil, setting.callbackParam)
-				end
-    			EventManager.sendMessage("EVENT_NETWORK_OFF")
-			end
-		end
-		request:release()
-    	if setting.single then
-    	    network.single = false
-    	end
-	end
-	local pos = string.find(url, "http")
-	local rurl = url
-	if pos ~= 1 then
-		rurl = network.baseUrl .. rurl
-	end
-	if not setting.isPost then
-	    paramStr = "platform=" .. network.platform
-		if setting.params then
-			for key, value in pairs(setting.params) do
-				paramStr = paramStr .. "&" .. key .. "=" .. network.urlencode(value)
-			end
-		end
-		rurl = rurl .. "?" .. paramStr
-		request = CCHttpRequest:createWithUrlLua(httpOver, rurl)
-	else
-		request = CCHttpRequest:createWithUrlLua(httpOver, rurl, false)
-		request:addPostValue("platform", network.platform)
-		if setting.params then
-			for key, value in pairs(setting.params) do
-				request:addPostValue(key, value)
-			end
-		end
-	end
-	if setting.timeout then
-		request:setTimeout(setting.timeout)
-	end
-	local isCache = setting.isCache or false
-	request:start(isCache)
-	return request
+    local paramStr = ""
+    setting = setting or {}
+    if setting.single then
+        if network.single then return false end
+        network.single = true
+    end
+    local request = nil
+    local function httpOver(isSuc)
+        if not isSuc then
+            local retry = setting.retry or 0
+            if retry>2 then
+                print("HTTP Canceled")
+                EventManager.sendMessage("EVENT_NETWORK_OFF")
+                if delegate then
+                    callback(delegate, false, nil, setting.callbackParam)
+                else
+                    callback(false, nil, setting.callbackParam)
+                end
+            else
+                setting.retry = retry + 1
+                network.httpRequest(url, callback, setting, delegate)
+            end
+        else
+            local hcode = request:getResponseStatusCode()
+            if hcode==200 then
+                local responseStr = request:getResponseString()
+                if delegate then
+                    callback(delegate, true, responseStr, setting.callbackParam)
+                else
+                    callback(true, responseStr, setting.callbackParam)
+                end
+            else
+                print("HTTP Failed " .. hcode)
+                if delegate then
+                    callback(delegate, false, nil, setting.callbackParam)
+                else
+                    callback(false, nil, setting.callbackParam)
+                end
+                EventManager.sendMessage("EVENT_NETWORK_OFF")
+            end
+        end
+        request:release()
+        if setting.single then
+            network.single = false
+        end
+    end
+    local pos = string.find(url, "http")
+    local rurl = url
+    if pos ~= 1 then
+        rurl = network.baseUrl .. rurl
+    end
+    if not setting.isPost then
+        paramStr = "platform=" .. network.platform
+        if setting.params then
+            for key, value in pairs(setting.params) do
+                paramStr = paramStr .. "&" .. key .. "=" .. network.urlencode(value)
+            end
+        end
+        rurl = rurl .. "?" .. paramStr
+        request = CCHttpRequest:createWithUrlLua(httpOver, rurl)
+    else
+        request = CCHttpRequest:createWithUrlLua(httpOver, rurl, false)
+        request:addPostValue("platform", network.platform)
+        if setting.params then
+            for key, value in pairs(setting.params) do
+                request:addPostValue(key, value)
+            end
+        end
+    end
+    if setting.timeout then
+        request:setTimeout(setting.timeout)
+    end
+    local isCache = setting.isCache or false
+    request:start(isCache)
+    return request
 end
 
 local SAVESTR="$-_.+!*'(),abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"

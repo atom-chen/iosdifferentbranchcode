@@ -47,12 +47,12 @@ function Clan:addBuildInfo(bg, addInfoItem)
 end
 
 function Clan:addBuildUpgrade(bg, addUpgradeItem)
-	local bdata = self.buildData
-	local maxData = StaticData.getMaxLevelData(bdata.bid)
-	local nextLevel = StaticData.getBuildData(bdata.bid, bdata.level+1)
-	
-	addUpgradeItem(bg, 1, bdata.extendValue1, nextLevel.extendValue1, maxData.extendValue1, "Camp")
-	return 1
+    local bdata = self.buildData
+    local maxData = StaticData.getMaxLevelData(bdata.bid)
+    local nextLevel = StaticData.getBuildData(bdata.bid, bdata.level+1)
+    
+    addUpgradeItem(bg, 1, bdata.extendValue1, nextLevel.extendValue1, maxData.extendValue1, "Camp")
+    return 1
 end
 
 function Clan:getExtendInfo()
@@ -63,18 +63,18 @@ function Clan:getExtendInfo()
     if self.troops and #(self.troops)>0 then
         ret.ts = self.troops
     end
-	return ret
+    return ret
 end
 
 function Clan:addChildMenuButs(buts)
-	if UserData.clan~=0 then
-	    if self.requestTime and self.requestTime>timer.getTime()-1200 then
-    		table.insert(buts, {image="images/menuItemRequest.png", callback=doNothing, callbackParam=self, extend={time=self.requestTime+1200-timer.getTime(), background="images/dialogItemC.png", text=StringManager.getString("labelNextRequest")}})
-    	else
-    		table.insert(buts, {image="images/menuItemRequest.png", text=StringManager.getString("buttonRequest"), callback=self.requestTroops, callbackParam=self})
-    	end
-	end
-	table.insert(buts, {image="images/menuItemLeague.png", text=StringManager.getString("buttonLeague"), callback=display.showDialog, callbackParam=ClanDialog})
+    if UserData.clan~=0 then
+        if self.requestTime and self.requestTime>timer.getTime()-1200 then
+            table.insert(buts, {image="images/menuItemRequest.png", callback=doNothing, callbackParam=self, extend={time=self.requestTime+1200-timer.getTime(), background="images/dialogItemC.png", text=StringManager.getString("labelNextRequest")}})
+        else
+            table.insert(buts, {image="images/menuItemRequest.png", text=StringManager.getString("buttonRequest"), callback=self.requestTroops, callbackParam=self})
+        end
+    end
+    table.insert(buts, {image="images/menuItemLeague.png", text=StringManager.getString("buttonLeague"), callback=display.showDialog, callbackParam=ClanDialog})
 end
 
 function Clan:getCurSpace()
@@ -91,9 +91,9 @@ end
 function Clan:requestTroops()
     self.requestTime = timer.getTime()
     self.receiveNum = 0
-	network.httpRequest(network.chatUrl .. "request", doNothing, {params={uid=UserData.userId, cid=UserData.clan, name=UserData.userName, space=self:getCurSpace(), max=self.buildData.extendValue1}})
-	--EventManager.sendMessage("EVENT_OTHER_OPERATION", {type="Add", key="donate"})
-	self.buildView:setFocus(false)
+    network.httpRequest(network.chatUrl .. "request", doNothing, {params={uid=UserData.userId, cid=UserData.clan, name=UserData.userName, space=self:getCurSpace(), max=self.buildData.extendValue1}})
+    --EventManager.sendMessage("EVENT_OTHER_OPERATION", {type="Add", key="donate"})
+    self.buildView:setFocus(false)
 end
 
 function Clan:updateOperationLogic(diff)
@@ -127,53 +127,53 @@ function Clan:updateOperationLogic(diff)
 end
 
 function Clan:getBuildView()
-	local bid = self.buildData.bid
-	local level = self.buildData.level
-	
-	local build  = UI.createSpriteWithFile("images/build/" .. bid .. "/league" .. level .. ".png")
-	return build
+    local bid = self.buildData.bid
+    local level = self.buildData.level
+    
+    local build  = UI.createSpriteWithFile("images/build/" .. bid .. "/league" .. level .. ".png")
+    return build
 end
 
 function Clan:changeNightMode(isNight)
-	local bid = self.buildData.bid
-	local build = self.buildView.build
-	if self.buildLevel<3 or not build then return end
-	if isNight then
-		local ox = build:getContentSize().width/2
+    local bid = self.buildData.bid
+    local build = self.buildView.build
+    if self.buildLevel<3 or not build then return end
+    if isNight then
+        local ox = build:getContentSize().width/2
 
         local sp = {nodeAnchor=General.anchorBottom, x=ox, y=49}
         
-		local light = UI.createSpriteWithFile("images/build/" .. bid .. "/leagueLight3.png")
-		screen.autoSuitable(light, sp)
-		build:addChild(light, 10, TAG_LIGHT)
-	else
-		local light = build:getChildByTag(TAG_LIGHT)
-		if light then
-			light:removeFromParentAndCleanup(true)
-		end
-	end
+        local light = UI.createSpriteWithFile("images/build/" .. bid .. "/leagueLight3.png")
+        screen.autoSuitable(light, sp)
+        build:addChild(light, 10, TAG_LIGHT)
+    else
+        local light = build:getChildByTag(TAG_LIGHT)
+        if light then
+            light:removeFromParentAndCleanup(true)
+        end
+    end
 end
 
 function Clan:getLevel0Build()
-	local gsize = self.buildData.gridSize
-	local temp = UI.createSpriteWithFile("images/build/2/league0.png")
-	screen.autoSuitable(temp, {nodeAnchor=General.anchorBottom, x=138, y=getParam("buildViewOffy2", 0)})
+    local gsize = self.buildData.gridSize
+    local temp = UI.createSpriteWithFile("images/build/2/league0.png")
+    screen.autoSuitable(temp, {nodeAnchor=General.anchorBottom, x=138, y=getParam("buildViewOffy2", 0)})
 
     local build = temp
 
-	return temp
+    return temp
 end
 
 function Clan:rebuilt()
     local data = StaticData.getBuildData(self.buildData.bid, 1)
     if ResourceLogic.checkAndCost(data, self.rebuilt, self) then
-		self:upgradeOver()
-		self.buildView.state.movable = true
-		if self.buildView.state.isFocus then
-		    self.buildView:setFocus(false)
-		end
-		self.buildView:changeUpdateState(true)
-	end
+        self:upgradeOver()
+        self.buildView.state.movable = true
+        if self.buildView.state.isFocus then
+            self.buildView:setFocus(false)
+        end
+        self.buildView:changeUpdateState(true)
+    end
 end
 
 function Clan:getBuildShadow()
@@ -188,12 +188,12 @@ function ClanTomb:ctor(bid, setting)
 end
 
 function ClanTomb:getBuildView()
-	local build = UI.createSpriteWithFrame("clanTomb.png")
-	
+    local build = UI.createSpriteWithFrame("clanTomb.png")
+    
     local clanIcon = UI.createSpriteWithFile("images/leagueIcon/" .. self.icon .. ".png",CCSizeMake(38, 43))
     screen.autoSuitable(clanIcon, {nodeAnchor=General.anchorBottom, x=build:getContentSize().width/2, y=49})
     build:addChild(clanIcon, 10)
-	return build
+    return build
 end
 
 function ClanTomb:updateBattle(diff)
@@ -202,14 +202,14 @@ function ClanTomb:updateBattle(diff)
         local soldier = table.remove(BattleLogic.clanTroops, 1)
         local s = SoldierHelper.create(soldier[1], {isFighting=true, level=soldier[2]})
 
-    	local x, y = s:getMoveArroundPosition(self)
-    	x, y = math.floor(x), math.floor(y)
-    	s:addToScene(self.buildView.scene, {x, y})
-    	table.insert(self.buildView.scene.soldiers, s)
-    	s:playAppearSound()
-    	table.insert(ReplayLogic.cmdList, {math.floor((timer.getTime()-ReplayLogic.beginTime)*1000)/1000, "s", soldier[1], x, y, soldier[2]})
-    	--BattleLogic.incSoldier(item.id)
-    	if #(BattleLogic.clanTroops)==0 then self.buildView.scene.menu.hasClan = nil end
+        local x, y = s:getMoveArroundPosition(self)
+        x, y = math.floor(x), math.floor(y)
+        s:addToScene(self.buildView.scene, {x, y})
+        table.insert(self.buildView.scene.soldiers, s)
+        s:playAppearSound()
+        table.insert(ReplayLogic.cmdList, {math.floor((timer.getTime()-ReplayLogic.beginTime)*1000)/1000, "s", soldier[1], x, y, soldier[2]})
+        --BattleLogic.incSoldier(item.id)
+        if #(BattleLogic.clanTroops)==0 then self.buildView.scene.menu.hasClan = nil end
     end
 end
 

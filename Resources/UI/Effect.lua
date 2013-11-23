@@ -36,7 +36,7 @@ function Effect.createGatherEffect(dir, time, color)
 
     p:setBlendAdditive(true)
     p:setTexture(CCTextureCache:sharedTextureCache():addImage("images/effects/circle2.png"))
-	return p
+    return p
 end
 
 function Effect.createFlyEffect(dir, time)
@@ -108,7 +108,7 @@ function Effect.createBombEffect(time, color)
     p:setEndColor(ccc4f(0, 0.05, 1, 1))
     p:setBlendAdditive(true)
     p:setTexture(CCTextureCache:sharedTextureCache():addImage("images/effects/circle2.png"))
-	return p
+    return p
 end
 
 require "UI.Effect.Flame"

@@ -5,7 +5,7 @@ LoadingScene = class(NormalChangeDelegate)
 
 function LoadingScene:ctor(fromScene, toScene)
     local bg = self.view
-	local temp = nil
+    local temp = nil
     temp = UI.createSpriteWithFile("images/loadingBack.png")
     screen.autoSuitable(temp, {screenAnchor=General.anchorCenter, scaleType=screen.SCALE_NORMAL})
     bg:addChild(temp)
@@ -65,7 +65,7 @@ function LoadingScene:readyToLoad()
         self.loadMax = self.loadMax+30
         if username=="" then username=nil end
         if tempname=="" then tempname=nil end
-	    General.useGameCenter = CCUserDefault:sharedUserDefault():getBoolForKey("gamecenter")
+        General.useGameCenter = CCUserDefault:sharedUserDefault():getBoolForKey("gamecenter")
         network.httpRequest("login", self.requestSelfId, {isPost=true, params={username=username, tempname=tempname, nickname=CCUserDefault:sharedUserDefault():getStringForKey("nickname")}}, self)
     else
         delayCallback(1, self.readyToLoad, self)
@@ -90,13 +90,13 @@ function LoadingScene:requestData()
             --[[
                 --if initInfo.baseCrystal==PauseLogic.pauseBuyObj.base then
                     CrystalLogic.changeCrystal(PauseLogic.pauseBuyObj.get)
-                	if UserData.totalCrystal==0 then
-                	    UserData.isNewVip = true
-                	end
-                	UserData.totalCrystal = UserData.totalCrystal + PauseLogic.pauseBuyObj.get
-                	if PauseLogic.pauseBuyObj.type==6 then
-                	    UserData.lastOffTime = timer.getTime()
-                	end
+                    if UserData.totalCrystal==0 then
+                        UserData.isNewVip = true
+                    end
+                    UserData.totalCrystal = UserData.totalCrystal + PauseLogic.pauseBuyObj.get
+                    if PauseLogic.pauseBuyObj.type==6 then
+                        UserData.lastOffTime = timer.getTime()
+                    end
                 --end
                 UserStat.addCrystalLog(-1, timer.getTime(), PauseLogic.pauseBuyObj.get, PauseLogic.pauseBuyObj.type-1)
                 PauseLogic.pauseBuyObj = nil
@@ -112,13 +112,13 @@ function LoadingScene:requestSelfId(isSuc, result)
         if r.code==0 then
             self.loadMax = self.loadMax+20
             UserData.userId = r.uid
-			CCUserDefault:sharedUserDefault():setIntegerForKey("userId", r.uid)
-	        self:requestData()
-	        if self.params then
-	            for k, v in pairs(self.params) do
-	                PARAM[k] = v
-	            end
-	        end
+            CCUserDefault:sharedUserDefault():setIntegerForKey("userId", r.uid)
+            self:requestData()
+            if self.params then
+                for k, v in pairs(self.params) do
+                    PARAM[k] = v
+                end
+            end
         end
     end
 end

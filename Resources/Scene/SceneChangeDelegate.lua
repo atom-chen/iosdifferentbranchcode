@@ -12,7 +12,7 @@ end
 function NormalChangeDelegate:ctor(fromScene, toScene)
     local bg = CCTouchLayer:create(display.DIALOG_PRI, true)
     bg:setContentSize(General.winSize)
-	self.view = bg
+    self.view = bg
     simpleRegisterEvent(bg, {update={callback = self.update, inteval=0.1}, enterOrExit={callback=self.enterOrExit}}, self)
     self.loadState = 0
     --ÄÚ²¿

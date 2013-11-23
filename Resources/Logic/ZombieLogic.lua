@@ -7,21 +7,21 @@ function ZombieLogic.delayNext()
 end
 
 function ZombieLogic.init()
-	ZombieLogic.max=0
-	ZombieLogic.num=0
-	ZombieLogic.person = math.floor(ResourceLogic.getResource("person") * 19/100)
-	ZombieLogic.personMax = ZombieLogic.person
-	ZombieLogic.losePerson = 0
-	ZombieLogic.personNum = 0
-	ZombieLogic.losePersonNum = 0
-	ZombieLogic.initZombies()
-	ZombieLogic.buildNum = 0
-	ZombieLogic.destroyNum = 0
-	ZombieLogic.percent = 100
-	ZombieLogic.stars = 3
-	ZombieLogic.killZombies = {0,0,0,0,0,0,0,0}
-	ZombieLogic.battleEnd = false
-	BattleLogic.costTraps = {}
+    ZombieLogic.max=0
+    ZombieLogic.num=0
+    ZombieLogic.person = math.floor(ResourceLogic.getResource("person") * 19/100)
+    ZombieLogic.personMax = ZombieLogic.person
+    ZombieLogic.losePerson = 0
+    ZombieLogic.personNum = 0
+    ZombieLogic.losePersonNum = 0
+    ZombieLogic.initZombies()
+    ZombieLogic.buildNum = 0
+    ZombieLogic.destroyNum = 0
+    ZombieLogic.percent = 100
+    ZombieLogic.stars = 3
+    ZombieLogic.killZombies = {0,0,0,0,0,0,0,0}
+    ZombieLogic.battleEnd = false
+    BattleLogic.costTraps = {}
 end
 
 local ZOMBIE_SETTINGS = {{{3,0,0,0,0,0,0,0}},{{10,10,0,0,0,0,0,0}},{{30,30,10,0,0,0,0,0}},{{40,40,30,0,10,0,0,0}},{{40,40,40,15,15,0,0,0}},{{40,45,45,30,15,5,0,0}},{{40,40,50,40,20,5,2,0}},{{40,40,40,40,25,7,5,2}},{{30,30,40,40,30,10,7,5}}}
@@ -98,37 +98,37 @@ function ZombieLogic.destroyBuild(bid)
 end
 
 function ZombieLogic.changeBuilderMax(value)
-	ZombieLogic.max=ZombieLogic.max+value
+    ZombieLogic.max=ZombieLogic.max+value
 end
 
 function ZombieLogic.changeBuilder(value)
-	ZombieLogic.num=ZombieLogic.num+value
+    ZombieLogic.num=ZombieLogic.num+value
 end
 
 function ZombieLogic.getBuilderMax()
-	return ZombieLogic.max
+    return ZombieLogic.max
 end
 
 function ZombieLogic.getBuilder()
-	return ZombieLogic.num
+    return ZombieLogic.num
 end
 
 function ZombieLogic.changePerson(value)
-	if value<0 then
-		ZombieLogic.losePersonNum = ZombieLogic.losePersonNum - value
-		ZombieLogic.losePerson = math.floor((ZombieLogic.losePersonNum/ZombieLogic.personNum)*ZombieLogic.personMax)
-		ZombieLogic.person = ZombieLogic.personMax - ZombieLogic.losePerson
-	else
-	    ZombieLogic.personNum = ZombieLogic.personNum+value
-	end
+    if value<0 then
+        ZombieLogic.losePersonNum = ZombieLogic.losePersonNum - value
+        ZombieLogic.losePerson = math.floor((ZombieLogic.losePersonNum/ZombieLogic.personNum)*ZombieLogic.personMax)
+        ZombieLogic.person = ZombieLogic.personMax - ZombieLogic.losePerson
+    else
+        ZombieLogic.personNum = ZombieLogic.personNum+value
+    end
 end
 
 function ZombieLogic.getPerson()
-	return ZombieLogic.person
+    return ZombieLogic.person
 end
 
 function ZombieLogic.getZombie()
-	return ZombieLogic.zombie
+    return ZombieLogic.zombie
 end
 
 function ZombieLogic.incZombieNumber(zid)
@@ -136,6 +136,6 @@ function ZombieLogic.incZombieNumber(zid)
 end
 
 function ZombieLogic.getBattleResult()
-	local result = {stars = ZombieLogic.stars, percent=ZombieLogic.percent, losePerson=ZombieLogic.losePerson, killZombies=ZombieLogic.killZombies}
-	return result
+    local result = {stars = ZombieLogic.stars, percent=ZombieLogic.percent, losePerson=ZombieLogic.losePerson, killZombies=ZombieLogic.killZombies}
+    return result
 end

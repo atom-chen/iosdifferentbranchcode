@@ -26,5 +26,5 @@ PARAM = {
 }
 
 function getParam(key, default)
-	return PARAM[key] or default
+    return PARAM[key] or default
 end
