@@ -7,9 +7,9 @@ local LABEL_BASE_Y = 666
 
 local editTabIndex=4
 
-local LeagueWarIntroDialog = class()
+LeagueWarIntroDialog = class()
 
-function LeagueWarIntroDialog:ctor()
+function LeagueWarIntroDialog:ctor(isIntro2)
     local temp, bg = nil
     bg = UI.createButton(CCSizeMake(720, 526), doNothing, {image="images/dialogBgA.png", priority=display.DIALOG_PRI, nodeChangeHandler = doNothing})
     screen.autoSuitable(bg, {screenAnchor=General.anchorCenter, scaleType = screen.SCALE_DIALOG_CLEVER})
@@ -29,13 +29,26 @@ function LeagueWarIntroDialog:ctor()
     temp = UI.createButton(CCSizeMake(135, 61), display.closeDialog, {image="images/buttonGreen.png", text=StringManager.getString("buttonYes"), fontSize=26, fontName=General.font3})
     screen.autoSuitable(temp, {x=449, y=134, nodeAnchor=General.anchorCenter})
     bg:addChild(temp)
-    temp = UI.createLabel(StringManager.getString("labelLeagueWarRule"), General.font1, 28, {colorR = 75, colorG = 66, colorB = 46, size=CCSizeMake(400, 240), align=kCCTextAlignmentLeft})
-    screen.autoSuitable(temp, {x=475, y=276, nodeAnchor=General.anchorCenter})
-    bg:addChild(temp)
-    
-    temp = UI.createLabel(StringManager.getString("titleLeagueWar"), General.font3, 30, {colorR = 255, colorG = 255, colorB = 255})
-    screen.autoSuitable(temp, {x=360, y=489, nodeAnchor=General.anchorCenter})
-    bg:addChild(temp)
+    if isIntro2 then
+        temp = UI.createLabel(StringManager.getString("textLeagueWar1"), General.font1, 25, {colorR = 75, colorG = 66, colorB = 46, size=CCSizeMake(420, 240), align=kCCTextAlignmentLeft})
+        screen.autoSuitable(temp, {x=465, y=346, nodeAnchor=General.anchorCenter})
+        bg:addChild(temp)
+        temp = UI.createLabel(StringManager.getString("textLeagueWar2"), General.font1, 23, {colorR = 75, colorG = 66, colorB = 46, size=CCSizeMake(420, 300), align=kCCTextAlignmentLeft})
+        screen.autoSuitable(temp, {x=465, y=256, nodeAnchor=General.anchorCenter})
+        bg:addChild(temp)
+        
+        temp = UI.createLabel(StringManager.getString("titleLeagueWar2"), General.font3, 30, {colorR = 255, colorG = 255, colorB = 255})
+        screen.autoSuitable(temp, {x=360, y=489, nodeAnchor=General.anchorCenter})
+        bg:addChild(temp)
+    else
+        temp = UI.createLabel(StringManager.getString("labelLeagueWarRule"), General.font1, 28, {colorR = 75, colorG = 66, colorB = 46, size=CCSizeMake(400, 240), align=kCCTextAlignmentLeft})
+        screen.autoSuitable(temp, {x=475, y=276, nodeAnchor=General.anchorCenter})
+        bg:addChild(temp)
+        
+        temp = UI.createLabel(StringManager.getString("titleLeagueWar"), General.font3, 30, {colorR = 255, colorG = 255, colorB = 255})
+        screen.autoSuitable(temp, {x=360, y=489, nodeAnchor=General.anchorCenter})
+        bg:addChild(temp)
+    end
     temp = UI.createButton(CCSizeMake(47, 46), display.closeDialog, {image="images/buttonClose.png"})
     screen.autoSuitable(temp, {x=683, y=492, nodeAnchor=General.anchorCenter})
     bg:addChild(temp)
@@ -583,8 +596,12 @@ function ClanDialog:createLeagueTab(info)
             end
             isLeaving = false
         end
-        local function onLeaveClan()
-            if not isLeaving and not network.single then
+        local function onLeaveClan(force)
+            if isLeaving then return end
+            if not force then
+                return display.showDialog(AlertDialog.new(StringManager.getString("alertTitleLeave"), StringManager.getString("alertTextLeave"),{callback=onLeaveClan, param=true}))
+            end
+            if not network.single then
                 isLeaving = true
                 network.httpRequest("leaveClan", leaveClanOver, {isPost=true, single=true, params={uid=UserData.userId, cid=info.clan}})
             end
@@ -1309,5 +1326,4 @@ end
 
 function ClanNoticeDialog:share()
     SNS.share(SNS.shareText, nil, self, 1)
-    UserStat.stat(UserStatType.SHARE)
 end

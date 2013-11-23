@@ -81,26 +81,12 @@ function LoadingScene:requestData()
         if version~="" then
             params.checkVersion=version
             params.check=1
-            params.country = default:getStringForKey("localCountry")
         end
+        params.country = default:getStringForKey("localCountry")
         if PauseLogic.pauseBuyObj then
             params.lastbuy = PauseLogic.pauseBuyObj.get
             params.lastbase = PauseLogic.pauseBuyObj.base
             params.lasttype = PauseLogic.pauseBuyObj.type
-            --[[
-                --if initInfo.baseCrystal==PauseLogic.pauseBuyObj.base then
-                    CrystalLogic.changeCrystal(PauseLogic.pauseBuyObj.get)
-                    if UserData.totalCrystal==0 then
-                        UserData.isNewVip = true
-                    end
-                    UserData.totalCrystal = UserData.totalCrystal + PauseLogic.pauseBuyObj.get
-                    if PauseLogic.pauseBuyObj.type==6 then
-                        UserData.lastOffTime = timer.getTime()
-                    end
-                --end
-                UserStat.addCrystalLog(-1, timer.getTime(), PauseLogic.pauseBuyObj.get, PauseLogic.pauseBuyObj.type-1)
-                PauseLogic.pauseBuyObj = nil
-            --]]
         end
         network.httpRequest("getData", self.requestSelfData, {params=params}, self)
     end

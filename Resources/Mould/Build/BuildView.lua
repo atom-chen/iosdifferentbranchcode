@@ -88,18 +88,7 @@ function BuildView:showNotice(text, type)
 end
 
 function BuildView:movePosition(position)
-    self.view:retain()
-    self.uiview:retain()
-    local parent = self.view:getParent()
-    if parent then
-        self.updatePause = true
-        parent:removeChild(self.view, false)
-        self.uiview:removeFromParentAndCleanup(false)
-    end
     self.view:setPosition(position[1], position[2])
-    --if self.isOperationDestroy then
-    --    if 
-    --end
     self.uiview:setPosition(position[1], position[2])
     
     local zOrder 
@@ -109,13 +98,15 @@ function BuildView:movePosition(position)
         zOrder = self.scene.SIZEY - position[2] - self.scene.mapGrid.sizeY*self.buildMould.buildData.gridSize/2
     end
 
-    simpleRegisterEvent(self.layer, self.eventEntries, self)
-    self.scene.soldierBuildingLayer:addChild(self.view, zOrder)
-    self.scene.uiground:addChild(self.uiview, zOrder)
-    self.updatePause = nil
-
-    self.view:release()
-    self.uiview:release()
+    local parent = self.view:getParent()
+    if not parent then
+        simpleRegisterEvent(self.layer, self.eventEntries, self)
+        self.scene.soldierBuildingLayer:addChild(self.view, zOrder)
+        self.scene.uiground:addChild(self.uiview, zOrder)
+    else
+        self.scene.soldierBuildingLayer:reorderChild(self.view, zOrder)
+        self.scene.uiground:reorderChild(self.uiview, zOrder)
+    end
     if self.circle then
         self.circle:setPosition(position[1], position[2]+self.view:getContentSize().height/2)
     end

@@ -62,15 +62,15 @@ local function pauseAndResume(event)
         isPause = false
         local delta = os.time()-pauseTime
         local curSceneType = display.getCurrentScene().sceneType
-        if delta>60 or (curSceneType==SceneTypes.Battle and delta>10) then
+        if delta>60 or delta<-1 or (curSceneType==SceneTypes.Battle and delta>10) then
             display.closeDialog()
             delayCallback(1, PauseLogic.restart)
             restarting = true
         else
             timer.synLocalTime(pauseGameTime, delta)
             CrystalLogic.buyObj = PauseLogic.pauseBuyObj
-            if CrystalLogic.buyObj then EventManager.sendMessage("EVENT_BUY_SUCCESS") end
             PauseLogic.pauseBuyObj = nil
+            if CrystalLogic.buyObj then EventManager.sendMessage("EVENT_BUY_SUCCESS") end
         end
     elseif event==EventManager.eventType.EVENT_NETWORK_OFF then
         display.showDialog(ErrorDialog.new(StringManager.getString("errorTitleNetworkOff"), StringManager.getString("errorTextNetworkOff"), StringManager.getString("buttonTryAgain")), false)

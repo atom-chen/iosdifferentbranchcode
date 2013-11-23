@@ -179,7 +179,7 @@ function BuildMould:beginUpgrade()
     if not bdata then return end
     if bdata.needLevel > UserData.level then
         display.pushNotice(UI.createNotice(StringManager.getFormatString("needLevel", {level=bdata.needLevel, name=StringManager.getString("dataBuildName" .. TOWN_BID)})))
-    elseif bdata.time>0 and ResourceLogic.getResource("builder")==0 then
+    elseif bdata.time>0 and ResourceLogic.getResource("builder")<=0 then
         display.pushNotice(UI.createNotice(StringManager.getString("noBuilder")))
     elseif self.needPerson and ResourceLogic.getResource("person")<bdata.extendValue2 then
         if bdata.extendValue2 > ResourceLogic.getResourceMax("person") then

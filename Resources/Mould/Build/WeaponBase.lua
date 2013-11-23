@@ -241,9 +241,11 @@ function WeaponBase:getBuildView()
     screen.autoSuitable(temp, {nodeAnchor=General.anchorBottom, x=w})
     build:addChild(temp, -1, TAG_ACTION)
     
+    --[[
     temp = UI.createSpriteWithFrame("build" .. bid .. "_" .. level .. "light.png")
     screen.autoSuitable(temp, {nodeAnchor=General.anchorBottom, x=w})
     build:addChild(temp, 1, TAG_LIGHT)
+    --]]
     
     temp = build
     build = CCNode:create()
@@ -260,21 +262,28 @@ end
 
 function WeaponBase:updateOperationLogic()
     local temp
-    local trainLight = self.buildView.build:getChildByTag(TAG_LIGHT)
+    local build = self.buildView.build:getChildByTag(TAG_SPECIAL)
+    local trainLight = build:getChildByTag(TAG_LIGHT)
     if #(self.callList)>0 then
-        --[[
         if not trainLight then
-
-            trainLight = UI.createSpriteWithFile("images/build/" .. self.buildData.bid .. "/WeaponBaseLight1.png")
-            screen.autoSuitable(trainLight,{nodeAnchor=General.anchorLeftBottom, x=self.buildView.build:getContentSize().width/2+23, y=13})
-            self.buildView.build:addChild(trainLight, 10, TAG_LIGHT)
-            
+            trainLight = UI.createSpriteWithFrame("build" .. self.buildData.bid .. "_" .. self.buildData.level .. "light.png")
+            screen.autoSuitable(trainLight,{nodeAnchor=General.anchorBottom, x=self.buildView.build:getContentSize().width/2, y=0})
+            build:addChild(trainLight, 10, TAG_LIGHT)
             local array = CCArray:create()
             array:addObject(CCFadeOut:create(1))
             array:addObject(CCFadeIn:create(1))
             trainLight:runAction(CCRepeatForever:create(CCSequence:create(array)))
+            local cache = CCSpriteFrameCache:sharedSpriteFrameCache()
+            local animation = CCAnimation:create()
+            for i = 3, 1,-1 do
+                animation:addSpriteFrame(cache:spriteFrameByName("build" .. self.buildData.bid .. "_action" .. i .. ".png"))
+            end
+            animation:setDelayPerUnit(0.1)
+            animation:setRestoreOriginalFrame(false)
+            local animate = CCAnimate:create(animation)
+            build:getChildByTag(TAG_ACTION):runAction(CCRepeatForever:create(animate))
         end
-        --]]
+        
         local perTime = self.callList[1].perTime
         local wid = self.callList[1].wid
         if not self.buildView.timeProcess then
@@ -319,6 +328,7 @@ function WeaponBase:updateOperationLogic()
     if #(self.callList)==0 then
         if trainLight then
             trainLight:removeFromParentAndCleanup(true)
+            build:getChildByTag(TAG_ACTION):stopAllActions()
         end
         if self.buildView.timeProcess then
             self.noticeWid = nil

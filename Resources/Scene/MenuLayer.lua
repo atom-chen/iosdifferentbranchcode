@@ -16,6 +16,7 @@ require "Dialog.VideoDialog"
 require "Dialog.RenameDialog"
 require "Dialog.DailyDialog"
 require "Dialog.WeaponDialog"
+require "Dialog.RewardNewDialog"
 
 MenuLayer = class()
 
@@ -529,6 +530,7 @@ function MenuLayer:eventHandler(eventType, param)
         if not display.isSceneChange then
             display.showDialog(SNSDialog.new(), false)
         end
+        --[[
         if not self.newspaperIcon and UserSetting.getValue("nozomiNewspaper")<param and param>=2 then
             if self.warIcon then
                 self.warIcon:removeFromParentAndCleanup(true)
@@ -544,11 +546,18 @@ function MenuLayer:eventHandler(eventType, param)
             self.newspaperIcon:setScale(0)
             self.newspaperIcon:runAction(CCEaseBackOut:create(CCScaleTo:create(0.5, sc, sc)))
         end
-        if not self.newspaperIcon and UserSetting.getValue("nozomiVideo")==0 and param>=2 and General.supportVideo then
-            if self.warIcon then
-                self.warIcon:removeFromParentAndCleanup(true)
-                self.warIcon = nil
+        --]]
+        if not self.warIcon and param==3 and UserSetting.getValue("leagueWarOpened")==0 then
+            UserData.showLeagueWar = true
+            if self.videoIcon then
+                self.videoIcon:removeFromParentAndCleanup(true)
+                self.videoIcon = nil
             end
+            self.warIcon = UI.createButton(CCSizeMake(67, 75), self.openLeagueWar, {image="images/leagueBattleIcon.png", callbackParam=self, priority=display.MENU_BUTTON_PRI})
+            screen.autoSuitable(self.warIcon, {nodeAnchor=General.anchorCenter, screenAnchor=General.anchorRight, x=-51, y=19, scaleType=screen.SCALE_NORMAL})
+            self.view:addChild(self.warIcon)
+        end
+        if not self.warIcon and UserSetting.getValue("nozomiVideo")==0 and param>=2 and General.supportVideo then
             self.videoIcon = UI.createButton(CCSizeMake(70, 73), self.openNozomiVideo, {image="images/battleEndVideo.png", callbackParam=self, priority=display.MENU_BUTTON_PRI})
             screen.autoSuitable(self.videoIcon, {nodeAnchor=General.anchorCenter, screenAnchor=General.anchorRight, x=-51, y=19, scaleType=screen.SCALE_NORMAL})
             self.view:addChild(self.videoIcon)
@@ -682,16 +691,13 @@ function MenuLayer:update(diff)
             curDialog = DailyDialog.new(UserData.dailyReward, UserData.dailyDays)
             UserData.dailyReward = nil
             UserData.dailyDays = nil
-        elseif UserData.isNewVip then
-            curDialog = VipDialog.new()
-            UserData.isNewVip = nil
+        elseif UserData.firstReward then
+            curDialog = FirstRewardDialog.new(UserData.firstReward)
+            UserData.firstReward = nil
         elseif self.showFeedback then
             curDialog = FeedbackDialog.new()
             UserSetting.setValue("feadbackDialog", UserData.level)
             self.showFeedback = nil
-        elseif UserData.showLeagueWar then
-            UserData.showLeagueWar = nil
-            curDialog = RankDialog.new()
         elseif UserData.rewards then
             local rnum = #(UserData.rewards)
             if rnum>0 then
@@ -700,6 +706,9 @@ function MenuLayer:update(diff)
             else
                 UserData.rewards = nil
             end
+        elseif not self.flagShowRewards and #(UserData.allRewards)>0 and GuideLogic.step>=14 then
+            self.flagShowRewards = true
+            curDialog = RewardNewDialog.new()
         end
         if curDialog then
             display.showDialog(curDialog, false)
@@ -729,20 +738,58 @@ function MenuLayer:update(diff)
             self.view:addChild(self.warIcon)
         end
     else
-        if self.warIcon then
+        if self.warIcon and not UserData.showLeagueWar then
             self.warIcon:removeFromParentAndCleanup(true)
             self.warIcon = nil
         end
     end
-    
+    --[[
+    if #(UserData.allRewards)>0 and GuideLogic.step>=14 then
+        if not self.rewardIcon then
+            self.rewardIcon = UI.createButton(CCSizeMake(56, 58), display.showDialog, {image="images/crystal2.png", callbackParam=RewardNewDialog, priority=display.MENU_BUTTON_PRI-2})
+            screen.autoSuitable(self.rewardIcon, {nodeAnchor=General.anchorCenter, screenAnchor=General.anchorRight, x=-51, y=19, scaleType=screen.SCALE_NORMAL})
+            self.view:addChild(self.rewardIcon, 1)
+        end
+    else
+        if self.rewardIcon then
+            self.rewardIcon:removeFromParentAndCleanup(true)
+            self.rewardIcon = nil
+        end
+    end
+    --]]
+    if UserData.totalCrystal==0 and UserSetting.getValue("firstRewardDialog")==0 then
+        if not self.rewardIcon then
+            self.rewardIcon = UI.createButton(CCSizeMake(56, 58), self.showFirstReward, {image="images/crystal2.png", callbackParam=self, priority=display.MENU_BUTTON_PRI-2})
+            screen.autoSuitable(self.rewardIcon, {nodeAnchor=General.anchorCenter, screenAnchor=General.anchorRight, x=-51, y=19, scaleType=screen.SCALE_NORMAL})
+            self.view:addChild(self.rewardIcon, 1)
+        end
+    elseif self.rewardIcon then
+        self.rewardIcon:removeFromParentAndCleanup(true)
+        self.rewardIcon = nil
+    end
     if self.score.value ~= UserData.userScore then
         self.score.value = UserData.userScore
         self.score.valueLabel:setString(tostring(self.score.value))
     end
 end
 
+function MenuLayer:showFirstReward()
+    UserSetting.setValue("firstRewardDialog",1)
+    if self.rewardIcon then
+        self.rewardIcon:removeFromParentAndCleanup(true)
+        self.rewardIcon = nil
+        display.showDialog(FirstRewardDialog)
+    end
+end
+
 function MenuLayer:openLeagueWar()
-    display.showDialog(ClanDialog.new(3))
+    if UserData.showLeagueWar then
+        UserData.showLeagueWar = nil
+        UserSetting.setValue("leagueWarOpened",1)
+        display.showDialog(LeagueWarIntroDialog.new(true))
+    else
+        display.showDialog(ClanDialog.new(3))
+    end
 end
 
 function MenuLayer:dalayZombieAttack(force)

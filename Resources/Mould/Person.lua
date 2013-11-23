@@ -404,15 +404,9 @@ function Person:update(diff)
                 local tempY = stateInfo.fromPoint[2] + delta*(stateInfo.toPoint[2]-stateInfo.fromPoint[2])
                 self.view:setPosition(stateInfo.fromPoint[1] + delta*(stateInfo.toPoint[1]-stateInfo.fromPoint[1]), tempY)
                     
-                self.updateEntry.pause = true
-                self.view:retain()
                 local parent = self.view:getParent()
                 --zorder 决定绘制顺序 来便于alpha 混合
-                self.view:removeFromParentAndCleanup(false)
-                parent:addChild(self.view,self.maxZorder - tempY)
-
-                self.view:release()
-                self.updateEntry.pause = false
+                parent:reorderChild(self.view,self.maxZorder - tempY)
                 if delta<1 then moveEnd = false end
             end
         end

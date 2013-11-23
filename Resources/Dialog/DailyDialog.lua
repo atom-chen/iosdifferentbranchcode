@@ -2,7 +2,6 @@ DailyDialog = class()
 
 function DailyDialog:share()
     SNS.share(SNS.shareText, nil, self)
-    UserStat.stat(UserStatType.SHARE)
 end
 
 function DailyDialog:ctor(reward, days)
@@ -23,7 +22,7 @@ function DailyDialog:ctor(reward, days)
         if spDays[which]~=days then return end
         local gain = reward * spRate[which]
         display.closeDialog()
-        CrystalLogic.changeCrystal(gain)
+        CrystalLogic.changeCrystal(gain, UserData.rcc-gain)
         CrystalLogic.rewardDay = days
         display.pushNotice(UI.createNotice(StringManager.getFormatString("noticeRemoveObstacle", {num=gain}), 255))
     end
@@ -62,7 +61,6 @@ VipDialog = class()
 
 function VipDialog:share()
     SNS.share(SNS.shareText, nil, self)
-    UserStat.stat(UserStatType.SHARE)
 end
 
 function VipDialog:ctor()
@@ -126,5 +124,4 @@ end
 
 function RewardDialog:share()
     SNS.share(SNS.shareText, nil, self)
-    UserStat.stat(UserStatType.SHARE)
 end

@@ -60,7 +60,7 @@ do
         local item = resourceItems[resourceType]
         if not item then
             if resourceType=="crystal" then
-                return CrystalLogic.changeCrystal(value)
+                return CrystalLogic.changeCrystal(value, UserData.rcc-value)
             end
             return UserData.changeValue(resourceType, value)
         end

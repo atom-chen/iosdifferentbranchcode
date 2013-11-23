@@ -63,7 +63,7 @@ function NormalChangeDelegate:update(diff)
         end
         if self.fromScene and self.fromScene.view and self.fromScene.sceneType~=self.toScene.sceneType then
             -- 在移除场景前移除纹理，是为了避免场景内纹理被清理。
-            CCTextureCache:sharedTextureCache():removeUnusedTextures()
+            --CCTextureCache:sharedTextureCache():removeUnusedTextures()
         end
         if self.fromScene then
             self.fromScene:removeScene()

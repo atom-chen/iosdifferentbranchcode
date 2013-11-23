@@ -55,7 +55,7 @@ function ChatRoom.checkChat()
         end
         ChatRoom.chatChannel = ChatRoom.chatChannel + 1
         local beginTime = (ChatRoom.beginTime or 0)
-        network.httpRequest(network.chatUrl .. "recv", ChatRoom.receiveChat, {params={uid=UserData.userId, cid=UserData.clan, since=beginTime}, callbackParam=beginTime, timeout=30})
+        network.httpRequest(network.chatUrl .. "recv", ChatRoom.receiveChat, {params={uid=UserData.userId, cid=UserData.clan, since=beginTime}, callbackParam=beginTime, timeout=30, noError=true})
     end
     if UserData.totalCrystal>=0 then
         if ChatRoom.globalChannel>0 then
@@ -67,8 +67,58 @@ function ChatRoom.checkChat()
         end 
         ChatRoom.globalChannel = ChatRoom.globalChannel + 1
         local beginTime = (ChatRoom.globalBeginTime or 0)
-        network.httpRequest(network.chatUrl .. "recv", ChatRoom.receiveGlobalChat, {params={uid=UserData.userId, cid=0, since=beginTime}, callbackParam=beginTime, timeout=30})
+        network.httpRequest(network.chatUrl .. "recv", ChatRoom.receiveGlobalChat, {params={uid=UserData.userId, cid=0, since=beginTime}, callbackParam=beginTime, timeout=30, noError=true})
     end
+end
+
+local function stringMinusSub(text, startIndex, deleteNum)
+    if startIndex==1 then
+        return string.sub(text, 1+deleteNum)
+    elseif startIndex+deleteNum>string.len(text) then
+        return string.sub(text, 1, startIndex-1)
+    else
+        return string.sub(text,1,startIndex-1) .. string.sub(text, startIndex+deleteNum)
+    end
+end
+
+function ChatRoom.repairText(text)
+    if network.platform=="ios" or network.platform=="ios_cn" then
+        return text
+    end
+    if text then
+        local i=1
+        local tl = string.len(text)
+        while i<=tl do
+            local c = string.byte(text, i)
+            if c<128 then
+                i=i+1
+            else
+                -- skip more then 3 char
+                if c>=240 then
+                    local l=4
+                    if c>=252 then
+                        l=6
+                    elseif c>=248 then
+                        l=5
+                    end
+                    text = stringMinusSub(text, i, l)
+                    tl = tl-l
+                elseif c>=224 then
+                    if c==226 and string.byte(text,i+1)==156 then
+                        text = stringMinusSub(text, i, 3)
+                        tl = tl-3
+                    else
+                        i=i+3
+                    end
+                else
+                    i=i+2
+                end
+            end
+        end
+        return text
+    else
+        return ""
+    end 
 end
 
 function ChatRoom.receiveChat(suc, result, lastTime)
@@ -81,7 +131,7 @@ function ChatRoom.receiveChat(suc, result, lastTime)
         for i=1, #msgs do
             local msg = msgs[i]
             if msg[5]=="msg" then
-                table.insert(ChatRoom.messages, 1, {uid=msg[1], name=msg[2], text=msg[3], time=timer.getTime(msg[4]), type=msg[5]})
+                table.insert(ChatRoom.messages, 1, {uid=msg[1], name=msg[2], text=ChatRoom.repairText(msg[3]), time=timer.getTime(msg[4]), type=msg[5]})
                 newMsgNum = newMsgNum+1
             elseif msg[5]=="sys" then
                 local newMsg = {uid=0, name="Caesars", time=timer.getTime(msg[4]), type="sys"}
@@ -185,7 +235,7 @@ function ChatRoom.receiveGlobalChat(suc, result, lastTime)
         for i=1, #msgs do
             local msg = msgs[i]
             if msg[5]=="msg" then
-                table.insert(ChatRoom.globalMsgs, 1, {uid=msg[1], name=msg[2], text=msg[3], time=timer.getTime(msg[4]), type=msg[5]})
+                table.insert(ChatRoom.globalMsgs, 1, {uid=msg[1], name=msg[2], text=ChatRoom.repairText(msg[3]), time=timer.getTime(msg[4]), type=msg[5]})
             end
         end
         if #msgs>0 then
@@ -282,104 +332,93 @@ function ChatRoom.onDonate(msg)
     --]]
 end
 
+function ChatRoom.updateChatCell(cell, scrollView, msg)
+    local Y=0
+    local temp = UI.createSpriteWithFile("images/chatRoomSeperator.png",CCSizeMake(336, 2))
+    screen.autoSuitable(temp, {x=17, y=3})
+    cell:addChild(temp)
+    local tempStr
+    if timer.getTime()-msg.time<60 then
+        tempStr = StringManager.getString("labelJustNow")
+    else
+        tempStr = StringManager.getFormatString("timeAgo", {time=StringManager.getTimeString(timer.getTime()-msg.time)})
+    end
+    temp = UI.createLabel(tempStr, General.font1, 18, {colorR = 149, colorG = 148, colorB = 139})
+    screen.autoSuitable(temp, {x=353, y=22, nodeAnchor=General.anchorRight})
+    cell:addChild(temp)
+    if msg.type=="msg" then
+        local color = msg.color or {255, 255, 255}
+        temp = UI.createLabel(msg.text or "", General.font5, 20, {colorR = color[1], colorG = color[2], colorB = color[3], size=CCSizeMake(310, 0), align=kCCTextAlignmentLeft})
+        local lheight = temp:getContentSize().height * temp:getScale()
+        screen.autoSuitable(temp, {x=19, y=39+lheight, nodeAnchor=General.anchorLeftTop})
+        cell:addChild(temp)
+        Y = Y+lheight-10
+    elseif msg.type=="request" then
+        local property = msg.property
+        local canDonate = true
+        if msg.uid==UserData.userId then
+            canDonate = false
+        else
+            local leftspace = property[2]-property[1]
+            local leftnum = 5
+            for _, s in ipairs(property[3]) do
+                if s[1]==UserData.userId then
+                    leftnum = leftnum-1
+                end
+            end
+            if leftnum<=0 or leftspace<=0 then
+                canDonate = false
+            end
+        end
+        if canDonate then
+            Y = Y+68
+            temp = scrollView:createButton(CCSizeMake(123, 43), ChatRoom.onDonate, {callbackParam=msg, image="images/buttonGreenB.png", text=StringManager.getString("buttonDonate"), fontSize=22, fontName=General.font3})
+            screen.autoSuitable(temp, {x=217, y=54, nodeAnchor=General.anchorCenter})
+            cell:addChild(temp)
+            msg.cell = cell
+        else
+            Y = Y+25
+        end
+        temp = UI.createLabel(property[1] .. "/" .. property[2], General.font1, 20, {colorR = 255, colorG = 255, colorB = 255})
+        screen.autoSuitable(temp, {x=96, y=Y+27, nodeAnchor=General.anchorRight})
+        cell:addChild(temp)
+        local ft = {value=property[1], valueLabel=temp, max=property[2]}
+        temp = UI.createSpriteWithFile("images/donateBack.png",CCSizeMake(226, 23))
+        screen.autoSuitable(temp, {x=104, y=Y+16})
+        cell:addChild(temp)
+        temp = UI.createSpriteWithFile("images/donateFiller.png",CCSizeMake(220, 17))
+        screen.autoSuitable(temp, {x=107, y=Y+19})
+        cell:addChild(temp)
+        ft.filler = temp
+        UI.registerAsProcess(temp, ft)
+        UI.setProcess(temp, ft, property[1]/property[2])
+    end
+    local tempStr = StringManager.getString("labelYou")
+    if msg.uid~=UserData.userId then
+        tempStr = msg.name
+        if tempStr == "" then tempStr="EmptyName" end
+    end
+    temp = UI.createLabel(tempStr, General.font5, 22, {colorR = 222, colorG = 215, colorB = 165})
+    screen.autoSuitable(temp, {x=20, y=Y+75, nodeAnchor=General.anchorLeft})
+    cell:addChild(temp)
+    local nameLabel = temp
+    local visitY = Y+63
+    Y = Y+75+temp:getContentSize().height/2
+    cell:setContentSize(CCSizeMake(368, Y))
+    if msg.uid~=UserData.userId then
+        local w = nameLabel:getContentSize().width * nameLabel:getScaleX()
+        temp = UI.createSpriteWithFile("images/chatRoomItemVisit.png",CCSizeMake(22, 23))
+        screen.autoSuitable(temp, {x=22+w, y=visitY})
+        cell:addChild(temp)
+        UI.registerVisitIcon(cell, scrollView, ChatRoom.view, msg.uid, temp)
+    end
+end
+
 function ChatRoom.reloadLeagueChats()
     if ChatRoom.deleted or not ChatRoom.leagueView then return end
     local bg = ChatRoom.leagueView:getChildByTag(TAG_ACTION)
-    local msgs = ChatRoom.messages
     bg:removeAllChildrenWithCleanup(true)
-    local temp
-    local OFFY = 0
-    local scrollView = UI.createScrollView(CCSizeMake(368, 582), false)
-    for i=1, #msgs do
-        if true then
-            local cell = CCNode:create()
-            local msg = msgs[i]
-            local Y=0
-            temp = UI.createSpriteWithFile("images/chatRoomSeperator.png",CCSizeMake(336, 2))
-            screen.autoSuitable(temp, {x=17, y=3})
-            cell:addChild(temp)
-            if timer.getTime()-msg.time<60 then
-                tempStr = StringManager.getString("labelJustNow")
-            else
-                tempStr = StringManager.getFormatString("timeAgo", {time=StringManager.getTimeString(timer.getTime()-msg.time)})
-            end
-            temp = UI.createLabel(tempStr, General.font1, 18, {colorR = 149, colorG = 148, colorB = 139})
-            screen.autoSuitable(temp, {x=353, y=22, nodeAnchor=General.anchorRight})
-            cell:addChild(temp)
-            
-            if msg.type=="msg" then
-                local color = msg.color or {255, 255, 255}
-                temp = UI.createLabel(msg.text or "", General.font5, 20, {colorR = color[1], colorG = color[2], colorB = color[3], size=CCSizeMake(310, 0), align=kCCTextAlignmentLeft})
-                local lheight = temp:getContentSize().height * temp:getScale()
-                screen.autoSuitable(temp, {x=19, y=39+lheight, nodeAnchor=General.anchorLeftTop})
-                cell:addChild(temp)
-                Y = Y+lheight-10
-            elseif msg.type=="request" then
-                local property = msg.property
-                
-                local canDonate = true
-                if msg.uid==UserData.userId then
-                    canDonate = false
-                else
-                    local leftspace = property[2]-property[1]
-                    local leftnum = 5
-                    for _, s in ipairs(property[3]) do
-                        if s[1]==UserData.userId then
-                            leftnum = leftnum-1
-                        end
-                    end
-                    if leftnum<=0 or leftspace<=0 then
-                        canDonate = false
-                    end
-                end
-                if canDonate then
-                    Y = Y+68
-                    temp = scrollView:createButton(CCSizeMake(123, 43), ChatRoom.onDonate, {callbackParam=msg, image="images/buttonGreenB.png", text=StringManager.getString("buttonDonate"), fontSize=22, fontName=General.font3})
-                    screen.autoSuitable(temp, {x=217, y=54, nodeAnchor=General.anchorCenter})
-                    cell:addChild(temp)
-                    msg.cell = cell
-                else
-                    Y = Y+25
-                end
-                temp = UI.createLabel(property[1] .. "/" .. property[2], General.font1, 20, {colorR = 255, colorG = 255, colorB = 255})
-                screen.autoSuitable(temp, {x=96, y=Y+27, nodeAnchor=General.anchorRight})
-                cell:addChild(temp)
-                local ft = {value=property[1], valueLabel=temp, max=property[2]}
-                temp = UI.createSpriteWithFile("images/donateBack.png",CCSizeMake(226, 23))
-                screen.autoSuitable(temp, {x=104, y=Y+16})
-                cell:addChild(temp)
-                temp = UI.createSpriteWithFile("images/donateFiller.png",CCSizeMake(220, 17))
-                screen.autoSuitable(temp, {x=107, y=Y+19})
-                cell:addChild(temp)
-                ft.filler = temp
-                UI.registerAsProcess(temp, ft)
-                UI.setProcess(temp, ft, property[1]/property[2])
-            end
-            
-            local tempStr = StringManager.getString("labelYou")
-            if msg.uid~=UserData.userId then
-                tempStr = msg.name
-            end
-            temp = UI.createLabel(tempStr, General.font5, 22, {colorR = 222, colorG = 215, colorB = 165})
-            screen.autoSuitable(temp, {x=20, y=Y+75, nodeAnchor=General.anchorLeft})
-            cell:addChild(temp)
-            local nameLabel = temp
-            local visitY = Y+63
-            Y = Y+75+temp:getContentSize().height/2
-            cell:setContentSize(CCSizeMake(368, Y))
-            if msg.uid~=UserData.userId then
-                local w = nameLabel:getContentSize().width * nameLabel:getScaleX()
-                temp = UI.createSpriteWithFile("images/chatRoomItemVisit.png",CCSizeMake(22, 23))
-                screen.autoSuitable(temp, {x=22+w, y=visitY})
-                cell:addChild(temp)
-                UI.registerVisitIcon(cell, scrollView, ChatRoom.view, msg.uid, temp)
-            end
-            scrollView:addItem(cell, {offx=1, offy=1+OFFY, disx=0, disy=0, index=1, rowmax=1})
-            OFFY = OFFY + Y
-            
-        end
-    end
-    scrollView:prepare()
+    local scrollView = UI.createScrollViewAuto(CCSizeMake(368, 582), false,{offx=1, offy=1, disx=0, disy=1, beginIndex=0, rowmax=1, sizeChange=true, infos=ChatRoom.messages, cellUpdate=ChatRoom.updateChatCell, size=CCSizeMake(0,0)})
     screen.autoSuitable(scrollView.view, {nodeAnchor=General.anchorLeftTop, x=0, y=582})
     bg:addChild(scrollView.view)
 end
@@ -447,57 +486,7 @@ function ChatRoom.reloadChatView()
     local bg = ChatRoom.chatView
     if not bg then return end
     bg:removeAllChildrenWithCleanup(true)
-    
-    local temp
-    local OFFY = 0
-    local scrollView = UI.createScrollView(CCSizeMake(368, 635-ChatRoom.globalOffsetY), false)
-    local msgs = ChatRoom.globalMsgs
-    for i=1, #msgs do
-        local cell = CCNode:create()
-        local msg = msgs[i]
-        local Y=0
-        temp = UI.createSpriteWithFile("images/chatRoomSeperator.png",CCSizeMake(336, 2))
-        screen.autoSuitable(temp, {x=17, y=3})
-        cell:addChild(temp)
-        if timer.getTime()-msg.time<60 then
-            tempStr = StringManager.getString("labelJustNow")
-        else
-            tempStr = StringManager.getFormatString("timeAgo", {time=StringManager.getTimeString(timer.getTime()-msg.time)})
-        end
-        temp = UI.createLabel(tempStr, General.font1, 18, {colorR = 149, colorG = 148, colorB = 139})
-        screen.autoSuitable(temp, {x=353, y=22, nodeAnchor=General.anchorRight})
-        cell:addChild(temp)
-            
-        if msg.type=="msg" then
-            local color = msg.color or {255, 255, 255}
-            temp = UI.createLabel(msg.text or "", General.font5, 20, {colorR = color[1], colorG = color[2], colorB = color[3], size=CCSizeMake(310, 0), align=kCCTextAlignmentLeft})
-            local lheight = temp:getContentSize().height * temp:getScale()
-            screen.autoSuitable(temp, {x=19, y=39+lheight, nodeAnchor=General.anchorLeftTop})
-            cell:addChild(temp)
-            Y = Y+lheight-10
-        end
-        local tempStr = StringManager.getString("labelYou")
-        if msg.uid~=UserData.userId then
-            tempStr = msg.name
-        end
-        temp = UI.createLabel(tempStr, General.font5, 22, {colorR = 222, colorG = 215, colorB = 165})
-        screen.autoSuitable(temp, {x=20, y=Y+75, nodeAnchor=General.anchorLeft})
-        cell:addChild(temp)
-        local nameLabel = temp
-        local visitY = Y+63
-        Y = Y+75+temp:getContentSize().height/2
-        cell:setContentSize(CCSizeMake(368, Y))
-        if msg.uid~=UserData.userId then
-            local w = nameLabel:getContentSize().width * nameLabel:getScaleX()
-            temp = UI.createSpriteWithFile("images/chatRoomItemVisit.png",CCSizeMake(22, 23))
-            screen.autoSuitable(temp, {x=22+w, y=visitY})
-            cell:addChild(temp)
-            UI.registerVisitIcon(cell, scrollView, ChatRoom.view, msg.uid, temp)
-        end
-        scrollView:addItem(cell, {offx=1, offy=1+OFFY, disx=0, disy=0, index=1, rowmax=1})
-        OFFY = OFFY + Y
-    end
-    scrollView:prepare()
+    local scrollView = UI.createScrollViewAuto(CCSizeMake(368, 635-ChatRoom.globalOffsetY), false,{offx=1, offy=1, disx=0, disy=1, beginIndex=0, rowmax=1, sizeChange=true, infos=ChatRoom.globalMsgs, cellUpdate=ChatRoom.updateChatCell, size=CCSizeMake(0,0)})
     screen.autoSuitable(scrollView.view, {nodeAnchor=General.anchorLeftTop, x=0, y=635-ChatRoom.globalOffsetY})
     bg:addChild(scrollView.view)
 end

@@ -1,8 +1,7 @@
 SNSDialog = class()
 
 function SNSDialog:share()
-    SNS.share(SNS.shareText, nil, self, 10)
-    UserStat.stat(UserStatType.SHARE)
+    SNS.share(SNS.shareText, nil, self, 50)
 end
 
 function SNSDialog:ctor()

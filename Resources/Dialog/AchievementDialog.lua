@@ -6,8 +6,8 @@ local function onGetRewards(info)
     if canGetReward then
         canGetReward = false
         display.closeDialog()
-        Achievements.completeAchievement(info.id)
-        CrystalLogic.changeCrystal(info.crystal)
+        Achievements.completeAchievement(info.id) 
+        CrystalLogic.changeCrystal(info.crystal, UserData.rcc - info.crystal)
         display.pushNotice(UI.createNotice(StringManager.getFormatString("noticeGetReward", {num=info.crystal}), 255))
         
         EventManager.sendMessage("EVENT_NOTICE_BUTTON", {name="achieve"})

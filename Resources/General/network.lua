@@ -37,11 +37,12 @@ network.httpRequest = function (url, callback, setting, delegate)
     end
     local request = nil
     local function httpOver(isSuc)
-        if not isSuc then
+    if not isSuc then
             local retry = setting.retry or 0
-            if retry>2 then
-                print("HTTP Canceled")
-                EventManager.sendMessage("EVENT_NETWORK_OFF")
+            if retry>2 or setting.noError then
+                if not setting.noError then
+                    EventManager.sendMessage("EVENT_NETWORK_OFF")
+                end
                 if delegate then
                     callback(delegate, false, nil, setting.callbackParam)
                 else
@@ -67,7 +68,10 @@ network.httpRequest = function (url, callback, setting, delegate)
                 else
                     callback(false, nil, setting.callbackParam)
                 end
-                EventManager.sendMessage("EVENT_NETWORK_OFF")
+                
+                if not setting.noError then
+                    EventManager.sendMessage("EVENT_NETWORK_OFF")
+                end
             end
         end
         request:release()

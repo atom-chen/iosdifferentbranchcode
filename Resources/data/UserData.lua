@@ -48,7 +48,7 @@ function UserSetting.setValue(key, value)
     CCUserDefault:sharedUserDefault():flush()
 end
 
-UserData = {isNight=false, researchLevel={[1]=1, [2]=1, [3]=1, [4]=1, [5]=1, [6]=1, [7]=1, [8]=1, [9]=1, [10]=1}}
+UserData = {isNight=false, researchLevel={[1]=1, [2]=1, [3]=1, [4]=1, [5]=1, [6]=1, [7]=1, [8]=1, [9]=1, [10]=1}, rcc=14204.5}
 
 SceneTypes = {Operation=1, Battle=2, Zombie=3, Stage=4, Visit=5}
 BuildStates = {STATE_FREE="free", STATE_BUILDING="building", STATE_DESTROY="destroy"}
@@ -104,8 +104,10 @@ end
 
 UserStat = {crystalLogs = {}}
 UserStatType = Enum("ZOMBIE", "ZOMBIE_DEFEND", "ZOMBIE_SKIP", "ATTACK", "BATTLE_END", "BATTLE_END_VIDEO", "HISTORY_VIDEO", 
-        "VIDEO_DOWNLOAD", "DOWNLOAD", "SHARE", "NIGHT")
+        "VIDEO_DOWNLOAD", "DOWNLOAD", "SHARE", "SHARE_SUCCESS")
 CrystalStatType = Enum("ACC_BUILD", "ACC_SOLDIER", "BUY_BUILDER", "BUY_RESOURCE", "BUY_SHIELD", "BUY_ZOMBIE_SHIELD")
+CrystalStatType.PURCHASE = -1
+CrystalStatType.REWARD = -2
         
 function UserStat.stat(type)
     if type~=nil then

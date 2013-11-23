@@ -51,6 +51,7 @@ function CrystalLogic.buyOver(eventType)
                 UserStat.addCrystalLog(-1, timer.getTime(), CrystalLogic.buyObj.get, CrystalLogic.buyObj.type-1)
                 if UserData.totalCrystal==0 then
                     UserData.isNewVip = true
+                    UserData.firstReward = CrystalLogic.buyObj.get
                 end
                 UserData.totalCrystal = UserData.totalCrystal + CrystalLogic.buyObj.get
                 if CrystalLogic.buyObj.type==6 then
@@ -100,13 +101,19 @@ function CrystalLogic.buyResource(param)
     end
 end
 
-function CrystalLogic.changeCrystal(cost)
+function CrystalLogic.changeCrystal(cost, costExt)
     if cost<0 and UserData.crystal+cost<0 then
         display.showDialog(AlertDialog.new(StringManager.getString("titleNoCrystal"), StringManager.getString("textNoCrystal"), {callback=StoreDialog.show, param="treasure", okText=StringManager.getString("buttonEnterShop"), img="images/crystal2.png", lineOffset=-12}))
         return false
     else
-        UserData.crystal = UserData.crystal + cost
-        table.insert(CrystalLogic.changeList, cost)
+        local ncost = 0
+        if cost>0 and (not costExt or UserData.rcc-costExt~=cost) then
+            ncost = cost-(UserData.rcc-(costExt or UserData.rcc))
+        end
+        --TODO: should add an extend value to make sure CrystalLogic.changeCrystal is correct. 
+        UserData.crystal = UserData.crystal + cost-ncost
+        table.insert(CrystalLogic.changeList, cost-ncost)
+        ncost = 0
         return true
     end
 end

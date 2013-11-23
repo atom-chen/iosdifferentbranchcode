@@ -1,6 +1,5 @@
 WeaponDialog = {}
 
-
 do
     local showMainTab
     

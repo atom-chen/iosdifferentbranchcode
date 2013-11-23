@@ -79,7 +79,7 @@ function ZombieResultDialog:ctor(result)
     temp = UI.createScaleSprite("images/crystal.png",CCSizeMake(60, 36))
     screen.autoSuitable(temp, {nodeAnchor=General.anchorBottom, x=554, y=337})
     bg:addChild(temp)
-    CrystalLogic.changeCrystal(crystal)
+    CrystalLogic.changeCrystal(crystal, UserData.rcc-crystal)
     local sspace = 0
     
     local items = {}

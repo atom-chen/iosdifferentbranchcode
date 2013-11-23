@@ -123,36 +123,68 @@ do
         local bg = self.bg
         local state = self.state
         
-        table.sort(items, getSortFunction("off"))
-        local itemsNum = #items
-        local lastItem = items[itemsNum]
-        if lastItem == nil then
-            lastItem = {off=0, length=0, endoff=0}
-        end
         local rectmin, rectmax = 0, 0
         if self.isX then
             self.off_max = 0
-            self.off_min = squeeze(size.width - (lastItem.off + lastItem.length + lastItem.endoff), nil, self.off_max)
             rectmin = -bg:getPositionX()
             rectmax = rectmin + size.width
         else
             self.off_min = size.height
-            self.off_max = squeeze(lastItem.off + lastItem.length + lastItem.endoff, self.off_min)
             rectmax = bg:getPositionY()
             rectmin = rectmax - size.height
         end
-        local index = 1
-        while index<=itemsNum do
-            local item = items[index]
-            if item.off + item.length >= rectmin and item.off < rectmax then
-                item.view:setVisible(true)
-                if not state.first then state.first = index end
-                state.last = index
+        if not self.delayInitCell then
+            table.sort(items, getSortFunction("off"))
+            local itemsNum = #items
+            local lastItem = items[itemsNum]
+            if lastItem == nil then
+                lastItem = {off=0, length=0, endoff=0}
             end
-            index = index + 1
-        end
-        if #items == 0 then
-            self.movable = false
+            if self.isX then
+                self.off_min = squeeze(size.width - (lastItem.off + lastItem.length + lastItem.endoff), nil, self.off_max)
+            else
+                self.off_max = squeeze(lastItem.off + lastItem.length + lastItem.endoff, self.off_min)
+            end
+            local index = 1
+            while index<=itemsNum do
+                local item = items[index]
+                if item.off + item.length >= rectmin and item.off < rectmax then
+                    item.view:setVisible(true)
+                    if not state.first then state.first = index end
+                    state.last = index
+                end
+                index = index + 1
+            end
+            if #items == 0 then
+                self.movable = false
+            end
+        else
+            self.dataInitedLength = 0
+            local itemsNum = self.dataLength
+            local index = 1
+            local lastItem = {off=0, length=0, endoff=0}
+            while index<=itemsNum do
+                local item = self:initCell(index)
+                lastItem = item
+                self.dataInitedLength = index
+                if item.off + item.length < rectmin then
+                    item.view:setVisible(false)
+                elseif item.off<rectmax then
+                    item.view:setVisible(true)
+                    if not state.first then state.first = index end
+                    state.last = index
+                else
+                    item.view:setVisible(false)
+                    break
+                end
+                index = index + 1
+            end
+            if self.isX then
+                self.off_min = squeeze(size.width - (lastItem.off + lastItem.length + lastItem.endoff), nil, self.off_max)
+            else
+                self.off_max = squeeze(lastItem.off + lastItem.length + lastItem.endoff, self.off_min)
+            end
+            self.movable = (self.dataLength>0)
         end
     end
     
@@ -167,6 +199,24 @@ do
             while state.last+1<=#items and items[state.last+1].off < rectmax do
                 items[state.last+1].view:setVisible(true)
                 state.last = state.last + 1
+            end
+            if self.delayInitCell then
+                while self.dataInitedLength<self.dataLength and state.last==self.dataInitedLength do
+                    self.dataInitedLength = self.dataInitedLength+1
+                    local item = self:initCell(self.dataInitedLength)
+                    local size = self.view:getContentSize()
+                    if self.isX then
+                        self.off_min = squeeze(size.width - (item.off + item.length + item.endoff), nil, self.off_max)
+                    else
+                        self.off_max = squeeze(item.off + item.length + item.endoff, self.off_min)
+                    end
+                    if item.off<rectmax then
+                        item.view:setVisible(true)
+                        state.last = state.last + 1
+                    else
+                        item.view:setVisible(false)
+                    end
+                end
             end
         else
             while state.first-1>0 and items[state.first-1].off + items[state.first-1].length > rectmin do
@@ -372,32 +422,89 @@ do
         return self
     end
     
+    function ScrollView:initCell(dindex)
+        if dindex>=1 and dindex<=self.dataLength then
+            local data = self.datas[dindex]
+            local cellSetting = self.cellSetting
+            while data.isNewLine do
+                cellSetting.offx = cellSetting.offx + (data.offx or 0)
+                cellSetting.offy = cellSetting.offy + (data.offy or 0)
+                table.remove(self.datas, dindex)
+                self.dataLength = self.dataLength-1
+                data = self.datas[dindex]
+            end
+            local cell = CCExtendNode:create(cellSetting.size, false)
+            pcall(cellSetting.cellUpdate, cell, self, data)
+            local offx, offy = cellSetting.offx, cellSetting.offy
+            local disx, disy = cellSetting.disx, cellSetting.disy
+            local index = cellSetting.beginIndex +dindex - 1
+            local rowmax = cellSetting.rowmax
+                
+            local off, length, endoff = 0, 0, 0
+            local nsize = cellSetting.size
+                
+            local x, y = 0, 0
+            if cellSetting.sizeChange then
+                nsize = cell:getContentSize()
+                local lastItem = self.items[dindex-1] or {length=0}
+                if self.isX then
+                    x = (lastItem.off or cellSetting.offx) + lastItem.length - cellSetting.offx + cellSetting.disx
+                    y = 0
+                    off = cellSetting.offx + x
+                    length = nsize.width
+                    endoff = cellSetting.disx/2
+                else
+                    x = 0
+                    y = (lastItem.off or cellSetting.offy) + lastItem.length - cellSetting.offy + cellSetting.disy
+                    off = cellSetting.offy + y
+                    length = nsize.height
+                    endoff = cellSetting.disy/2
+                end
+            else
+                if self.isX then
+                    x = math.floor(index / rowmax) * (nsize.width + cellSetting.disx) 
+                    y = (index % rowmax) * (nsize.height + cellSetting.disy)
+                    off = cellSetting.offx + x
+                    length = nsize.width
+                    endoff = cellSetting.disx/2
+                else
+                    x = (index % rowmax) * (nsize.width + cellSetting.disx) 
+                    y = math.floor(index / rowmax) * (nsize.height + cellSetting.disy)
+                    off = cellSetting.offy + y
+                    length = nsize.height
+                    endoff = cellSetting.disy/2
+                end
+            end
+            cell:setAnchorPoint(General.anchorCenter)
+            cell:setPosition(cellSetting.offx + x + nsize.width/2, -(y + cellSetting.offy + nsize.height/2))
+            self.bg:addChild(cell)
+            local newItem = {off = off, length = length, endoff = endoff, view = cell}
+            self.items[dindex] = newItem
+            return newItem
+        end
+    end
+    
+    function ScrollView:setDatas(cellSetting)
+        self.cellSetting = cellSetting
+        self.datas = cellSetting.infos
+        self.dataLength = #(cellSetting.infos)
+        self.delayInitCell = true
+        
+        cellSetting.beginIndex = cellSetting.beginIndex or 0
+        cellSetting.offx = cellSetting.offx or 0
+        cellSetting.offy = cellSetting.offy or 0
+        cellSetting.disx = cellSetting.disx or 0
+        cellSetting.disy = cellSetting.disy or 0
+        cellSetting.rowmax = cellSetting.rowmax or 1
+    end
+    
     function UI.createScrollView(size, isX)
         return ScrollView:new(size, isX)
     end
     
     function UI.createScrollViewAuto(size, isX, params)
         local scrollView = ScrollView:new(size, isX, params.priority)
-        local cellSize = params.size
-        local cellUpdate = params.cellUpdate
-        local offx, offy = params.offx or 0, params.offy or 0
-        local disx, disy = params.disx or 0, params.disy or 0
-        local beginIndex = params.beginIndex or 0
-        local rowmax = params.rowmax or 1
-        local infos = params.infos
-        for i=1, #infos do
-            local info = infos[i]
-            if info.isNewLine then
-                offx, offy = offx + (info.offx or 0), offy + (info.offy or 0)
-                beginIndex = beginIndex - 1
-            else
-                local cell = CCExtendNode:create(cellSize, false)
-                if cell and pcall(cellUpdate, cell, scrollView, info) then
-                    --cellUpdate(cell, scrollView, info)
-                    scrollView:addItem(cell, {offx=offx, offy=offy, disx=disx, disy=disy, index=i+beginIndex, rowmax=rowmax})
-                end
-            end
-        end
+        scrollView:setDatas(params)
         scrollView:prepare()
         if params.dismovable then
             scrollView.movable = false

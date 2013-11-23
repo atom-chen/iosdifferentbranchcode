@@ -3,7 +3,7 @@ ZombieLogic = {}
 function ZombieLogic.delayNext()
     --local tid = squeeze(ZombieLogic.zombieDefends, 0, 4)
     --ZombieLogic.zombieDefends = ZombieLogic.zombieDefends+1
-    UserData.zombieShieldTime = timer.getTime()+getParam("zombieDelayTime" .. (UserData.level), 28800)
+    UserData.zombieShieldTime = timer.getTime()+getParam("zombieDelayTime" .. (UserData.level), 3600)
 end
 
 function ZombieLogic.init()
