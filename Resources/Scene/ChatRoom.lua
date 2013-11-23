@@ -21,7 +21,7 @@ local function onSendMessage(input)
         if str=="" then return end
         input:setString("")
         local function send()
-            network.httpRequest(network.chatUrl .. "send", doNothing, {params={uid=UserData.userId, cid=UserData.clan, name=UserData.userName, text=str}, timeout=30})
+            network.httpRequest(network.chatUrl .. "send", doNothing, {params={uid=UserData.userId, cid=UserData.clan, name=UserData.userName, text=str}, timeout=30, noError=true})
         end
         
         network.checkWord(str, send)
