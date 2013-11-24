@@ -3,49 +3,49 @@ require "Mould.Person"
 SoldierHelper = {}
 
 SoldierHelper.headPos = {[1]={x=4, y=10}, [2]={x=1, y=10}, [3]={x=-19, y=9}, [4]={x=-2, y=9}, [5]={x=0,y=11}, 
-						[6]={x=-3, y=18}, [7]={x=-17,y=10},[8]={x=26, y=10}, [9]={x=-7,y=13},[10]={x=6, y=9}}
+                        [6]={x=-3, y=18}, [7]={x=-17,y=10},[8]={x=26, y=10}, [9]={x=-7,y=13},[10]={x=6, y=9}}
 SoldierHelper.featurePos = {[1]={x=-53, y=122}, [2]={x=0, y=124}, [3]={x=47, y=165}, [4]={x=-26, y=133}, [5]={x=45, y=168}, 
-						[6]={x=28, y=141}, [7]={x=17, y=123},[8]={x=51, y=124}, [9]={x=30, y=128},[10]={x=-20, y=121}}	
-						
+                        [6]={x=28, y=141}, [7]={x=17, y=123},[8]={x=51, y=124}, [9]={x=30, y=128},[10]={x=-20, y=121}}    
+                        
 SoldierHelper.moveAction = {[1]={t=1, m=10}, [2]={t=1, m=10}, [3]={t=0.3, m=3}, [4]={t=1.1, m=11}, [5]={t=0.7, m=7},
-							[6]={t=1, m=1}, [7]={t=1, m=10}, [8]={t=1.5, m=15}, [9]={t=1, m=1}, [10]={t=1, m=10}}
+                            [6]={t=1, m=1}, [7]={t=1, m=10}, [8]={t=1.5, m=15}, [9]={t=1, m=1}, [10]={t=1, m=10}}
 
 SoldierHelper.shadowScale = {[2]=0.59, [3]=1.14, [4]=1.14, [6]=1.86, [8]=0.64, [9]=2.09, [10]=1.14}
 
 function SoldierHelper.addSoldierHead(bg, sid, scale)
-	local head = UI.createSpriteWithFile("images/soldierHead" .. sid .. ".png")
-	local p=copyData(SoldierHelper.headPos[sid])
-	p.scale = scale
-	screen.autoSuitable(head, p)
-	bg:addChild(head)
-	return head
+    local head = UI.createSpriteWithFile("images/soldierHead" .. sid .. ".png")
+    local p=copyData(SoldierHelper.headPos[sid])
+    p.scale = scale
+    screen.autoSuitable(head, p)
+    bg:addChild(head)
+    return head
 end
 
 function SoldierHelper.addSoldierFeature(bg, sid)
-	local temp = UI.createSpriteWithFile("images/soldierFeature" .. sid .. ".png")
-	screen.autoSuitable(temp, SoldierHelper.featurePos[sid])
-	bg:addChild(temp)
+    local temp = UI.createSpriteWithFile("images/soldierFeature" .. sid .. ".png")
+    screen.autoSuitable(temp, SoldierHelper.featurePos[sid])
+    bg:addChild(temp)
 end
 
 Soldier = class(Person)
 
 function Soldier:ctor(sid, setting)
-	local params = setting or {}
-	local sinfo = StaticData.getSoldierInfo(sid)
-	--sinfo.unitType=2
-	self:initWithInfo(sinfo)
-	local level = params.level or 1
-	self.data = StaticData.getSoldierData(sid, level)
-	self.hitpoints = self.data.hitpoints
-	self.shadowScale = SoldierHelper.shadowScale[sid] or 0.68
-	local scale = getParam("soldierScale" .. sid, 100)/100
-	self.viewInfo = {scale=scale, x=0, y=17.5*scale}
-	if params.arround then
-		self.moveArround = params.arround
-	end
-	self.isFighting = params.isFighting
-	self.imgLevel = level
-	self.plistFile = "animate/soldiers/soldier" .. self.info.sid .. "_" .. self.imgLevel .. ".plist"
+    local params = setting or {}
+    local sinfo = StaticData.getSoldierInfo(sid)
+    --sinfo.unitType=2
+    self:initWithInfo(sinfo)
+    local level = params.level or 1
+    self.data = StaticData.getSoldierData(sid, level)
+    self.hitpoints = self.data.hitpoints
+    self.shadowScale = SoldierHelper.shadowScale[sid] or 0.68
+    local scale = getParam("soldierScale" .. sid, 100)/100
+    self.viewInfo = {scale=scale, x=0, y=17.5*scale}
+    if params.arround then
+        self.moveArround = params.arround
+    end
+    self.isFighting = params.isFighting
+    self.imgLevel = level
+    self.plistFile = "animate/soldiers/soldier" .. self.info.sid .. "_" .. self.imgLevel .. ".plist"
 
     --当士兵距离军旗较远距离的时候
     --设定移动目标之后 等待移动时间 之后再次检测距离
@@ -93,130 +93,130 @@ function Soldier:ctor(sid, setting)
     self.lastTarget = nil
     self.wallPos = nil
 end
-	
+    
 function Soldier:getInitPos()
-	if self.moveArround then
-		return {self:getMoveArroundPosition(self.moveArround)}
-	end
+    if self.moveArround then
+        return {self:getMoveArroundPosition(self.moveArround)}
+    end
 end
 
 function Soldier:damage(value)
-	if self.deleted then return end
-	self.hitpoints = self.hitpoints - value
-	if self.hitpoints > self.data.hitpoints then
-		self.hitpoints = self.data.hitpoints
-	end
-	if not self.blood and self.hitpoints > 0 then
-		self.blood = UI.createBloodProcess(self.data.hitpoints, false)
-		screen.autoSuitable(self.blood.view, {nodeAnchor=General.anchorBottom, x=self.view:getContentSize().width/2+self.viewInfo.x, y=self.viewInfo.y+50})
-		self.view:addChild(self.blood.view, 100)
-		--TODO
-	end
-	if self.blood then
-		self.blood:changeValue(self.hitpoints)
-	end
-	if self.hitpoints <= 0 then
-		self.hitpoints = 0
+    if self.deleted then return end
+    self.hitpoints = self.hitpoints - value
+    if self.hitpoints > self.data.hitpoints then
+        self.hitpoints = self.data.hitpoints
+    end
+    if not self.blood and self.hitpoints > 0 then
+        self.blood = UI.createBloodProcess(self.data.hitpoints, false)
+        screen.autoSuitable(self.blood.view, {nodeAnchor=General.anchorBottom, x=self.view:getContentSize().width/2+self.viewInfo.x, y=self.viewInfo.y+50})
+        self.view:addChild(self.blood.view, 100)
+        --TODO
+    end
+    if self.blood then
+        self.blood:changeValue(self.hitpoints)
+    end
+    if self.hitpoints <= 0 then
+        self.hitpoints = 0
         --死亡时清理路径
-		if self.stateInfo.action~="dead" then
+        if self.stateInfo.action~="dead" then
             self:clearAllPath()
-			self:setDeadView()
-		end
-		
-		if SoldierHelper.personSoldier[self.info.sid]==1 or self.info.sid==5 then
-    	    music.playCleverEffect("music/dead" .. self.info.sid .. ".mp3")
-    	else
-    	    music.playCleverEffect("music/buildBomb.mp3")
-    	end
-	end
+            self:setDeadView()
+        end
+        
+        if SoldierHelper.personSoldier[self.info.sid]==1 or self.info.sid==5 then
+            music.playCleverEffect("music/dead" .. self.info.sid .. ".mp3")
+        else
+            music.playCleverEffect("music/buildBomb.mp3")
+        end
+    end
 end
 
 function Soldier:setDeadView()
-	if self.blood then
-		self.blood.view:removeFromParentAndCleanup(true)
-		self.blood = nil
-	end
-	self.state = PersonState.STATE_OTHER
-	self.stateInfo = {action="dead"}
-	self.deleted = true
-	local x, y = self.view:getPosition()
-	y = y + self.viewInfo.y
-	self.view:removeFromParentAndCleanup(true)
-	local t = getParam("soldierDeadTime", 1000)/1000
-	local bomb = UI.createAnimateWithSpritesheet(t, "dead_", 19, {plist="animate/soldiers/dead.plist"})
-	screen.autoSuitable(bomb, {nodeAnchor=General.anchorCenter, x=x, y=y})
-	if self.info.unitType==2 then y = 0 end
-	self.scene.ground:addChild(bomb, self.scene.SIZEY-y)
-	delayRemove(t, bomb)
-	
-	local map = self.scene.mapGrid
-	local grid = map:convertToGrid(x, y, 1)
-	if map:checkGridEmpty(GridKeys.Build, grid.gridPosX, grid.gridPosY, grid.gridSize) then
-		local tomb = Tomb.new(grid.gridPosX, grid.gridPosY)
-		tomb:addToScene(self.scene)
-	end
+    if self.blood then
+        self.blood.view:removeFromParentAndCleanup(true)
+        self.blood = nil
+    end
+    self.state = PersonState.STATE_OTHER
+    self.stateInfo = {action="dead"}
+    self.deleted = true
+    local x, y = self.view:getPosition()
+    y = y + self.viewInfo.y
+    self.view:removeFromParentAndCleanup(true)
+    local t = getParam("soldierDeadTime", 1000)/1000
+    local bomb = UI.createAnimateWithSpritesheet(t, "dead_", 19, {plist="animate/soldiers/dead.plist"})
+    screen.autoSuitable(bomb, {nodeAnchor=General.anchorCenter, x=x, y=y})
+    if self.info.unitType==2 then y = 0 end
+    self.scene.ground:addChild(bomb, self.scene.SIZEY-y)
+    delayRemove(t, bomb)
+    
+    local map = self.scene.mapGrid
+    local grid = map:convertToGrid(x, y, 1)
+    if map:checkGridEmpty(GridKeys.Build, grid.gridPosX, grid.gridPosY, grid.gridSize) then
+        local tomb = Tomb.new(grid.gridPosX, grid.gridPosY)
+        tomb:addToScene(self.scene)
+    end
 end
-	
+    
 function Soldier:resetFreeState()
-	self.displayState.duration = 1
-	self.displayState.isRepeat = false
-	self.displayState.num = 1
-	self.displayState.prefix = "soldier" .. self.info.sid .. "_" .. self.imgLevel .. "_p"
+    self.displayState.duration = 1
+    self.displayState.isRepeat = false
+    self.displayState.num = 1
+    self.displayState.prefix = "soldier" .. self.info.sid .. "_" .. self.imgLevel .. "_p"
 end
-	
+    
 function Soldier:resetMoveState()
-	local moveAction = SoldierHelper.moveAction[self.info.sid]
-	self.displayState.duration = moveAction.t
-	self.displayState.isRepeat = true
-	self.displayState.num = moveAction.m
-	self.displayState.prefix = "soldier" .. self.info.sid .. "_" .. self.imgLevel .. "_m"
+    local moveAction = SoldierHelper.moveAction[self.info.sid]
+    self.displayState.duration = moveAction.t
+    self.displayState.isRepeat = true
+    self.displayState.num = moveAction.m
+    self.displayState.prefix = "soldier" .. self.info.sid .. "_" .. self.imgLevel .. "_m"
 end
 
 -- to override
 function Soldier:resetOtherState()
-	if self.stateInfo.action == "pose" then
-		self.displayState.duration = getParam("soldierPoseTime" .. self.info.sid, 500)/1000
-		self.displayState.isRepeat = false
-		self.displayState.num = 5
-		self.displayState.prefix = "soldier" .. self.info.sid .. "_" .. self.imgLevel .. "_p"
-	elseif self.stateInfo.action == "attack1" or self.stateInfo.action == "attack2" then
-		self.displayState.duration = self.info.attackSpeed
-		self.displayState.isRepeat = false
-		self.displayState.reverse = true
-		self.displayState.num = 10
-		self.displayState.prefix = "soldier" .. self.info.sid .. "_" .. self.imgLevel .. "_a" .. string.sub(self.stateInfo.action, -1) .. "_"
-	end
+    if self.stateInfo.action == "pose" then
+        self.displayState.duration = getParam("soldierPoseTime" .. self.info.sid, 500)/1000
+        self.displayState.isRepeat = false
+        self.displayState.num = 5
+        self.displayState.prefix = "soldier" .. self.info.sid .. "_" .. self.imgLevel .. "_p"
+    elseif self.stateInfo.action == "attack1" or self.stateInfo.action == "attack2" then
+        self.displayState.duration = self.info.attackSpeed
+        self.displayState.isRepeat = false
+        self.displayState.reverse = true
+        self.displayState.num = 10
+        self.displayState.prefix = "soldier" .. self.info.sid .. "_" .. self.imgLevel .. "_a" .. string.sub(self.stateInfo.action, -1) .. "_"
+    end
 end
 
 function Soldier:getFrameEspecially(i)
-	if self.stateInfo.action ~= "pose" then
-		return nil
-	end
-	if i>=5 then
-		if i<12 then
-			i = 4
-		elseif i<15 then
-			i = i-7
-		else
-			i = 0
-		end
-	end
-	return i
+    if self.stateInfo.action ~= "pose" then
+        return nil
+    end
+    if i>=5 then
+        if i<12 then
+            i = 4
+        elseif i<15 then
+            i = i-7
+        else
+            i = 0
+        end
+    end
+    return i
 end
 
 --士兵四周闲逛
 function Soldier:setMoveArround(build)
-	if build == nil then
-		build = self.moveArround
-	else
-		self.moveArround = build
-	end
-	-- TODO
-	if build.buildView and self.view then
+    if build == nil then
+        build = self.moveArround
+    else
+        self.moveArround = build
+    end
+    -- TODO
+    if build.buildView and self.view then
         --[[
-		if false then
-			self.view:setPosition(self:getMoveArroundPosition(build))
-		end
+        if false then
+            self.view:setPosition(self:getMoveArroundPosition(build))
+        end
         --]]
 
         --local w = self.scene.mapWorld
@@ -227,54 +227,54 @@ function Soldier:setMoveArround(build)
         if not newWorld.searchYet or self.info.unitType==2 then
             self:setMoveTarget(self:getMoveArroundPosition(build))
         end
-	end
+    end
 end
-		
+        
 function Soldier:setPose()
-	if self.state == PersonState.STATE_FREE and self.personView then
-		self.state = PersonState.STATE_OTHER
-		self.direction = 1
-		self.stateInfo = {action="pose", actionTime=getParam("soldierPoseTime", 1500)/1000}
-		self.stateTime = 0
-		self:resetPersonView()
-	end
+    if self.state == PersonState.STATE_FREE and self.personView then
+        self.state = PersonState.STATE_OTHER
+        self.direction = 1
+        self.stateInfo = {action="pose", actionTime=getParam("soldierPoseTime", 1500)/1000}
+        self.stateTime = 0
+        self:resetPersonView()
+    end
 end
 
 function Soldier:getAttackValue()
-	local attackValue = self.data.dps*self.info.attackSpeed
-	if self.info.favorite~=0 and self.attackTarget.buildMould.buildInfo.btype == self.info.favorite then
-		attackValue = attackValue * self.info.favoriteRate
-	end
-	return attackValue
+    local attackValue = self.data.dps*self.info.attackSpeed
+    if self.info.favorite~=0 and self.attackTarget.buildMould.buildInfo.btype == self.info.favorite then
+        attackValue = attackValue * self.info.favoriteRate
+    end
+    return attackValue
 end
 
 function Soldier:setAttack()
-	if self.state==PersonState.STATE_OTHER and self.stateInfo.action=="dead" then
-		return
-	end
-	self.state = PersonState.STATE_OTHER
-	local fx, fy = self.view:getPosition()
-	local tx, ty = self.attackTarget.view:getPositionX(), self.attackTarget.view:getPositionY() + self.attackTarget.view:getContentSize().height/2
-	self:changeDirection(tx-fx, ty-fy)
-	self:prepareAttack()
-	self.stateTime = 0
-	self:resetPersonView()
+    if self.state==PersonState.STATE_OTHER and self.stateInfo.action=="dead" then
+        return
+    end
+    self.state = PersonState.STATE_OTHER
+    local fx, fy = self.view:getPosition()
+    local tx, ty = self.attackTarget.view:getPositionX(), self.attackTarget.view:getPositionY() + self.attackTarget.view:getContentSize().height/2
+    self:changeDirection(tx-fx, ty-fy)
+    self:prepareAttack()
+    self.stateTime = 0
+    self:resetPersonView()
 end
 
 -- to override
 function Soldier:prepareAttack()
-	self.stateInfo = {actionTime=self.info.attackSpeed}
-	self.stateInfo.attackValue = self:getAttackValue()
-	self.stateInfo.attackTime = self.info.attackSpeed * 0.9
-	self.stateInfo.action = "attack" .. math.random(self.attackTypeNum)
+    self.stateInfo = {actionTime=self.info.attackSpeed}
+    self.stateInfo.attackValue = self:getAttackValue()
+    self.stateInfo.attackTime = self.info.attackSpeed * 0.9
+    self.stateInfo.action = "attack" .. math.random(self.attackTypeNum)
 end
 
 -- to override
 function Soldier:executeAttack()
-	self.attackTarget:damage(self.stateInfo.attackValue)
-	if SoldierHelper.personSoldier[self.info.sid]==1 or self.info.sid==10 then
-	    music.playCleverEffect("music/attack" .. self.info.sid .. ".mp3")
-	end
+    self.attackTarget:damage(self.stateInfo.attackValue)
+    if SoldierHelper.personSoldier[self.info.sid]==1 or self.info.sid==10 then
+        music.playCleverEffect("music/attack" .. self.info.sid .. ".mp3")
+    end
 end
 --设定世界路径拥挤程度
 
@@ -373,7 +373,7 @@ function Soldier:searchAttack()
             self.setFromToGrid({0, 0, 1}, self.truePath[1])
             self:setPathCount()
 
-        end	
+        end    
 
         --设定当前按照truePath 来移动
         --movePath = truePath
@@ -424,7 +424,7 @@ end
 --只限制远距离寻路
 function Soldier:searchBusiness(dt)
     if self.state == PersonState.STATE_FREE then
-	    local fx, fy = self.view:getPosition()
+        local fx, fy = self.view:getPosition()
         local tx, ty = self:getMoveArroundPosition(self.moveArround)
         if self.moveYet then
             self.moveTime = self.moveTime + dt
@@ -530,13 +530,13 @@ function Soldier:updateState(diff)
         self.lastSearchFrame = self.lastSearchFrame-1
         self.lastSearchFrame = math.max(0, self.lastSearchFrame)
     end
-	if self.isFighting then
-		if BattleLogic.battleEnd then
-			self:setDeadView()
-		elseif not self.attackTarget then
-		    return self:searchAttack()
-		elseif self.attackTarget and self.attackTarget.deleted then
-		    self:clearAttackState()
+    if self.isFighting then
+        if BattleLogic.battleEnd then
+            self:setDeadView()
+        elseif not self.attackTarget then
+            return self:searchAttack()
+        elseif self.attackTarget and self.attackTarget.deleted then
+            self:clearAttackState()
             return self:searchAttack()
         --当前攻击城墙 真实要攻击的目标 被摧毁 切换是否需要攻击城墙
         elseif self.realTarget and self.realTarget.deleted then
@@ -546,21 +546,21 @@ function Soldier:updateState(diff)
         --距离上次寻路一定frame之后再重新寻路
         elseif self.attackTarget and self.attackTarget.buildMould.buildData.bid == 3006 and self.lastSearchFrame == 0 and self.state == PersonState.STATE_OTHER then
             return self:searchAttack()
-		elseif self.state == PersonState.STATE_FREE and self.bigPath~=nil then
-			return self:searchAttack()
-		elseif self.state == PersonState.STATE_FREE then
-			self:setAttack()
-			return true
-		elseif self.state == PersonState.STATE_OTHER then
+        elseif self.state == PersonState.STATE_FREE and self.bigPath~=nil then
+            return self:searchAttack()
+        elseif self.state == PersonState.STATE_FREE then
+            self:setAttack()
+            return true
+        elseif self.state == PersonState.STATE_OTHER then
             self:attackOther()
-		end
-		if diff==0 then
-			-- 入场后的掉落动画，先不实现
-		end
-	else
+        end
+        if diff==0 then
+            -- 入场后的掉落动画，先不实现
+        end
+    else
         --print("searchBusiness")
         return self:searchBusiness(diff)
-	end
+    end
 end
 
 SoldierHelper.personSoldier = {[1]=1, [2]=1, [4]=1, [7]=1, [8]=1, [11]=1, [12]=1, [14]=1}
@@ -580,7 +580,7 @@ require "Mould.Soldier.UFO"
 require "Mould.Soldier.Mech"
 
 SoldierHelper.soldierClass = {[1]=Soldier, [2]=Archer, [3]=Soldier, [4]=Giant, [5]=Bomb, [6]=Balloon, [7]=Wizard,
-	[8]=Healer, [9]=UFO, [10]=Mech}
+    [8]=Healer, [9]=UFO, [10]=Mech}
 function SoldierHelper.create(sid, setting)
-	return SoldierHelper.soldierClass[sid].new(sid, setting)
+    return SoldierHelper.soldierClass[sid].new(sid, setting)
 end

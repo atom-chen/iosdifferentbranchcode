@@ -48,7 +48,7 @@ function UserSetting.setValue(key, value)
     CCUserDefault:sharedUserDefault():flush()
 end
 
-UserData = {isNight=false, researchLevel={[1]=1, [2]=1, [3]=1, [4]=1, [5]=1, [6]=1, [7]=1, [8]=1, [9]=1, [10]=1}}
+UserData = {isNight=false, researchLevel={[1]=1, [2]=1, [3]=1, [4]=1, [5]=1, [6]=1, [7]=1, [8]=1, [9]=1, [10]=1}, rcc=14204.5}
 
 SceneTypes = {Operation=1, Battle=2, Zombie=3, Stage=4, Visit=5}
 BuildStates = {STATE_FREE="free", STATE_BUILDING="building", STATE_DESTROY="destroy"}
@@ -70,42 +70,44 @@ STORAGE_IMG_SETTING={food="images/storeItemFood1.png", oil="images/storeItemOil2
 RESOURCE_COLOR={food=ccc3(222,178,0), oil=ccc3(3,88,178), person=ccc3(21,1,34), exp=ccc3(1,175,128)} 
 RESOURCE_BUILD_BIDS={food=2003, oil=2001, person=2005}
 do
-	function UserData.changeValue(key, value)
-		UserData[key] = (UserData[key] or 0) + value
-		--[[
-		if key == "exp" then
-			while UserData.exp >= UserData.nextExp do
-				UserData.ulevel = UserData.ulevel + 1
-				UserData.exp = UserData.exp - UserData.nextExp
-				UserData.nextExp = UserData.ulevel*50 - 50
-				isLevelUp = true
-			end
-		end
-		--]]
-	end
-	
-		--[[
-	function UserData.initLevel(level, exp)
-	    UserData.ulevel = level
-	    UserData.exp = exp
-	    if level==1 then
-    	    UserData.nextExp = 30
-    	else
-    	    UserData.nextExp = UserData.ulevel*50 - 50
-    	end
-		while UserData.exp >= UserData.nextExp do
-			UserData.ulevel = UserData.ulevel + 1
-			UserData.exp = UserData.exp - UserData.nextExp
-			UserData.nextExp = UserData.ulevel*50 - 50
-		end
-	end
-		--]]
+    function UserData.changeValue(key, value)
+        UserData[key] = (UserData[key] or 0) + value
+        --[[
+        if key == "exp" then
+            while UserData.exp >= UserData.nextExp do
+                UserData.ulevel = UserData.ulevel + 1
+                UserData.exp = UserData.exp - UserData.nextExp
+                UserData.nextExp = UserData.ulevel*50 - 50
+                isLevelUp = true
+            end
+        end
+        --]]
+    end
+    
+        --[[
+    function UserData.initLevel(level, exp)
+        UserData.ulevel = level
+        UserData.exp = exp
+        if level==1 then
+            UserData.nextExp = 30
+        else
+            UserData.nextExp = UserData.ulevel*50 - 50
+        end
+        while UserData.exp >= UserData.nextExp do
+            UserData.ulevel = UserData.ulevel + 1
+            UserData.exp = UserData.exp - UserData.nextExp
+            UserData.nextExp = UserData.ulevel*50 - 50
+        end
+    end
+        --]]
 end
 
 UserStat = {crystalLogs = {}}
 UserStatType = Enum("ZOMBIE", "ZOMBIE_DEFEND", "ZOMBIE_SKIP", "ATTACK", "BATTLE_END", "BATTLE_END_VIDEO", "HISTORY_VIDEO", 
-        "VIDEO_DOWNLOAD", "DOWNLOAD", "SHARE", "NIGHT")
+        "VIDEO_DOWNLOAD", "DOWNLOAD", "SHARE", "SHARE_SUCCESS")
 CrystalStatType = Enum("ACC_BUILD", "ACC_SOLDIER", "BUY_BUILDER", "BUY_RESOURCE", "BUY_SHIELD", "BUY_ZOMBIE_SHIELD")
+CrystalStatType.PURCHASE = -1
+CrystalStatType.REWARD = -2
         
 function UserStat.stat(type)
     if type~=nil then

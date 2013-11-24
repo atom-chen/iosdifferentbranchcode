@@ -1,8 +1,7 @@
 SNSDialog = class()
 
 function SNSDialog:share()
-	SNS.share(SNS.shareText, nil, self, 10)
-	UserStat.stat(UserStatType.SHARE)
+    SNS.share(SNS.shareText, nil, self, 50)
 end
 
 function SNSDialog:ctor()
@@ -10,7 +9,7 @@ function SNSDialog:ctor()
     bg = UI.createButton(CCSizeMake(720, 526), doNothing, {image="images/dialogBgA.png", priority=display.DIALOG_PRI, nodeChangeHandler = doNothing})
     screen.autoSuitable(bg, {screenAnchor=General.anchorCenter, scaleType = screen.SCALE_DIALOG_CLEVER})
     self.view = bg
-	UI.setShowAnimate(bg)
+    UI.setShowAnimate(bg)
     
     temp = UI.createSpriteWithFile("images/dialogItemBlood.png",CCSizeMake(292, 222))
     screen.autoSuitable(temp, {x=400, y=50})
@@ -45,7 +44,7 @@ function SNSDialog:ctor()
     temp = UI.createLabel(StringManager.getString("titleSNS"), General.font3, 30, {colorR = 255, colorG = 255, colorB = 255})
     screen.autoSuitable(temp, {x=360, y=489, nodeAnchor=General.anchorCenter})
     bg:addChild(temp)
-	temp = UI.createButton(CCSizeMake(47, 46), display.closeDialog, {image="images/buttonClose.png"})
-	screen.autoSuitable(temp, {x=683, y=492, nodeAnchor=General.anchorCenter})
-	bg:addChild(temp)
+    temp = UI.createButton(CCSizeMake(47, 46), display.closeDialog, {image="images/buttonClose.png"})
+    screen.autoSuitable(temp, {x=683, y=492, nodeAnchor=General.anchorCenter})
+    bg:addChild(temp)
 end

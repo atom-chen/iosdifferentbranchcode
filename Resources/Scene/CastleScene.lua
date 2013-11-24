@@ -86,8 +86,8 @@ end
 --ui图层   20000
 
 function CastleScene:initView()
-	--初始化场景时，初始化更新列表
-	UpdateLogic.init()
+    --初始化场景时，初始化更新列表
+    UpdateLogic.init()
     self.view = CCTouchLayer:create(display.SCENE_PRI, true)
     self.view:setContentSize(General.winSize)
     local function onTouch(event, id, x, y)
@@ -395,7 +395,7 @@ function CastleScene:initData()
 end
 
 -- 不在初始化建筑的时候即时完成对建筑VIEW的初始化，避免内存加载高峰
-function CastleScene:initBuilds()
+function CastleScene:initBuilds(shouldHidden)
     local initInfo = self.initInfo
     self.builds = {}
     self.walls = {}
@@ -460,7 +460,9 @@ function CastleScene:initBuilds()
                 setting.hitpoints = build[6]
             end
             self.builds[id] = Build.create(bid, nil, setting)
-            table.insert(self.asynBuilds, self.builds[id]) 
+            if shouldHidden~=true or not self.builds[id].hiddenSupport or self.builds[id].buildState ~= BuildStates.STATE_FREE then
+                table.insert(self.asynBuilds, self.builds[id]) 
+            end
             if (bid>=1000 and bid<=1004) and self.sceneType==SceneTypes.Operation then
                 self.builds[id]:enterOperation()
             end
@@ -482,7 +484,7 @@ end
 
 function CastleScene:batchAddToScene()
     local ct = os.clock()
-    local rr = 0.2
+    local rr = 0.05
     while #(self.asynBuilds)>0 do
         local build = table.remove(self.asynBuilds)
         build:addToScene(self)
@@ -551,7 +553,7 @@ function CastleScene:onTouchBegan(id, x, y)
         --state.touchStart = {x, y}
         state.touchTime = timer.getTime() + 0.5
         self.touchBuild = nil
-        if not self.isReplay and (self.sceneType == SceneTypes.Operation or self.sceneType==SceneTypes.Zombie) then
+        if not self.isReplay and (self.sceneType == SceneTypes.Operation or self.sceneType==SceneTypes.Zombie or self.sceneType==SceneTypes.Visit) then
             local firstBuild = self.focusBuild or self.buyingBuild
             if firstBuild and firstBuild:checkTouch(x, y) then
                 isTouch = true
@@ -738,9 +740,9 @@ end
 function CastleScene:onTouchHold()
     if self.touchBuild and self.buildMovable then
         local state = self.touchBuild.state
-		if state.touchPoint and not state.isFocus then
-			self.touchBuild:setFocus(true)
-		end
+        if state.touchPoint and not state.isFocus then
+            self.touchBuild:setFocus(true)
+        end
     end
     self.stateInfo.touchTime = nil
 end
@@ -754,25 +756,6 @@ function CastleScene:onTouch(eventType, id, x, y)
         return self:onTouchEnded(id, x, y)
     end
 end
-
---[[
-function CastleScene:updateNightMode()
-    --if true then return end
-    if UserSetting.nightMode or UserData.isNight then
-        local dtime = timer.getDayTime()
-        local isTimeNight = UserSetting.nightMode --and (dtime<21600 or dtime>=64800)
-        if isTimeNight ~= UserData.isNight then
-            UserData.isNight = isTimeNight
-            if isTimeNight then
-		        UserStat.stat(UserStatType.NIGHT)
-                self.colorFilter:setColor(General.nightColor)
-            else
-                self.colorFilter:setColor(General.normalColor)
-            end
-        end
-    end
-end
---]]
 
 function CastleScene:update(diff)
     self.logicDiff = (self.logicDiff or 0) + diff
@@ -889,17 +872,17 @@ end
 function CastleScene:countSoldier()
     local num = 0
     local toDel = {}
-	for i, soldier in pairs(self.soldiers) do
-	    if soldier.deleted then
-			table.insert(toDel, i)
-		else
-			num = num+1
-		end
-	end
-	for i=1, #toDel do
-		self.soldiers[toDel[i]] = nil
-	end
-	return num
+    for i, soldier in pairs(self.soldiers) do
+        if soldier.deleted then
+            table.insert(toDel, i)
+        else
+            num = num+1
+        end
+    end
+    for i=1, #toDel do
+        self.soldiers[toDel[i]] = nil
+    end
+    return num
 end
 
 OperationScene = class(CastleScene)
@@ -930,11 +913,11 @@ local function loadBattleHistory(isSuc, result)
         local newBattles = {}
         for i=1, #data do
         --{id=1, score=21, stars=0, percent=40, time=1362642124, uscore=1460, food=2635, oil=8890, special=0, clan="Flesh", name="Boice", items={{id=2,num=53,level=5}, {id=5,num=10,level=3}, {id=3, num=54, level=4}, {id=1, num=53, level=4}}},
-		    
-		    local base = data[i]
-		    local item = base[1]
-		    local historyItem = {id=base[2], time=timer.getTime(base[3]), videoId=base[4], revenged=(base[5]==1), score=item[1], stars=item[2], percent=item[3], uscore=item[4], food=item[5], oil=item[6], name=item[7], items=item[8], icon=item[9], clan=item[10]} 
-		    
+            
+            local base = data[i]
+            local item = base[1]
+            local historyItem = {id=base[2], time=timer.getTime(base[3]), videoId=base[4], revenged=(base[5]==1), score=item[1], stars=item[2], percent=item[3], uscore=item[4], food=item[5], oil=item[6], name=item[7], items=item[8], icon=item[9], clan=item[10]} 
+            
             table.insert(battles,historyItem)
             if historyItem.time > UserData.lastSynTime then
                 table.insert(newBattles, historyItem)
@@ -985,20 +968,21 @@ function OperationScene:initData()
         if getParam("switchZombieOpen", 0)~=0 then
             initInfo.zombieTime = 0
         end
-        UserData.zombieShieldTime = timer.getTime(initInfo.zombieTime)
+        UserData.zombieShieldTime =  initInfo.zombieTime-initInfo.lastSynTime+timer.getTime()
         UserData.crystal = initInfo.crystal
         UserData.totalCrystal = initInfo.totalCrystal or 0
         UserData.lastOffTime = timer.getTime(initInfo.lastOffTime or 0)
         CrystalLogic.initCrystal(initInfo.crystal)
         if PauseLogic.pauseBuyObj then
-                CrystalLogic.changeCrystal(PauseLogic.pauseBuyObj.get)
-            	if UserData.totalCrystal==0 then
-            	    UserData.isNewVip = true
-            	end
-            	UserData.totalCrystal = UserData.totalCrystal + PauseLogic.pauseBuyObj.get
-            	if PauseLogic.pauseBuyObj.type==6 then
-            	    UserData.lastOffTime = timer.getTime()
-            	end
+                CrystalLogic.changeCrystal(PauseLogic.pauseBuyObj.get, UserData.rcc-PauseLogic.pauseBuyObj.get)
+                if UserData.totalCrystal==0 then
+                    UserData.isNewVip = true
+                UserData.firstReward = PauseLogic.pauseBuyObj.get
+                end
+                UserData.totalCrystal = UserData.totalCrystal + PauseLogic.pauseBuyObj.get
+                if PauseLogic.pauseBuyObj.type==6 then
+                    UserData.lastOffTime = timer.getTime()
+                end
             UserStat.addCrystalLog(-1, timer.getTime(), PauseLogic.pauseBuyObj.get, PauseLogic.pauseBuyObj.type-1)
             PauseLogic.pauseBuyObj = nil
         end
@@ -1007,13 +991,13 @@ function OperationScene:initData()
             UserData.dailyReward = initInfo.reward
             UserData.dailyDays = initInfo.days
         end
+        UserData.leftDay = initInfo.leftDay
+        UserData.allRewards = {}
+        UserData.getRewardList = {}
+        UserData.loadRewards(initInfo.newRewards)
         if initInfo.leagueWarTime then
             UserData.leagueWarTime = timer.getTime(initInfo.leagueWarTime)
             UserData.nextLeagueWarTime = timer.getTime(initInfo.nextLeagueWarTime)
-            if UserData.clan>0 and UserSetting.getValue("leagueWarOpened")==0 then
-                UserSetting.setValue("leagueWarOpened", 1)
-                UserData.showLeagueWar = true
-            end
         end
         UserData.obstacleTime = timer.getTime(initInfo.obstacleTime)
         if getParam("switchGuideOpen", 0)~=0 then
@@ -1222,6 +1206,12 @@ function OperationScene:synData(isAsyn)
                 needSyn = true
                 params.bcl = json.encode(CrystalLogic.buyAction)
                 CrystalLogic.buyAction = {}
+            end
+            cl = #(UserData.getRewardList)
+            if cl>0 then
+                needSyn = true
+                params.grl = json.encode(UserData.getRewardList)
+                UserData.getRewardList = {}
             end
             if needSyn then
                 self.synOver = false
@@ -1440,7 +1430,11 @@ function VisitScene:initData()
     SoldierLogic.init()
     SoldierLogic.isInit = true
     --SoldierLogic.updateSoldierList()
-    self:initBuilds(initInfo)
+    local shouldHidden = false
+    if UserData.clan~=0 and UserData.clan~=initInfo.clan then
+        shouldHidden = true
+    end
+    self:initBuilds(shouldHidden)
 end
 
 function VisitScene:updateLogic(diff)
@@ -1469,7 +1463,7 @@ function BattleScene:initData()
     local initInfo = self.initInfo
     BattleLogic.init()
     BattleLogic.computeScore(initInfo.score)
-    self:initBuilds(initInfo)
+    self:initBuilds()
 
     self.mapGridView:setColor(ccc3(255, 0, 0))
 
@@ -1502,7 +1496,7 @@ function BattleScene:eventHandler(eventType, params)
     if eventType==EventManager.eventType.EVENT_RESOURCE_STOLEN then
         local type = params.type
         local num = squeeze(params.num/100, 1, 20)
-	    local bitem = self.buffer[params.buildId]
+        local bitem = self.buffer[params.buildId]
         if bitem and bitem[type] then
             if bitem[type][1]>timer.getTime() then
                 bitem[type][2] = bitem[type][2]+params.num
@@ -1515,23 +1509,23 @@ function BattleScene:eventHandler(eventType, params)
         if not build.buildView then return end
         local x, y = build.buildView.view:getPosition()
         y = y + build.buildView.view:getContentSize().height*3/4
-	    music.playCleverEffect("music/" .. type .. "Collect.mp3")
-	    local bv = {timer.getTime()+1, params.num}
-	    if not bitem then
-	        self.buffer[params.buildId] = {[type]=bv}
-	    else
-	        bitem[type] = bv
-	    end
+        music.playCleverEffect("music/" .. type .. "Collect.mp3")
+        local bv = {timer.getTime()+1, params.num}
+        if not bitem then
+            self.buffer[params.buildId] = {[type]=bv}
+        else
+            bitem[type] = bv
+        end
         if type=="oil" then
             local temp = UI.createWaterSplashEffect(num)
-        	screen.autoSuitable(temp.view, {x=x, y=y})
-        	self.ground:addChild(temp.view, self.SIZEY)
-        	delayRemove(1.5, temp.view)
+            screen.autoSuitable(temp.view, {x=x, y=y})
+            self.ground:addChild(temp.view, self.SIZEY)
+            delayRemove(1.5, temp.view)
         elseif type=="food" then
-        	local temp = UI.createFoodSplashEffect(num)
-        	screen.autoSuitable(temp.view, {x=x, y=y})
-        	self.ground:addChild(temp.view, self.SIZEY)
-        	delayRemove(1.5, temp.view)
+            local temp = UI.createFoodSplashEffect(num)
+            screen.autoSuitable(temp.view, {x=x, y=y})
+            self.ground:addChild(temp.view, self.SIZEY)
+            delayRemove(1.5, temp.view)
         end
         if build.setResourceState and not build.deleted then
             local state = squeeze(math.floor(params.leftResource/build.resourceMax*100/24), 0, 4)
@@ -1630,7 +1624,7 @@ function ReplayScene:ctor(menuParam)
         
         ReplayLogic.loadReplayResult("zombie.txt")
     else
-    	BattleLogic.init()
+        BattleLogic.init()
         self.sceneType = SceneTypes.Battle
         ReplayLogic.battleTime = ReplayLogic.cmdList[#(ReplayLogic.cmdList)][1]
     end
@@ -1669,7 +1663,7 @@ end
 
 function ReplayScene:updateLogic(diff)
     if not self.pause and self.initOver then
-		UpdateLogic.executeUpdate(diff)
+        UpdateLogic.executeUpdate(diff)
         self.time = (self.time or 0)+ diff
         while not self.cmdTime or self.time>self.cmdTime do
             if self.cmdTime then
@@ -1688,16 +1682,16 @@ function ReplayScene:updateLogic(diff)
                     WeaponHelper.create(self.cmd[3], self.cmd[6], self, ReplayLogic.randomSeed, self.cmd[4], self.cmd[5])
                 elseif self.cmd[2]=="zb" then
                     local zombieTomb = ZombieTomb.new(1004, {level=self.cmd[5]})
-    			    zombieTomb:addToScene(self, {initGridX=self.cmd[3], initGridY=self.cmd[4]})
-    			    --add action here
-    			    local b = zombieTomb.buildView.build
-    			    local height=getParam("actionTombHeight", 104)
-    			    b:setPositionY(height+28)
-    			    b:runAction(CCEaseBackIn:create(CCMoveBy:create(0.4, CCPointMake(0, -height))))
+                    zombieTomb:addToScene(self, {initGridX=self.cmd[3], initGridY=self.cmd[4]})
+                    --add action here
+                    local b = zombieTomb.buildView.build
+                    local height=getParam("actionTombHeight", 104)
+                    b:setPositionY(height+28)
+                    b:runAction(CCEaseBackIn:create(CCMoveBy:create(0.4, CCPointMake(0, -height))))
                 elseif self.cmd[2]=="cl" then
-    			    local clanTomb = ClanTomb.new(2, {icon=self.cmd[5]})
-    			    clanTomb:addToScene(self, {initGridX=self.cmd[3], initGridY=self.cmd[4]})
-    			    clanTomb.buildView.build:setPositionY(26)
+                    local clanTomb = ClanTomb.new(2, {icon=self.cmd[5]})
+                    clanTomb:addToScene(self, {initGridX=self.cmd[3], initGridY=self.cmd[4]})
+                    clanTomb.buildView.build:setPositionY(26)
                 elseif self.cmd[2]=="r" then
                     self.builds[self.cmd[3]]:repair()
                 elseif self.cmd[2]=="c" then

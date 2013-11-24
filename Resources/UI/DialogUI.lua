@@ -1,10 +1,10 @@
 function UI.registerAsProcess(filler, fillerTable)
-	local origin, size = filler:getTextureRect().origin, filler:getContentSize()
-	fillerTable.baseX = origin.x
-	fillerTable.baseY = origin.y
-	fillerTable.baseW = size.width
-	fillerTable.baseH = size.height
-	fillerTable.width = -1
+    local origin, size = filler:getTextureRect().origin, filler:getContentSize()
+    fillerTable.baseX = origin.x
+    fillerTable.baseY = origin.y
+    fillerTable.baseW = size.width
+    fillerTable.baseH = size.height
+    fillerTable.width = -1
 end
 
 function UI.setProcess(filler, fillerTable, bl, reverse)
@@ -41,10 +41,10 @@ function InfoProcessItem:ctor(number1, number2, max, infoType, infoIcon)
     screen.autoSuitable(temp, {x=2, y=2})
     self.bg:addChild(temp,1)
     self.process = temp
-	UI.registerAsProcess(temp, self)
-	local lmax = self.max
-	if lmax<=0 then lmax = 1 end
-	UI.setProcess(temp, self, self.number/lmax)
+    UI.registerAsProcess(temp, self)
+    local lmax = self.max
+    if lmax<=0 then lmax = 1 end
+    UI.setProcess(temp, self, self.number/lmax)
     
     local numberText = number1
     self.isUpgradeType = number2
@@ -58,8 +58,8 @@ function InfoProcessItem:ctor(number1, number2, max, infoType, infoIcon)
             self.bg:addChild(temp)
             --temp:setHueOffset(100)
             local ttable = {}
-	        UI.registerAsProcess(temp, ttable)
-	        UI.setProcess(temp, ttable, number2/lmax)
+            UI.registerAsProcess(temp, ttable)
+            UI.setProcess(temp, ttable, number2/lmax)
         end
     end
     self.text = UI.createLabel(StringManager.getFormatString(typeText .. infoType, {num=numberText, max=max}), General.font3, 18)
@@ -88,8 +88,8 @@ function InfoProcessItem:setNumber(number)
         end
         self.text:setString(StringManager.getFormatString(typeText .. self.infoType, {num=self.number, max=self.max}))
         
-    	local lmax = self.max
-    	if lmax<=0 then lmax = 1 end
+        local lmax = self.max
+        if lmax<=0 then lmax = 1 end
         UI.setProcess(self.process, self, self.number/lmax)
     end
 end
@@ -158,9 +158,9 @@ end
 function UI.createStar(starnum, starsize, staroff)
     local bg = CCSpriteBatchNode:create("images/normalUI.png", starnum)
     for i=1, starnum do
-		local temp = UI.createSpriteWithFile("images/soldierStar.png",CCSizeMake(starsize, starsize))
-		screen.autoSuitable(temp, {x=staroff*i-staroff, y=0})
-		bg:addChild(temp)
+        local temp = UI.createSpriteWithFile("images/soldierStar.png",CCSizeMake(starsize, starsize))
+        screen.autoSuitable(temp, {x=staroff*i-staroff, y=0})
+        bg:addChild(temp)
     end
     return bg
 end

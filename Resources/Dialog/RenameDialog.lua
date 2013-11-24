@@ -28,9 +28,9 @@ function RenameDialog:ctor()
     screen.autoSuitable(temp, {x=222, y=166, nodeAnchor=General.anchorCenter})
     bg:addChild(temp)
     self.view = bg
-	local input = UI.createTextInput("", General.font1, 22, CCSizeMake(324, 36), kCCTextAlignmentCenter, 24, display.DIALOG_BUTTON_PRI)
-	screen.autoSuitable(input, {x=222, y=166, nodeAnchor=General.anchorCenter})
-	input:setColor(ccc3(0,0,0))
-	bg:addChild(input)
-	self.input = input
+    local input = UI.createTextInput("", General.font1, 22, CCSizeMake(324, 36), kCCTextAlignmentCenter, 24, display.DIALOG_BUTTON_PRI)
+    screen.autoSuitable(input, {x=222, y=166, nodeAnchor=General.anchorCenter})
+    input:setColor(ccc3(0,0,0))
+    bg:addChild(input)
+    self.input = input
 end

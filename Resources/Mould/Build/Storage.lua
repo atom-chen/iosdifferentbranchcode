@@ -1,41 +1,41 @@
 Storage = class(BuildMould)
 
 function Storage:ctor(bid, setting, param)
-	self.resourceType = param
-	self.resource = setting.resource or 0
+    self.resourceType = param
+    self.resource = setting.resource or 0
 end
 
 function Storage:getExtendInfo()
-	return {resource=self.resource}
+    return {resource=self.resource}
 end
 
 function Storage:getBattleResource()
-	if self.resourceType=="food" or self.resourceType=="oil" then
-	    local resource = squeeze(math.floor(self.resource*0.25), 0, nil)
-	    self.resourceMax = self.buildData.extendValue1
-		return {[self.resourceType]=resource}
-	end
+    if self.resourceType=="food" or self.resourceType=="oil" then
+        local resource = squeeze(math.floor(self.resource*0.25), 0, nil)
+        self.resourceMax = self.buildData.extendValue1
+        return {[self.resourceType]=resource}
+    end
 end
 
 function Storage:enterOperation()
-	ResourceLogic.setResourceStorage(self.resourceType, self.buildIndex, self)
-	ResourceLogic.setResourceMax(self.resourceType, self.buildIndex, self.buildData.extendValue1)
+    ResourceLogic.setResourceStorage(self.resourceType, self.buildIndex, self)
+    ResourceLogic.setResourceMax(self.resourceType, self.buildIndex, self.buildData.extendValue1)
 end
 
 function Storage:addBuildInfo(bg, addInfoItem)
-	local img = STORAGE_IMG_SETTING[self.resourceType]
-	addInfoItem(bg, 1, self.resource, nil, self.buildData.extendValue1, "Storage", img)
-	
-	return 1
+    local img = STORAGE_IMG_SETTING[self.resourceType]
+    addInfoItem(bg, 1, self.resource, nil, self.buildData.extendValue1, "Storage", img)
+    
+    return 1
 end
 
 function Storage:addBuildUpgrade(bg, addUpgradeItem)
-	local bdata = self.buildData
-	local maxData = StaticData.getMaxLevelData(bdata.bid)
-	local nextLevel = StaticData.getBuildData(bdata.bid, bdata.level+1)
-	
-	addUpgradeItem(bg, 1, bdata.extendValue1, nextLevel.extendValue1, maxData.extendValue1, "Storage", STORAGE_IMG_SETTING[self.resourceType])
-	return 1
+    local bdata = self.buildData
+    local maxData = StaticData.getMaxLevelData(bdata.bid)
+    local nextLevel = StaticData.getBuildData(bdata.bid, bdata.level+1)
+    
+    addUpgradeItem(bg, 1, bdata.extendValue1, nextLevel.extendValue1, maxData.extendValue1, "Storage", STORAGE_IMG_SETTING[self.resourceType])
+    return 1
 end
 
 function Storage:updateOperationLogic(diff)

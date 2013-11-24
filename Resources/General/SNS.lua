@@ -1,8 +1,11 @@
 SNS = {}
 
 function SNS.shareOver(event)
-    if event==EventManager.eventType.EVENT_SHARE_SUCCESS and SNS.shareReward then
-        CrystalLogic.changeCrystal(SNS.shareReward)
+    if event==EventManager.eventType.EVENT_SHARE_SUCCESS then
+        UserStat.stat(UserStatType.SHARE_SUCCESS)
+        if SNS.shareReward then
+            CrystalLogic.changeCrystal(SNS.shareReward, UserData.rcc-SNS.shareReward)
+        end
     end
     SNS.shareReward = nil
     if SNS.shareDialog and not SNS.shareDialog.deleted then
@@ -27,6 +30,7 @@ function SNS.share(text, image, dialog, crystal)
             end
             text = SNS.shareText
         end
+        UserStat.stat(UserStatType.SHARE)
         MyPlugins:getInstance():share(text, image)
         SNS.shareReward = crystal
     end

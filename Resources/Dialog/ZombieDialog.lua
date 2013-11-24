@@ -1,34 +1,34 @@
 ZombieDialog = {}
 
 local function onDefense()
-	local mainScene = display.getCurrentScene()
-	if not mainScene.synData then return end
-	mainScene:synData()
-	local scene = ZombieScene.new()
-	scene.initInfo = mainScene.initInfo
-	display.pushScene(scene, PreBattleScene)
-	ZombieLogic.delayNext()
-	UserStat.stat(UserStatType.ZOMBIE)
+    local mainScene = display.getCurrentScene()
+    if not mainScene.synData then return end
+    mainScene:synData()
+    local scene = ZombieScene.new()
+    scene.initInfo = mainScene.initInfo
+    display.pushScene(scene, PreBattleScene)
+    ZombieLogic.delayNext()
+    UserStat.stat(UserStatType.ZOMBIE)
     UserStat.stat(UserStatType.ZOMBIE_DEFEND)
 end
 
 local function onSkip()
     local num = math.floor(ResourceLogic.getResource("person")*LOST_PERCENT/100)
     if num>0 then
-    	ResourceLogic.changeResource("person", -num)
-    	display.pushNotice(UI.createNotice(StringManager.getFormatString("noticeSkipZombie", {num=num})))
+        ResourceLogic.changeResource("person", -num)
+        display.pushNotice(UI.createNotice(StringManager.getFormatString("noticeSkipZombie", {num=num})))
     end
-	ZombieLogic.delayNext()
-	display.closeDialog()
-	UserStat.stat(UserStatType.ZOMBIE)
-	UserStat.stat(UserStatType.ZOMBIE_SKIP)
+    ZombieLogic.delayNext()
+    display.closeDialog()
+    UserStat.stat(UserStatType.ZOMBIE)
+    UserStat.stat(UserStatType.ZOMBIE_SKIP)
 end
 
 function ZombieDialog.create()
-	local temp, bg = nil
+    local temp, bg = nil
     bg = UI.createButton(CCSizeMake(630, 461), doNothing, {image="images/dialogBgA.png", priority=display.DIALOG_PRI, nodeChangeHandler = doNothing})
     screen.autoSuitable(bg, {screenAnchor=General.anchorCenter, scaleType = screen.SCALE_DIALOG_CLEVER})
-	UI.setShowAnimate(bg)
+    UI.setShowAnimate(bg)
     temp = UI.createSpriteWithFile("images/dialogItemBlood.png",CCSizeMake(256, 194))
     screen.autoSuitable(temp, {x=350, y=45})
     bg:addChild(temp)
@@ -43,9 +43,9 @@ function ZombieDialog.create()
         batchSprite:addChild(temp)
         local num = zombies[i] or 0
         if num>0 then
-			temp = UI.createScaleSprite("images/zombieHead" .. i .. ".png", CCSizeMake(60, 80))
-			screen.autoSuitable(temp, {nodeAnchor=General.anchorCenter, x=(i-offi)*75-20, y=214})
-			bg:addChild(temp)
+            temp = UI.createScaleSprite("images/zombieHead" .. i .. ".png", CCSizeMake(60, 80))
+            screen.autoSuitable(temp, {nodeAnchor=General.anchorCenter, x=(i-offi)*75-20, y=214})
+            bg:addChild(temp)
             temp = UI.createLabel(StringManager.getString("x" .. num), General.font4, 20, {colorR = 255, colorG = 255, colorB = 255, lineOffset=-12})
             screen.autoSuitable(temp, {x=(i-offi)*75+5, y=187, nodeAnchor=General.anchorRight})
             bg:addChild(temp)
@@ -68,5 +68,5 @@ function ZombieDialog.create()
     temp = UI.createLabel(StringManager.getString("titleWarning"), General.font3, 28, {colorR = 255, colorG = 255, colorB = 255})
     screen.autoSuitable(temp, {x=315, y=429, nodeAnchor=General.anchorCenter})
     bg:addChild(temp)
-	return {view=bg}
+    return {view=bg}
 end

@@ -7,14 +7,14 @@ local LABEL_BASE_Y = 666
 
 local editTabIndex=4
 
-local LeagueWarIntroDialog = class()
+LeagueWarIntroDialog = class()
 
-function LeagueWarIntroDialog:ctor()
+function LeagueWarIntroDialog:ctor(isIntro2)
     local temp, bg = nil
     bg = UI.createButton(CCSizeMake(720, 526), doNothing, {image="images/dialogBgA.png", priority=display.DIALOG_PRI, nodeChangeHandler = doNothing})
     screen.autoSuitable(bg, {screenAnchor=General.anchorCenter, scaleType = screen.SCALE_DIALOG_CLEVER})
     self.view = bg
-	UI.setShowAnimate(bg)
+    UI.setShowAnimate(bg)
     
     temp = UI.createSpriteWithFile("images/dialogItemBlood.png",CCSizeMake(292, 222))
     screen.autoSuitable(temp, {x=400, y=50})
@@ -29,16 +29,29 @@ function LeagueWarIntroDialog:ctor()
     temp = UI.createButton(CCSizeMake(135, 61), display.closeDialog, {image="images/buttonGreen.png", text=StringManager.getString("buttonYes"), fontSize=26, fontName=General.font3})
     screen.autoSuitable(temp, {x=449, y=134, nodeAnchor=General.anchorCenter})
     bg:addChild(temp)
-    temp = UI.createLabel(StringManager.getString("labelLeagueWarRule"), General.font1, 28, {colorR = 75, colorG = 66, colorB = 46, size=CCSizeMake(400, 240), align=kCCTextAlignmentLeft})
-    screen.autoSuitable(temp, {x=475, y=276, nodeAnchor=General.anchorCenter})
-    bg:addChild(temp)
+    if isIntro2 then
+        temp = UI.createLabel(StringManager.getString("textLeagueWar1"), General.font1, 25, {colorR = 75, colorG = 66, colorB = 46, size=CCSizeMake(420, 240), align=kCCTextAlignmentLeft})
+        screen.autoSuitable(temp, {x=465, y=346, nodeAnchor=General.anchorCenter})
+        bg:addChild(temp)
+        temp = UI.createLabel(StringManager.getString("textLeagueWar2"), General.font1, 23, {colorR = 75, colorG = 66, colorB = 46, size=CCSizeMake(420, 300), align=kCCTextAlignmentLeft})
+        screen.autoSuitable(temp, {x=465, y=256, nodeAnchor=General.anchorCenter})
+        bg:addChild(temp)
+        
+        temp = UI.createLabel(StringManager.getString("titleLeagueWar2"), General.font3, 30, {colorR = 255, colorG = 255, colorB = 255})
+        screen.autoSuitable(temp, {x=360, y=489, nodeAnchor=General.anchorCenter})
+        bg:addChild(temp)
+    else
+        temp = UI.createLabel(StringManager.getString("labelLeagueWarRule"), General.font1, 28, {colorR = 75, colorG = 66, colorB = 46, size=CCSizeMake(400, 240), align=kCCTextAlignmentLeft})
+        screen.autoSuitable(temp, {x=475, y=276, nodeAnchor=General.anchorCenter})
+        bg:addChild(temp)
     
-    temp = UI.createLabel(StringManager.getString("titleLeagueWar"), General.font3, 30, {colorR = 255, colorG = 255, colorB = 255})
-    screen.autoSuitable(temp, {x=360, y=489, nodeAnchor=General.anchorCenter})
+        temp = UI.createLabel(StringManager.getString("titleLeagueWar"), General.font3, 30, {colorR = 255, colorG = 255, colorB = 255})
+        screen.autoSuitable(temp, {x=360, y=489, nodeAnchor=General.anchorCenter})
+        bg:addChild(temp)
+    end
+    temp = UI.createButton(CCSizeMake(47, 46), display.closeDialog, {image="images/buttonClose.png"})
+    screen.autoSuitable(temp, {x=683, y=492, nodeAnchor=General.anchorCenter})
     bg:addChild(temp)
-	temp = UI.createButton(CCSizeMake(47, 46), display.closeDialog, {image="images/buttonClose.png"})
-	screen.autoSuitable(temp, {x=683, y=492, nodeAnchor=General.anchorCenter})
-	bg:addChild(temp)
 end
 
 local function createTab(setting)
@@ -115,7 +128,7 @@ function ClanDialog:initTabView(tabs, changeTab)
         screen.autoSuitable(temp, {x=-71+i*209, y=679})
         self.view:addChild(temp)
         tabs[i] = temp
-	    simpleRegisterButton(temp, {priority=display.DIALOG_BUTTON_PRI, callback=changeTab, callbackParam=i})
+        simpleRegisterButton(temp, {priority=display.DIALOG_BUTTON_PRI, callback=changeTab, callbackParam=i})
 
         temp = UI.createLabel(StringManager.getString(tabTitles[i]), General.font3, 24, {colorR = 255, colorG = 255, colorB = 255})
         screen.autoSuitable(temp, {x=29+209*i, y=722, nodeAnchor=General.anchorCenter})
@@ -190,7 +203,7 @@ function updateRankClanCell(bg, scrollView, info)
     temp = UI.createSpriteWithFile("images/dialogItemHistorySeperator.png",CCSizeMake(2, 55))
     screen.autoSuitable(temp, {x=115, y=2})
     bg:addChild(temp)
-	local rgb = RANK_COLOR[info.rank] or {255, 255, 255}
+    local rgb = RANK_COLOR[info.rank] or {255, 255, 255}
     temp = UI.createLabel(info.rank .. ".", General.font4, 23, {colorR = rgb[1], colorG = rgb[2], colorB = rgb[3], lineOffset=-12})
     screen.autoSuitable(temp, {x=41, y=29, nodeAnchor=General.anchorCenter})
     bg:addChild(temp)
@@ -201,14 +214,14 @@ function ClanDialog:getCaesarsCupData(isSuc, result, view)
     if isSuc and not self.deleted then
         local data = json.decode(result)
         if data==None or #data==0 then return end
-    	local infos = {}
-    	local isNew = true
-    	for i=1, #data do
-    	    local info = data[i]
-    	    --`id`, icon, score, `type`, name, `desc`, members, `min`
-    	    local item = {dialog=self, rank=i, clan=info[1], icon=info[2], score=info[3], type=info[4], name=info[5], desc=info[6], members=info[7], min=info[8]}
-        	table.insert(infos, item)
-    	end
+        local infos = {}
+        local isNew = true
+        for i=1, #data do
+            local info = data[i]
+            --`id`, icon, score, `type`, name, `desc`, members, `min`
+            local item = {dialog=self, rank=i, clan=info[1], icon=info[2], score=info[3], type=info[4], name=info[5], desc=info[6], members=info[7], min=info[8]}
+            table.insert(infos, item)
+        end
     	
         local scrollView = UI.createScrollViewAuto(CCSizeMake(996, 470), false, {offx=5, offy=4, disy=10, size=CCSizeMake(986, 58), infos=infos, cellUpdate=updateRankClanCell})
         screen.autoSuitable(scrollView.view, {nodeAnchor=General.anchorLeftBottom, x=12, y=26})
@@ -248,7 +261,7 @@ function ClanDialog:createCaesarsCupTab()
     screen.autoSuitable(temp, {x=685, y=555, nodeAnchor=General.anchorCenter})
     bg:addChild(temp)
     
-	network.httpRequest("getCaesarsCupRank", self.getCaesarsCupData, {callbackParam=bg, params={uid=UserData.userId}}, self)
+    network.httpRequest("getCaesarsCupRank", self.getCaesarsCupData, {callbackParam=bg, params={uid=UserData.userId}}, self)
     return bg
 end
 
@@ -299,8 +312,8 @@ local function beginReplay(suc, result)
         ReplayLogic.buildData = data.data
         ReplayLogic.cmdList = data.cmdList
         ReplayLogic.isZombie = false
-    	display.pushScene(ReplayScene.new(), PreBattleScene)
-    	--UserStat.stat(UserStatType.HISTORY_VIDEO)
+        display.pushScene(ReplayScene.new(), PreBattleScene)
+        --UserStat.stat(UserStatType.HISTORY_VIDEO)
     end
 end
 
@@ -316,11 +329,11 @@ local function getBattleMemberDataOver(suc, result, bid)
         if data.code~=0 then
             display.pushNotice(UI.createNotice(StringManager.getString("noticeLeagueBattleFail" .. data.code)))
         else
-	        mainScene:synData()
-	        BattleLogic.isLeagueBattle = UserData.clanBattleId
+            mainScene:synData()
+            BattleLogic.isLeagueBattle = UserData.clanBattleId
             UserData.enemyId = UserData.clanBattleId
-    		BattleLogic.enemyClan = data.clan
-    		BattleLogic.leagueBattleId = bid
+            BattleLogic.enemyClan = data.clan
+            BattleLogic.leagueBattleId = bid
             local scene = BattleScene.new()
             scene.initInfo = data
             display.pushScene(scene, PreBattleScene)
@@ -337,7 +350,7 @@ local function onBattleWithMember(info)
             if network.httpRequest("getLeagueMemberData", getBattleMemberDataOver, {single=true,params={uid=UserData.userId, eid=info.uid}, callbackParam=info.binfo[6]}) then
                 UserData.clanBattleId = info.uid
             end
-    	end
+        end
     end
 end
 
@@ -446,7 +459,7 @@ local function updateClanMemberCell(bg, scrollView, info)
         if info.clan and UserData.memberType==2 and UserData.clan==info.clan then
             others = {{text=StringManager.getString("buttonKick"), callbackParam={info.uid, info.name, info.clan}, callback=kickoutClan}}
         end
-    	UI.registerVisitIcon(bg, scrollView, info.dialog.view, info.uid, temp, others)
+        UI.registerVisitIcon(bg, scrollView, info.dialog.view, info.uid, temp, others)
     end
     temp = UI.createLabel(StringManager.getString("mtype" .. info.mtype), General.font1, 15, {colorR = 90, colorG = 81, colorB = 74})
     screen.autoSuitable(temp, {x=80, y=15, nodeAnchor=General.anchorLeft})
@@ -583,8 +596,12 @@ function ClanDialog:createLeagueTab(info)
             end
             isLeaving = false
         end
-        local function onLeaveClan()
-            if not isLeaving and not network.single then
+        local function onLeaveClan(force)
+            if isLeaving then return end
+            if not force then
+                return display.showDialog(AlertDialog.new(StringManager.getString("alertTitleLeave"), StringManager.getString("alertTextLeave"),{callback=onLeaveClan, param=true}))
+            end
+            if not network.single then
                 isLeaving = true
                 network.httpRequest("leaveClan", leaveClanOver, {isPost=true, single=true, params={uid=UserData.userId, cid=info.clan}})
             end
@@ -988,9 +1005,9 @@ function ClanDialog:showFindedView(bg, info)
                 display.pushNotice(UI.createNotice(StringManager.getString("noticeErrorLeagueBattle")))
                 self:showPrepareView(bg)
             elseif rdata.code==0 then
-    			UserData.clanInfo[10] = 2
-    			UserData.clanInfo[11] = timer.getServerTime(timer.getTime()+86400)
-    			if not self.deleted then
+                UserData.clanInfo[10] = 2
+                UserData.clanInfo[11] = timer.getServerTime(timer.getTime()+86400)
+                if not self.deleted then
                     display.closeDialog()
                 end
             elseif rdata.code==3 then
@@ -1234,16 +1251,16 @@ function ClanDialog:createCreateTab(isEdit)
         local temp1 = UI.createSpriteWithFile("images/oil.png",CCSizeMake(38, 43))
         screen.autoSuitable(temp1, {x=121, y=14})
         temp:addChild(temp1)
-    	local colorSetting = {colorR=255, colorG=255, colorB=255, lineOffset=-12}
-    	if ResourceLogic.getResource("oil")<cost then
-    		colorSetting.colorG=0
-    	    colorSetting.colorB=0
-    	end
-    	temp1 = UI.createLabel(tostring(cost), General.font4, 28, colorSetting)
-    	screen.autoSuitable(temp1, {nodeAnchor=General.anchorCenter, x=68, y=36})
-    	temp:addChild(temp1)
-	end
-	return bg
+        local colorSetting = {colorR=255, colorG=255, colorB=255, lineOffset=-12}
+        if ResourceLogic.getResource("oil")<cost then
+            colorSetting.colorG=0
+            colorSetting.colorB=0
+        end
+        temp1 = UI.createLabel(tostring(cost), General.font4, 28, colorSetting)
+        screen.autoSuitable(temp1, {nodeAnchor=General.anchorCenter, x=68, y=36})
+        temp:addChild(temp1)
+    end
+    return bg
 end
 
 ClanNoticeDialog=class()
@@ -1308,6 +1325,5 @@ function ClanNoticeDialog:openClanDialog()
 end
 
 function ClanNoticeDialog:share()
-	SNS.share(SNS.shareText, nil, self, 1)
-	UserStat.stat(UserStatType.SHARE)
+    SNS.share(SNS.shareText, nil, self, 1)
 end

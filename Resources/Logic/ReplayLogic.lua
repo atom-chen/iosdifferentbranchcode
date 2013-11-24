@@ -8,18 +8,18 @@ end
 
 function ReplayLogic.makeReplayResult(fileName)
     local replayFile = io.open(CCFileUtils:sharedFileUtils():getWritablePath() .. fileName, "w")
-	replayFile:write(json.encode(ReplayLogic.buildData) .. "\n")
-	replayFile:write(ReplayLogic.randomSeed .. "\n")
-	for _, cmd in ipairs(ReplayLogic.cmdList) do
-	    replayFile:write(json.encode(cmd) .. "\n")
-	end
+    replayFile:write(json.encode(ReplayLogic.buildData) .. "\n")
+    replayFile:write(ReplayLogic.randomSeed .. "\n")
+    for _, cmd in ipairs(ReplayLogic.cmdList) do
+        replayFile:write(json.encode(cmd) .. "\n")
+    end
     replayFile:close()
 end
 
 function ReplayLogic.loadReplayResult(fileName)
     local replayFile = io.open(CCFileUtils:sharedFileUtils():getWritablePath() .. fileName)
-	ReplayLogic.buildData = json.decode(replayFile:read())
-	ReplayLogic.randomSeed = tonumber(replayFile:read())
+    ReplayLogic.buildData = json.decode(replayFile:read())
+    ReplayLogic.randomSeed = tonumber(replayFile:read())
     local cmdList = {}
     while true do
         local cmd = json.decode(replayFile:read())

@@ -548,51 +548,51 @@ end
 
 --设定Grid
 function World:clearGrids(x, y, size)
-	for i=1, size do
-		for j=1, size do
+    for i=1, size do
+        for j=1, size do
             local key = self:getKey(x-1+i, y-1+j)
-			self.cells[key]['state'] = nil
+            self.cells[key]['state'] = nil
             self.cells[key]['obj'] = nil
-		end
-	end
+        end
+    end
 end
 
 --清除经营页面障碍物
 function World:clearObstacle(x, y, size)
-	for i=1, size do
-		for j=1, size do
+    for i=1, size do
+        for j=1, size do
             local key = self:getKey(x-1+i, y-1+j)
-			self.cells[key]['state'] = nil
+            self.cells[key]['state'] = nil
             self.cells[key]['obj'] = nil
-		end
-	end
+        end
+    end
 end
 --经营页面障碍物
 --经营障碍物 不能 像城墙一样堵死路线
 --否则使用setGrids 方法
 function World:setObstacle(x, y, size, obj)
-	for i=1, size do
-		for j=1, size do
+    for i=1, size do
+        for j=1, size do
             local key = self:getKey(x-1+i, y-1+j)
-			self.cells[key]['state'] = 'Solid'
+            self.cells[key]['state'] = 'Solid'
             self.cells[key]['obj'] = obj
-		end
-	end
+        end
+    end
 end
 
 --陷阱 城墙 装饰
 function World:setGrids(x, y, size, obj)
-	for i=1, size do
-		for j=1, size do
+    for i=1, size do
+        for j=1, size do
             local key = self:getKey(x-1+i, y-1+j)
-			self.cells[key]['state'] = 'Wall'
+            self.cells[key]['state'] = 'Wall'
             self.cells[key]['obj'] = obj
-		end
-	end
+        end
+    end
 end
 
 local function compareDis(a, b)
-	return a[1] < b[1]
+    return a[1] < b[1]
 end
 --1 2 3 4 ---> 1
 function World:smallToBig(x, y)
@@ -613,7 +613,7 @@ end
 --大网格中的某个小网格有对象
 function World:setBigGridBuildings(x, y, size, btype, obj)
     local halfSize = size/2
-	local cp = {x+halfSize, y+halfSize, obj} --建筑物中点 和 建筑物
+    local cp = {x+halfSize, y+halfSize, obj} --建筑物中点 和 建筑物
 
     for i = x, x+size-1 do
         for j = y, y+size-1 do
@@ -654,7 +654,7 @@ function World:setBigGridBuildings(x, y, size, btype, obj)
 end
 function World:clearBigGridBuildings(x, y, size, btype, obj)
     local halfSize = size/2
-	local cp = {x+halfSize, y+halfSize, obj} --建筑物中点 和 建筑物
+    local cp = {x+halfSize, y+halfSize, obj} --建筑物中点 和 建筑物
 
     for i = x, x+size-1 do
         for j = y, y+size-1 do
@@ -752,10 +752,10 @@ end
 --prevGrid 包含建筑物类型 用于寻路特定类型建筑物 
 function World:setSmallGrid(x, y, size, btype, obj)
     local halfSize = size/2
-	local cp = {x+halfSize, y+halfSize, obj} --建筑物中点 和 建筑物
+    local cp = {x+halfSize, y+halfSize, obj} --建筑物中点 和 建筑物
     for i = x, x+size-1 do
         for j = y, y+size-1 do
-			self.cells[self:getKey(i, j)]['state'] = 'Building'
+            self.cells[self:getKey(i, j)]['state'] = 'Building'
         end
     end
     --[[
@@ -795,13 +795,13 @@ end
 
 function World:setBuild(x, y, size, btype, obj)
     local halfSize = size/2
-	--local fsize = (size-1)/2
-	local cp = {x+halfSize, y+halfSize, obj} --建筑物中点 和 建筑物
+    --local fsize = (size-1)/2
+    local cp = {x+halfSize, y+halfSize, obj} --建筑物中点 和 建筑物
     self.buildInfo[obj] = {x, y, size, btype}
     --所有建筑物类型 
     --建筑物初始位置
-	self.typeNum[btype] = (self.typeNum[btype] or 0) + 1
-	self.allBuilds[self:getKey(x, y)] = cp
+    self.typeNum[btype] = (self.typeNum[btype] or 0) + 1
+    self.allBuilds[self:getKey(x, y)] = cp
     --for k, v in pairs(self.allBuilds) do
     --    print("allBuilding "..self:getXY(k))
     --end
@@ -857,7 +857,7 @@ end
 function World:clearSmallGrid(x, y, size, btype, obj)
     for i=x, x+size-1 do
         for j=y, y+size-1 do
-			self.cells[self:getKey(i, j)]['state'] = nil
+            self.cells[self:getKey(i, j)]['state'] = nil
         end
     end
     --[[
@@ -887,10 +887,10 @@ end
 
 --清理建筑物的网格
 function World:clearBuild(x, y, size, btype, obj)
-	local fsize = (size-1)/2
-	local cp = {x+fsize, y+fsize}
-	self.typeNum[btype] = self.typeNum[btype] - 1
-	self.allBuilds[self:getKey(x, y)] = nil
+    local fsize = (size-1)/2
+    local cp = {x+fsize, y+fsize}
+    self.typeNum[btype] = self.typeNum[btype] - 1
+    self.allBuilds[self:getKey(x, y)] = nil
     self.buildInfo[obj] = nil
 
     --清理当前建筑的最近的大网格
@@ -968,7 +968,7 @@ end
 --当没有建筑之后 可能存在bug
 function World:calcH(x, y, bx, by)
     local data = self.cells[self:getKey(x, y)]
-	if self.searchType=="attack" then
+    if self.searchType=="attack" then
         --大网格路径存在 且长度大于当前网格位置
         if self.endPoint ~= nil then
             local dx, dy = math.abs(self.endPoint[1]-x), math.abs(self.endPoint[2]-y)
@@ -985,14 +985,14 @@ function World:calcH(x, y, bx, by)
             local dx, dy = math.abs(nearX-x), math.abs(nearY-y)
             data['hScore'] = (dx+dy)*10
         else
-		    data['hScore'] = 99999 --没有最近的建筑则是无穷远
+            data['hScore'] = 99999 --没有最近的建筑则是无穷远
         end
         --]]
-	else
-		local dx, dy = math.abs(self.endPoint[1]-x), math.abs(self.endPoint[2]-y)
-		local score = (dx+dy)*10
-		data['hScore'] = score
-	end
+    else
+        local dx, dy = math.abs(self.endPoint[1]-x), math.abs(self.endPoint[2]-y)
+        local score = (dx+dy)*10
+        data['hScore'] = score
+    end
 end
 
 function World:calcF(x, y)
@@ -1194,23 +1194,23 @@ function World:search()
     self.pqDict = {}
     self.closedList = {}
 
-	local tempStart = {}
-	if self.startPoint[1]<1 then
-		tempStart[1] = 1
-	elseif self.startPoint[1]>self.cellNum then
-		tempStart[1] = self.cellNum
-	end
-	if self.startPoint[2]<1 then
-		tempStart[2] = 1
-	elseif self.startPoint[2]>self.cellNum then
-		tempStart[2] = self.cellNum
-	end
-	if tempStart[1] then
-		self.startPoint[1], tempStart[1] = tempStart[1], self.startPoint[1]
-	end
-	if tempStart[2] then
-		self.startPoint[2], tempStart[2] = tempStart[2], self.startPoint[2]
-	end
+    local tempStart = {}
+    if self.startPoint[1]<1 then
+        tempStart[1] = 1
+    elseif self.startPoint[1]>self.cellNum then
+        tempStart[1] = self.cellNum
+    end
+    if self.startPoint[2]<1 then
+        tempStart[2] = 1
+    elseif self.startPoint[2]>self.cellNum then
+        tempStart[2] = self.cellNum
+    end
+    if tempStart[1] then
+        self.startPoint[1], tempStart[1] = tempStart[1], self.startPoint[1]
+    end
+    if tempStart[2] then
+        self.startPoint[2], tempStart[2] = tempStart[2], self.startPoint[2]
+    end
 
     self.cells[self:getKey(self.startPoint[1], self.startPoint[2])]['gScore'] = 0
     self:calcH(self.startPoint[1], self.startPoint[2])
@@ -1261,9 +1261,9 @@ function World:search()
             break
         end
         --[[
-        	if tempStart[1] or tempStart[2] then
-        		table.insert(self.path, {tempStart[1] or self.startPoint[1], tempStart[2] or self.startPoint[2]})
-        	end
+            if tempStart[1] or tempStart[2] then
+                table.insert(self.path, {tempStart[1] or self.startPoint[1], tempStart[2] or self.startPoint[2]})
+            end
             break    
         else
             self.cells[parent]['isPath'] = true
@@ -1316,23 +1316,23 @@ function World:addPathCount(x, y)
     self.totalPathCount = self.totalPathCount + 1
 end
 function World:adjustStartPoint()
-	local tempStart = {}
-	if self.startPoint[1]<1 then
-		tempStart[1] = 1
-	elseif self.startPoint[1]>self.cellNum then
-		tempStart[1] = self.cellNum
-	end
-	if self.startPoint[2]<1 then
-		tempStart[2] = 1
-	elseif self.startPoint[2]>self.cellNum then
-		tempStart[2] = self.cellNum
-	end
-	if tempStart[1] then
-		self.startPoint[1], tempStart[1] = tempStart[1], self.startPoint[1]
-	end
-	if tempStart[2] then
-		self.startPoint[2], tempStart[2] = tempStart[2], self.startPoint[2]
-	end
+    local tempStart = {}
+    if self.startPoint[1]<1 then
+        tempStart[1] = 1
+    elseif self.startPoint[1]>self.cellNum then
+        tempStart[1] = self.cellNum
+    end
+    if self.startPoint[2]<1 then
+        tempStart[2] = 1
+    elseif self.startPoint[2]>self.cellNum then
+        tempStart[2] = self.cellNum
+    end
+    if tempStart[1] then
+        self.startPoint[1], tempStart[1] = tempStart[1], self.startPoint[1]
+    end
+    if tempStart[2] then
+        self.startPoint[2], tempStart[2] = tempStart[2], self.startPoint[2]
+    end
     return tempStart
 end
 
@@ -1357,7 +1357,7 @@ function World:findCertainTypeBuilding(range)
             --当前点到建筑物距离 小于 士兵的射程
             local prevGrid = self.prevGrids[point]
             --距离 建筑物中心 建筑物大小 建筑物
-			--table.insert(prevGrid, {dis, cp, fsize, obj, btype})
+            --table.insert(prevGrid, {dis, cp, fsize, obj, btype})
             if prevGrid and #prevGrid > 0 and prevGrid[1][1]<=range and prevGrid[1][5] == self.searchTargetType then
                 prevGrid = prevGrid[1]
                 parent = point 
@@ -1391,7 +1391,7 @@ function World:findInitPath(range)
             --当前点到建筑物距离 小于 士兵的射程
             local prevGrid = self.prevGrids[point]
             --距离 建筑物中心 建筑物大小 建筑物
-			--table.insert(prevGrid, {dis, cp, fsize, obj})
+            --table.insert(prevGrid, {dis, cp, fsize, obj})
             --一个网格多个prevGrid 寻找最近的距离
             if prevGrid and #prevGrid > 0 and prevGrid[1][1] <= range then
                 parent = point 
@@ -2201,7 +2201,7 @@ function World:searchAttack(range, fx, fy, solX, solY, param)
 
     local parent, lastPoint, target
 
-	--self.typeNum[btype] = (self.typeNum[btype] or 0) + 1
+    --self.typeNum[btype] = (self.typeNum[btype] or 0) + 1
     --print("typeNum", (self.typeNum[self.searchTargetType] or 0))
     if self.searchTargetType ~= nil and self.typeNum[self.searchTargetType] ~= nil and self.typeNum[self.searchTargetType] > 0 then
         parent, lastPoint, target = self:findCertainTypeBuilding(range)
@@ -2320,33 +2320,33 @@ function World:clearWorld()
         return
     end
 
-	local cell
+    local cell
     if self.startPoint ~= nil then
-    	cell = self.cells[self:getKey(self.startPoint[1], self.startPoint[2])]
-    	if cell then
-	        cell['state'] = nil
-	    end
+        cell = self.cells[self:getKey(self.startPoint[1], self.startPoint[2])]
+        if cell then
+            cell['state'] = nil
+        end
     end
     if self.endPoint ~= nil then
         cell = self.cells[self:getKey(self.endPoint[1], self.endPoint[2])]
-    	if cell then
-	        cell['state'] = nil
-	    end
+        if cell then
+            cell['state'] = nil
+        end
     end
     --[[
     for k, v in ipairs(self.walls) do
         cell = self.cells[self:getKey(v[1], v[2])]
-    	if cell then
-	        cell['state'] = nil
-	    end
+        if cell then
+            cell['state'] = nil
+        end
     end
     ]]--
 
     for k, v in ipairs(self.path) do
         cell = self.cells[self:getKey(v[1], v[2])]
-    	if cell then
-	        cell['state'] = nil
-	    end
+        if cell then
+            cell['state'] = nil
+        end
     end
     self.startPoint = nil
     self.endPoint = nil

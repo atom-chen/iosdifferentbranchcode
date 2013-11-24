@@ -12,7 +12,7 @@ end
 function NormalChangeDelegate:ctor(fromScene, toScene)
     local bg = CCTouchLayer:create(display.DIALOG_PRI, true)
     bg:setContentSize(General.winSize)
-	self.view = bg
+    self.view = bg
     simpleRegisterEvent(bg, {update={callback = self.update, inteval=0.1}, enterOrExit={callback=self.enterOrExit}}, self)
     self.loadState = 0
     --内部
@@ -63,7 +63,7 @@ function NormalChangeDelegate:update(diff)
         end
         if self.fromScene and self.fromScene.view and self.fromScene.sceneType~=self.toScene.sceneType then
             -- 在移除场景前移除纹理，是为了避免场景内纹理被清理。
-            CCTextureCache:sharedTextureCache():removeUnusedTextures()
+            --CCTextureCache:sharedTextureCache():removeUnusedTextures()
         end
         if self.fromScene then
             self.fromScene:removeScene()

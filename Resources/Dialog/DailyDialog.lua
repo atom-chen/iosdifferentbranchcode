@@ -1,8 +1,7 @@
 DailyDialog = class()
 
 function DailyDialog:share()
-	SNS.share(SNS.shareText, nil, self)
-	UserStat.stat(UserStatType.SHARE)
+    SNS.share(SNS.shareText, nil, self)
 end
 
 function DailyDialog:ctor(reward, days)
@@ -10,24 +9,24 @@ function DailyDialog:ctor(reward, days)
     bg = UI.createButton(CCSizeMake(720, 526), doNothing, {image="images/dialogBgA.png", priority=display.DIALOG_PRI, nodeChangeHandler = doNothing})
     screen.autoSuitable(bg, {screenAnchor=General.anchorCenter, scaleType = screen.SCALE_DIALOG_CLEVER})
     self.view = bg
-	UI.setShowAnimate(bg)
-	if days~=7 and days~=14 and days~=30 then
+    UI.setShowAnimate(bg)
+    if days~=7 and days~=14 and days~=30 then
         temp = UI.createButton(CCSizeMake(47, 46), display.closeDialog, {image="images/buttonClose.png"})
         screen.autoSuitable(temp, {x=684, y=491, nodeAnchor=General.anchorCenter})
         bg:addChild(temp)
     end
-	
+    
     local spDays = {7,14,30}
     local spRate = {2,3,5}
-	local function getReward(which)
-	    if spDays[which]~=days then return end
-	    local gain = reward * spRate[which]
-	    display.closeDialog()
-	    CrystalLogic.changeCrystal(gain)
-	    CrystalLogic.rewardDay = days
+    local function getReward(which)
+        if spDays[which]~=days then return end
+        local gain = reward * spRate[which]
+        display.closeDialog()
+        CrystalLogic.changeCrystal(gain, UserData.rcc-gain)
+        CrystalLogic.rewardDay = days
         display.pushNotice(UI.createNotice(StringManager.getFormatString("noticeRemoveObstacle", {num=gain}), 255))
-	end
-	
+    end
+    
     temp = UI.createSpriteWithFile("images/dialogItemBlood.png",CCSizeMake(292, 222))
     screen.autoSuitable(temp, {x=400, y=50})
     bg:addChild(temp)
@@ -61,8 +60,7 @@ end
 VipDialog = class()
 
 function VipDialog:share()
-	SNS.share(SNS.shareText, nil, self)
-	UserStat.stat(UserStatType.SHARE)
+    SNS.share(SNS.shareText, nil, self)
 end
 
 function VipDialog:ctor()
@@ -71,8 +69,8 @@ function VipDialog:ctor()
     bg = UI.createButton(CCSizeMake(720, 526), doNothing, {image="images/dialogBgA.png", priority=display.DIALOG_PRI, nodeChangeHandler = doNothing})
     screen.autoSuitable(bg, {screenAnchor=General.anchorCenter, scaleType = screen.SCALE_DIALOG_CLEVER})
     self.view = bg
-	UI.setShowAnimate(bg)
-	
+    UI.setShowAnimate(bg)
+    
     temp = UI.createSpriteWithFile("images/dialogItemBlood.png",CCSizeMake(292, 222))
     screen.autoSuitable(temp, {x=400, y=50})
     bg:addChild(temp)
@@ -125,6 +123,5 @@ function RewardDialog:ctor(reward, remark)
 end
 
 function RewardDialog:share()
-	SNS.share(SNS.shareText, nil, self)
-	UserStat.stat(UserStatType.SHARE)
+    SNS.share(SNS.shareText, nil, self)
 end

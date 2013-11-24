@@ -20,11 +20,11 @@ PARAM = {
     npcMovingTime3=1000, npcMovingTime4=1000, npcScale1=100, npcSpeed2=40,
     npcSpeed3=70, npcSpeed4=70, npcSpeed5=70, populationPercent0=3,
     populationPercent1=5, populationPercent2005=4, scaleMinDialogClose=80, scaleMinDialogOpen=80,
-    switchGuideOpen=0, switchZombieOpen=0, zombieDelayTime1=900, zombieDelayTime2=1800,
-    zombieDelayTime3=3600, zombieDelayTime4=7200, zombieDelayTime5=14400, zombieRepairTime=7000,
+    switchGuideOpen=0, switchZombieOpen=0, zombieDelayTime1=900, zombieDelayTime2=900,
+    zombieDelayTime3=1800, zombieRepairTime=7000,
     actionTombHeight=0
 }
 
 function getParam(key, default)
-	return PARAM[key] or default
+    return PARAM[key] or default
 end
