@@ -206,33 +206,17 @@ do
             bg:addChild(temp)
         end
         
-        temp = UI.createSpriteWithFile("images/dialogItemBgCost.png",CCSizeMake(264, 46))
-        screen.autoSuitable(temp, {x=10, y=10})
-        bg:addChild(temp)
-        
         if info.resource=="crystal" then
-            temp = UI.createLabel(tostring(info.cost), General.font6, 20, {colorR = 255, colorG = 255, colorB = 255})
-            screen.autoSuitable(temp, {x=142, y=31, nodeAnchor=General.anchorCenter})
-            bg:addChild(temp)
             temp = UI.createLabel(info.text, General.font3, 20, {colorR = 252, colorG = 186, colorB = 255})
             screen.autoSuitable(temp, {x=142, y=213, nodeAnchor=General.anchorCenter})
             bg:addChild(temp)
-            if info.type==6 then
-                temp:setColor(ccc3(255, 2, 32))
-            end
-            
-            temp = UI.createLabel(tostring(info.get), General.font4, 20, {colorR = 255, colorG = 255, colorB = 255})
-            screen.autoSuitable(temp, {x=134, y=186, nodeAnchor=General.anchorLeft})
-            bg:addChild(temp)
-            temp = UI.createSpriteWithFile("images/crystal.png",CCSizeMake(34, 33))
-            screen.autoSuitable(temp, {x=100, y=171})
-            bg:addChild(temp)
             
             scrollView:addChildTouchNode(bg, CrystalLogic.buyCrystal, info)
-            if info.type==6 and timer.getTime()-UserData.lastOffTime<86400*7 then
-                bg:setSatOffset(-100, true)
-            end
         else
+            temp = UI.createSpriteWithFile("images/dialogItemBgCost.png",CCSizeMake(264, 46))
+            screen.autoSuitable(temp, {x=10, y=10})
+            bg:addChild(temp)
+
             local colorSetting = {colorR = 255, colorG = 255, colorB = 255}
             if info.cost>UserData.crystal then
                 colorSetting.colorG=0
@@ -258,23 +242,7 @@ do
     
     local function showTreasureTab(param)
         local infos = {}
-        local crystals = {}
-        local default= CCUserDefault:sharedUserDefault()
-        for i=1, 6 do
-            -- in app pay
-            crystals[i] = tonumber(default:getStringForKey("cnum" .. (i-1)))
-            local cost = default:getStringForKey(CRYSTAL_PREFIX .. (i-1))
-            if cost~="" then
-                if i<6 then
-                    local info = {type=i, resource="crystal", cost=cost, get=crystals[i], text=StringManager.getString("storeItemCrystal" .. i), img="images/storeItemCrystal" .. i .. ".png"}
-                    table.insert(infos, info)
-                else
-                    local info = {type=i, resource="crystal", cost=cost, get=crystals[i], text=StringManager.getString("storeItemCrystal" .. i), img="images/storeItemCrystal" .. 1 .. ".png"}
-                    table.insert(infos, 1, info)
-                end
-            end
-        end
-        
+        table.insert(infos, {resource="crystal", text=StringManager.getString("storeItemCrystal"), img="images/storeItemCrystal1.png"})
         
         local types = {"food", "oil", "person"}
         local tmap = {food="Food", oil="Oil", person="Person"}

@@ -83,11 +83,6 @@ function LoadingScene:requestData()
             params.check=1
         end
         params.country = default:getStringForKey("localCountry")
-        if PauseLogic.pauseBuyObj then
-            params.lastbuy = PauseLogic.pauseBuyObj.get
-            params.lastbase = PauseLogic.pauseBuyObj.base
-            params.lasttype = PauseLogic.pauseBuyObj.type
-        end
         network.httpRequest("getData", self.requestSelfData, {params=params}, self)
     end
 end
@@ -157,9 +152,6 @@ function LoadingScene:requestSelfData(isSuc, result)
             end
             self.loadMax = self.loadMax+30
             self.toScene.initInfo = data
-            if PauseLogic.pauseBuyObj and data.lastsynover then
-                PauseLogic.pauseBuyObj = nil
-            end
         end
     end
 end

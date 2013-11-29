@@ -124,13 +124,16 @@ void MyPlugins::share(const char* sharedText, const char* sharedImagePath)
 	    m_pSharePlugin->share(info);
 }
 
-void MyPlugins::pay(const char* productId)
+void MyPlugins::pay(const char* productId, int userId/*=0*/, int serverId/*=0*/)
 {
 	TProductInfo info;
 	info["productName"] = productId;
 	char uid[20] = {};
-	sprintf(uid, "%d", CCUserDefault::sharedUserDefault()->getIntegerForKey("userId"));
+	sprintf(uid, "%d", userId);
 	info["payerId"] = std::string(uid);
+    char sid[20] = {};
+    sprintf(sid, "%d", serverId);
+    info["serverId"] = std::string(sid);
 	if(m_pIAPPlugin!=NULL)
 		m_pIAPPlugin->payForProduct(info);
 }
@@ -149,6 +152,10 @@ void MyPayResult::onPayResult(PayResultCode ret, const char* msg, TProductInfo i
 {
     if(ret == kPaySuccess){
         CCNotificationCenter::sharedNotificationCenter()->postNotification("EVENT_BUY_SUCCESS");
+    }
+    else if(ret == kPayCancel)
+    {
+        CCNotificationCenter::sharedNotificationCenter()->postNotification("EVENT_BUY_CANCEL");
     }
     else{
         CCNotificationCenter::sharedNotificationCenter()->postNotification("EVENT_BUY_FAIL");

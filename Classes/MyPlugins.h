@@ -35,7 +35,7 @@ public:
 	void unloadPlugins();
     void loadPlugins(cocos2d::CCDictionary* dict);
     void share(const char* sharedText, const char* sharedImagePath);
-    void pay(const char* productId);
+    void pay(const char* productId, int userId=0, int serverId=0);
     
 private:
     MyPlugins();

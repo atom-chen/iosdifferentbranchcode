@@ -973,19 +973,6 @@ function OperationScene:initData()
         UserData.totalCrystal = initInfo.totalCrystal or 0
         UserData.lastOffTime = timer.getTime(initInfo.lastOffTime or 0)
         CrystalLogic.initCrystal(initInfo.crystal)
-        if PauseLogic.pauseBuyObj then
-                CrystalLogic.changeCrystal(PauseLogic.pauseBuyObj.get, UserData.rcc-PauseLogic.pauseBuyObj.get)
-                if UserData.totalCrystal==0 then
-                    UserData.isNewVip = true
-                UserData.firstReward = PauseLogic.pauseBuyObj.get
-                end
-                UserData.totalCrystal = UserData.totalCrystal + PauseLogic.pauseBuyObj.get
-                if PauseLogic.pauseBuyObj.type==6 then
-                    UserData.lastOffTime = timer.getTime()
-                end
-            UserStat.addCrystalLog(-1, timer.getTime(), PauseLogic.pauseBuyObj.get, PauseLogic.pauseBuyObj.type-1)
-            PauseLogic.pauseBuyObj = nil
-        end
         UserData.rewards = initInfo.rewards
         if initInfo.reward then
             UserData.dailyReward = initInfo.reward
@@ -994,6 +981,7 @@ function OperationScene:initData()
         UserData.leftDay = initInfo.leftDay
         UserData.allRewards = {}
         UserData.getRewardList = {}
+        UserData.needReloadRewards = nil
         UserData.loadRewards(initInfo.newRewards)
         if initInfo.leagueWarTime then
             UserData.leagueWarTime = timer.getTime(initInfo.leagueWarTime)
@@ -1229,9 +1217,22 @@ function OperationScene:synData(isAsyn)
         self.synTime = 0
 end
 
+local function getRewardsCallback(suc, data)
+    if suc then
+        local jdata = json.decode(data)
+        if jdata.code==0 then
+            UserData.loadRewards(jdata.rewards)
+        end
+    end
+end
+
 function OperationScene:updateLogic(diff)
     if self.sceneType~=SceneTypes.Operation then return end
     if display.isSceneChange then return end
+    if UserData.needReloadRewards and not PauseLogic.isPause() then
+        UserData.needReloadRewards = nil
+        network.httpRequest("getRewards", getRewardsCallback, {isPost=false, noError=true, params={uid=UserData.userId}})
+    end
     SoldierLogic.updateSoldierList()
     UpdateLogic.executeUpdate(diff)
     local t1 = timer.getTime()

@@ -7,8 +7,6 @@
 //
 
 #include "platform/CCNative.h"
-#include "platform/ios/IAPHelper.h"
-#include "platform/ios/GCHelper.h"
 #include "platform/ios/CSAlertView.h"
 
 #include "support/CCNotificationCenter.h"
@@ -48,14 +46,11 @@ void CCNative::clearLocalNotification()
 
 void CCNative::buyProductIdentifier(const char *productId)
 {
-	if(!CCUserDefault::sharedUserDefault()->getBoolForKey("pay"))
-		CCNotificationCenter::sharedNotificationCenter()->postNotification("EVENT_BUY_SUCCESS");
-	else
-	    [[IAPHelper sharedHelper] buyProductIdentifier:[NSString stringWithCString:productId encoding:NSUTF8StringEncoding]];
 }
 
 void CCNative::initStore(CCDictionary* dict)
 {
+    /*
 	NSMutableSet* set = [NSMutableSet setWithCapacity:6];
 	CCArray* keys = dict->allKeys();
 	CCObject* key;
@@ -71,13 +66,14 @@ void CCNative::initStore(CCDictionary* dict)
 	udefault->setIntegerForKey("cnum3", 6500);
 	udefault->setIntegerForKey("cnum4", 14000);
 	udefault->setIntegerForKey("cnum5", 200);
+     */
 }
 
 void CCNative::showAchievements() {
-    [[GCHelper sharedGameCenter] showAchievements];
+    //[[GCHelper sharedGameCenter] showAchievements];
 }
 void CCNative::reportAchievement(const char *identifer, float percent) {
-    [[GCHelper sharedGameCenter] reportAchievementIdentifier: [NSString stringWithUTF8String:identifer] percentComplete:percent];
+    //[[GCHelper sharedGameCenter] reportAchievementIdentifier: [NSString stringWithUTF8String:identifer] percentComplete:percent];
 }
 
 void CCNative::showAlert(const char* title, const char* content, int button1, const char* button1Text, int button2, const char* button2Text)

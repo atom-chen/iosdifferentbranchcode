@@ -29,8 +29,6 @@
 
 #import "RootViewController.h"
 
-#import "platform/ios/GCHelper.h"
-
 @implementation AppController
 
 @synthesize bgTask;
@@ -76,7 +74,6 @@ static AppDelegate s_sharedApplication;
     [window makeKeyAndVisible];
 
     [[UIApplication sharedApplication] setStatusBarHidden: YES];
-    [[GCHelper sharedGameCenter] authenticateLocalUser:viewController];
     
     NSString *country = [[NSLocale currentLocale] objectForKey:NSLocaleCountryCode];
     cocos2d::CCUserDefault::sharedUserDefault()->setStringForKey("localCountry", [country UTF8String]);

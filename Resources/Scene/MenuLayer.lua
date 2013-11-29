@@ -757,7 +757,7 @@ function MenuLayer:update(diff)
         end
     end
     --]]
-    if UserData.totalCrystal==0 and UserSetting.getValue("firstRewardDialog")==0 then
+    if UserData.totalCrystal==0 and UserSetting.getValue("firstRewardDialog")==0 and GuideLogic.complete then
         if not self.rewardIcon then
             self.rewardIcon = UI.createButton(CCSizeMake(56, 58), self.showFirstReward, {image="images/crystal2.png", callbackParam=self, priority=display.MENU_BUTTON_PRI-2})
             screen.autoSuitable(self.rewardIcon, {nodeAnchor=General.anchorCenter, screenAnchor=General.anchorRight, x=-51, y=19, scaleType=screen.SCALE_NORMAL})

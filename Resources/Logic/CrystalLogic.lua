@@ -43,22 +43,8 @@ end
 function CrystalLogic.buyOver(eventType)
     if eventType==EventManager.eventType.EVENT_BUY_SUCCESS then
         if CrystalLogic.buyObj then
-            if PauseLogic.isPause() then
-                PauseLogic.pauseBuyObj = CrystalLogic.buyObj
-                PauseLogic.pauseBuyObj.base = UserData.crystal
-            else
-                ResourceLogic.changeResource("crystal", CrystalLogic.buyObj.get)
-                UserStat.addCrystalLog(-1, timer.getTime(), CrystalLogic.buyObj.get, CrystalLogic.buyObj.type-1)
-                if UserData.totalCrystal==0 then
-                    UserData.isNewVip = true
-                    UserData.firstReward = CrystalLogic.buyObj.get
-                end
-                UserData.totalCrystal = UserData.totalCrystal + CrystalLogic.buyObj.get
-                if CrystalLogic.buyObj.type==6 then
-                    UserData.lastOffTime = timer.getTime()
-                end
-                display.closeDialog()
-            end
+            display.closeDialog()
+            UserData.needReloadRewards = true
         end
         CrystalLogic.buyObj = nil
     elseif eventType==EventManager.eventType.EVENT_BUY_FAIL then
@@ -74,14 +60,8 @@ EventManager.registerEventMonitor({"EVENT_BUY_SUCCESS", "EVENT_BUY_FAIL", "EVENT
 --need param cost and get
 function CrystalLogic.buyCrystal(param)
     if CrystalLogic.buyObj then return end
-    if param.type==6 and timer.getTime()-UserData.lastOffTime<86400*7 then
-        local day = 7-math.floor((timer.getTime()-UserData.lastOffTime)/86400)
-        display.pushNotice(UI.createNotice(StringManager.getFormatString("noticeSaleOffLimit", {days=day})))
-    else
-        CrystalLogic.buyObj = param
-        CCNative:buyProductIdentifier(CRYSTAL_PREFIX .. (param.type-1))
-        table.insert(CrystalLogic.buyAction, param.type-1)
-    end
+    CrystalLogic.buyObj = true
+    MyPlugins:getInstance():pay("all",UserData.userId,0)
 end
 
 --need param cost and get and resource
