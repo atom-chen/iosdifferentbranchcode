@@ -10,7 +10,9 @@
 #include "PluginManager.h"
 #include "support/CCNotificationCenter.h"
 #include "support/user_default/CCUserDefault.h"
+#include <string>
 
+using namespace std;
 using namespace cocos2d::plugin;
 using namespace cocos2d;
 
@@ -21,6 +23,7 @@ MyPlugins::MyPlugins()
 , m_pIAPPlugin(NULL)
 , m_pSharePlugin(NULL)
 , m_pIAPListener(NULL)
+, m_pAds(NULL)
 {
     
 }
@@ -100,11 +103,20 @@ void MyPlugins::loadPlugins(CCDictionary* dict)
 			m_pIAPPlugin->setResultListener(m_pIAPListener);
 		}
 	}
+	pluginSetting = (CCDictionary*)dict->objectForKey("ads");
+	if(pluginSetting!=NULL){
+		m_pAds = dynamic_cast<ProtocolAds*>(PluginManager::getInstance()->loadPlugin(pluginSetting->valueForKey("name")->getCString()));
+		if(m_pAds){
+			m_pPluginNames->addObject(CCString::create(pluginSetting->valueForKey("name")->getCString()));
+		}
+	}
 }
 
 void MyPlugins::unloadPlugins()
 {
 	m_pSharePlugin = NULL;
+	m_pIAPPlugin = NULL;
+	m_pAds = NULL;
 	CCObject* pluginName;
 	CCARRAY_FOREACH(m_pPluginNames, pluginName)
 	{
@@ -131,11 +143,26 @@ void MyPlugins::pay(const char* productId, int userId/*=0*/, int serverId/*=0*/)
 	char uid[20] = {};
 	sprintf(uid, "%d", userId);
 	info["payerId"] = std::string(uid);
-    char sid[20] = {};
-    sprintf(sid, "%d", serverId);
-    info["serverId"] = std::string(sid);
+	char sid[20] = {};
+	sprintf(sid, "%d", serverId);
+	info["serverId"] = std::string(uid);
 	if(m_pIAPPlugin!=NULL)
 		m_pIAPPlugin->payForProduct(info);
+}
+
+void MyPlugins::sendCmd(const char *cmd, const char *args) {
+	if(m_pAds != NULL) {  
+		string c(cmd);   
+		if(c == "showAds") {  
+			m_pAds->showAds((ProtocolAds::AdsType)0, 0, (ProtocolAds::AdsPos)0);  
+		} else if(c == "hideAds") {  
+			m_pAds->hideAds((ProtocolAds::AdsType)0); 
+		} else if(c == "moregames") {  
+            m_pAds->spendPoints(0);  
+		} else if(c == "hideMoreGames") {  
+			m_pAds->spendPoints(1); 
+		}  
+	}  
 }
 
 void MyShareResult::onShareResult(ShareResultCode ret, const char* msg)
@@ -153,11 +180,10 @@ void MyPayResult::onPayResult(PayResultCode ret, const char* msg, TProductInfo i
     if(ret == kPaySuccess){
         CCNotificationCenter::sharedNotificationCenter()->postNotification("EVENT_BUY_SUCCESS");
     }
-    else if(ret == kPayCancel)
-    {
+    else if(ret == kPayCancel){
         CCNotificationCenter::sharedNotificationCenter()->postNotification("EVENT_BUY_CANCEL");
-    }
-    else{
+	}
+	else{
         CCNotificationCenter::sharedNotificationCenter()->postNotification("EVENT_BUY_FAIL");
     }
 }

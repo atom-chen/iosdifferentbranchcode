@@ -8,7 +8,10 @@ function SettingDialog.onAbout()
 end
 
 function SettingDialog.onFeedback()
-    display.showDialog(FeedbackDialog.new(), true)
+    --display.showDialog(FeedbackDialog.new(), true)
+    display.closeDialog()
+    local t = os.time() .. " " .. os.date("%Y-%m-%d %H:%M:%S")
+    CCNative:sendEmail("cozhelp@loftygame.com","Feedback of Nozomi", "\n\n------DO NOT DELETE!------\nTime:" .. t .. "\nGame:Nozomi\nVersion:1\nPlayerID:" .. (8000000+UserData.userId) .. "\nLanguage:EN")
 end
 
 function SettingDialog.create()

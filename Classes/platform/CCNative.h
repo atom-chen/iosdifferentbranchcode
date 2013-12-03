@@ -19,6 +19,8 @@ class CCNative
 public:
     /** @brief Open a web page in the browser; create an email; or call a phone number. */
     static void openURL(const char* url);
+    
+    static void sendEmail(const char* receiver, const char* title, const char* message);
 
 	static void postNotification(int duration, const char* content);
 

@@ -1,6 +1,6 @@
 /*
 ** Lua binding: Cocos2dExt
-** Generated automatically by tolua++-1.0.92 on 09/06/13 15:02:22.
+** Generated automatically by tolua++-1.0.92 on 12/02/13 14:30:52.
 */
 
 /****************************************************************************
@@ -109,6 +109,39 @@ static int tolua_Cocos2dExt_CCNative_openURL00(lua_State* tolua_S)
 #ifndef TOLUA_RELEASE
  tolua_lerror:
  tolua_error(tolua_S,"#ferror in function 'openURL'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: sendEmail of class  CCNative */
+#ifndef TOLUA_DISABLE_tolua_Cocos2dExt_CCNative_sendEmail00
+static int tolua_Cocos2dExt_CCNative_sendEmail00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertable(tolua_S,1,"CCNative",0,&tolua_err) ||
+     !tolua_isstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isstring(tolua_S,3,0,&tolua_err) ||
+     !tolua_isstring(tolua_S,4,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  const char* receiver = ((const char*)  tolua_tostring(tolua_S,2,0));
+  const char* title = ((const char*)  tolua_tostring(tolua_S,3,0));
+  const char* message = ((const char*)  tolua_tostring(tolua_S,4,0));
+  {
+   CCNative::sendEmail(receiver,title,message);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'sendEmail'.",&tolua_err);
  return 0;
 #endif
 }
@@ -2793,39 +2826,74 @@ static int tolua_Cocos2dExt_MyPlugins_share00(lua_State* tolua_S)
 }
 #endif //#ifndef TOLUA_DISABLE
 
-/* method: share of class  MyPlugins */
+/* method: sendCmd of class  MyPlugins */
+#ifndef TOLUA_DISABLE_tolua_Cocos2dExt_MyPlugins_sendCmd00
+static int tolua_Cocos2dExt_MyPlugins_sendCmd00(lua_State* tolua_S)
+{
+#ifndef TOLUA_RELEASE
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"MyPlugins",0,&tolua_err) ||
+     !tolua_isstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isstring(tolua_S,3,0,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,4,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
+#endif
+ {
+  MyPlugins* self = (MyPlugins*)  tolua_tousertype(tolua_S,1,0);
+  const char* cmd = ((const char*)  tolua_tostring(tolua_S,2,0));
+  const char* args = ((const char*)  tolua_tostring(tolua_S,3,0));
+#ifndef TOLUA_RELEASE
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'sendCmd'", NULL);
+#endif
+  {
+   self->sendCmd(cmd,args);
+  }
+ }
+ return 0;
+#ifndef TOLUA_RELEASE
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'sendCmd'.",&tolua_err);
+ return 0;
+#endif
+}
+#endif //#ifndef TOLUA_DISABLE
+
+/* method: pay of class  MyPlugins */
 #ifndef TOLUA_DISABLE_tolua_Cocos2dExt_MyPlugins_pay00
 static int tolua_Cocos2dExt_MyPlugins_pay00(lua_State* tolua_S)
 {
 #ifndef TOLUA_RELEASE
-    tolua_Error tolua_err;
-    if (
-        !tolua_isusertype(tolua_S,1,"MyPlugins",0,&tolua_err) ||
-        !tolua_isstring(tolua_S,2,0,&tolua_err) ||
-        !tolua_isnumber(tolua_S,3,0,&tolua_err) ||
-        !tolua_isnumber(tolua_S,4,0,&tolua_err) ||
-        !tolua_isnoobj(tolua_S,5,&tolua_err)
-        )
-        goto tolua_lerror;
-    else
+ tolua_Error tolua_err;
+ if (
+     !tolua_isusertype(tolua_S,1,"MyPlugins",0,&tolua_err) ||
+     !tolua_isstring(tolua_S,2,0,&tolua_err) ||
+     !tolua_isnumber(tolua_S,3,1,&tolua_err) ||
+     !tolua_isnumber(tolua_S,4,1,&tolua_err) ||
+     !tolua_isnoobj(tolua_S,5,&tolua_err)
+ )
+  goto tolua_lerror;
+ else
 #endif
-    {
-        MyPlugins* self = (MyPlugins*)  tolua_tousertype(tolua_S,1,0);
-        const char* productId = ((const char*)  tolua_tostring(tolua_S,2,0));
-        int userId = ((int) tolua_tonumber(tolua_S, 3, 0));
-        int serverId = ((int) tolua_tonumber(tolua_S, 4, 0));
+ {
+  MyPlugins* self = (MyPlugins*)  tolua_tousertype(tolua_S,1,0);
+  const char* productId = ((const char*)  tolua_tostring(tolua_S,2,0));
+  int userId = ((int)  tolua_tonumber(tolua_S,3,0));
+  int serverId = ((int)  tolua_tonumber(tolua_S,4,0));
 #ifndef TOLUA_RELEASE
-        if (!self) tolua_error(tolua_S,"invalid 'self' in function 'pay'", NULL);
+  if (!self) tolua_error(tolua_S,"invalid 'self' in function 'pay'", NULL);
 #endif
-        {
-            self->pay(productId, userId, serverId);
-        }
-    }
-    return 0;
+  {
+   self->pay(productId,userId,serverId);
+  }
+ }
+ return 0;
 #ifndef TOLUA_RELEASE
-tolua_lerror:
-    tolua_error(tolua_S,"#ferror in function 'pay'.",&tolua_err);
-    return 0;
+ tolua_lerror:
+ tolua_error(tolua_S,"#ferror in function 'pay'.",&tolua_err);
+ return 0;
 #endif
 }
 #endif //#ifndef TOLUA_DISABLE
@@ -2850,6 +2918,7 @@ TOLUA_API int tolua_extensions_caesars_open (lua_State* tolua_S)
   tolua_cclass(tolua_S,"CCNative","CCNative","",NULL);
   tolua_beginmodule(tolua_S,"CCNative");
    tolua_function(tolua_S,"openURL",tolua_Cocos2dExt_CCNative_openURL00);
+   tolua_function(tolua_S,"sendEmail",tolua_Cocos2dExt_CCNative_sendEmail00);
    tolua_function(tolua_S,"postNotification",tolua_Cocos2dExt_CCNative_postNotification00);
    tolua_function(tolua_S,"clearLocalNotification",tolua_Cocos2dExt_CCNative_clearLocalNotification00);
    tolua_function(tolua_S,"buyProductIdentifier",tolua_Cocos2dExt_CCNative_buyProductIdentifier00);
@@ -2983,6 +3052,7 @@ TOLUA_API int tolua_extensions_caesars_open (lua_State* tolua_S)
   tolua_beginmodule(tolua_S,"MyPlugins");
    tolua_function(tolua_S,"getInstance",tolua_Cocos2dExt_MyPlugins_getInstance00);
    tolua_function(tolua_S,"share",tolua_Cocos2dExt_MyPlugins_share00);
+   tolua_function(tolua_S,"sendCmd",tolua_Cocos2dExt_MyPlugins_sendCmd00);
    tolua_function(tolua_S,"pay",tolua_Cocos2dExt_MyPlugins_pay00);
   tolua_endmodule(tolua_S);
  tolua_endmodule(tolua_S);

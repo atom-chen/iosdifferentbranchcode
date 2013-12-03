@@ -20,6 +20,17 @@ void CCNative::openURL(const char *url)
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlStr]];
 }
 
+void CCNative::sendEmail(const char *receiver, const char *title, const char *message)
+{
+    NSString* mail = [NSString stringWithUTF8String:receiver];
+    NSString* nTitle = [NSString stringWithUTF8String:title];
+    NSString* nMessage = [NSString stringWithUTF8String:message];
+    NSString* device = [UIDevice currentDevice].model;
+    NSString* sys = [UIDevice currentDevice].systemVersion;
+    NSString* mailUrl = [NSString stringWithFormat:@"mailto:%@?subject=%@&body=%@\nDevice:%@\nSystem version:%@\n---------------", mail, nTitle, nMessage,device,sys];
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[mailUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]]];
+}
+
 void CCNative::postNotification(int duration, const char *content)
 {
     UILocalNotification *notification = [[UILocalNotification alloc] init];
