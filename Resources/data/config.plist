@@ -97,11 +97,11 @@
           <key>cprefix</key>
           <string>crystal</string>
           <key>baseUrl</key>
-          <string>http://23.21.135.42:9990/</string>
+          <string>http://180.210.224.221:9990/</string>
           <key>scoreUrl</key>
-          <string>http://23.21.135.42:8998/</string>
+          <string>http://180.210.224.221:8998/</string>
           <key>chatUrl</key>
-          <string>http://23.21.135.42:8005/</string>
+          <string>http://180.210.224.221:8005/</string>
           <key>purpleUrl</key>
           <string>https://play.google.com/store/apps/details?id=code.softgames.pocketonlinewar</string>
         </dict>
